@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JSON Data Mapper</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #333;
+      background: #fff;
+      overflow-x: hidden;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 100%;
+    }
+
+    header {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .upload-section {
+      margin-bottom: 20px;
+    }
+
+    .drop-zone {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragging {
+      border-color: #0066cc;
+      background-color: #f0f8ff;
+    }
+
+    .file-button {
+      display: inline-block;
+      background: #0066cc;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 8px 0;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .file-button:hover {
+      background: #0052a3;
+    }
+
+    .file-limit {
+      font-size: 10px;
+      color: #999;
+    }
+
+    .json-preview {
+      margin-bottom: 20px;
+    }
+
+    .table-container {
+      max-height: 200px;
+      overflow: auto;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    th, td {
+      border: 1px solid #e5e5e5;
+      padding: 4px 6px;
+      text-align: left;
+      min-width: 60px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    .mapping-section {
+      margin-bottom: 20px;
+    }
+
+    .mapping-table {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+    }
+
+    .mapping-row {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #e5e5e5;
+      gap: 8px;
+    }
+
+    .mapping-row:last-child {
+      border-bottom: none;
+    }
+
+    .mapping-row label {
+      flex: 1;
+      font-size: 11px;
+      font-weight: 500;
+      min-width: 80px;
+      word-break: break-word;
+    }
+
+    .mapping-row input {
+      flex: 1;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 11px;
+      min-width: 100px;
+    }
+
+    .mapping-row input:focus {
+      outline: none;
+      border-color: #0066cc;
+    }
+
+    .action-section {
+      margin-bottom: 20px;
+    }
+
+    .apply-button {
+      width: 100%;
+      background: #18a0fb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .apply-button:hover:not(:disabled) {
+      background: #0073e6;
+    }
+
+    .apply-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .logs-section {
+      border-top: 1px solid #e5e5e5;
+      padding-top: 16px;
+    }
+
+    .logs-container {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      background: #f8f9fa;
+    }
+
+    .log-entry {
+      padding: 6px 8px;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-entry.info {
+      color: #333;
+    }
+
+    .log-entry.warning {
+      color: #f39c12;
+      background: #fef9e7;
+    }
+
+    .log-entry.error {
+      color: #e74c3c;
+      background: #fdf2f2;
+    }
+
+    .timestamp {
+      color: #666;
+      font-size: 9px;
+      min-width: 60px;
+    }
+
+    .message {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  </style>
+</head>
+<body>
+  <div id="react-page"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script type="text/babel">
+    const { useState, useCallback, useEffect } = React;
+
+    // Helper function to extract all possible key paths from JSON data
+    function extractJsonKeys(data, maxDepth = 3) {
+      const keys = new Set();
+      
+      function extractKeysRecursive(obj, prefix = '', depth = 0) {
+        if (depth >= maxDepth || obj === null || typeof obj !== 'object') {
+          return;
+        }
+        
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            const fullKey = prefix ? `${prefix}.${key}` : key;
+            keys.add(fullKey);
+            
+            if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+              extractKeysRecursive(obj[key], fullKey, depth + 1);
+            }
+          }
+        }
+      }
+      
+      data.slice(0, 10).forEach(item => extractKeysRecursive(item));
+      return Array.from(keys).sort();
+    }
+
+    // Helper function to get nested value for preview
+    function getNestedValue(obj, path) {
+      return path.split('.').reduce((current, key) => {
+        return current && current[key] !== undefined ? current[key] : undefined;
+      }, obj);
+    }
+
+    const JsonDataMapper = () => {
+      const [jsonData, setJsonData] = useState(null);
+      const [jsonKeys, setJsonKeys] = useState([]);
+      const [mappings, setMappings] = useState([]);
+      const [selectionCount, setSelectionCount] = useState(0);
+      const [logs, setLogs] = useState([]);
+      const [isDragging, setIsDragging] = useState(false);
+
+      // Handle file upload
+      const handleFileUpload = useCallback((file) => {
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+          addLog('File size exceeds 2MB limit', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target?.result;
+            const parsed = JSON.parse(content);
+            
+            let dataArray;
+            if (Array.isArray(parsed)) {
+              dataArray = parsed;
+            } else {
+              dataArray = [parsed];
+            }
+            
+            setJsonData(dataArray);
+            const keys = extractJsonKeys(dataArray);
+            setJsonKeys(keys);
+            
+            // Initialize mappings with empty layer names
+            setMappings(keys.map(key => ({ jsonKey: key, layerName: '' })));
+            
+            addLog(`Loaded JSON with ${dataArray.length} objects and ${keys.length} unique keys`, 'info');
+          } catch (error) {
+            addLog('Invalid JSON file', 'error');
+            console.error('JSON parsing error:', error);
+          }
+        };
+        reader.readAsText(file);
+      }, []);
+
+      // Handle drag and drop
+      const handleDragOver = useCallback((e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }, []);
+
+      const handleDragLeave = useCallback((e) => {
+        e.preventDefault();
+        setIsDragging(false);
+      }, []);
+
+      const handleDrop = useCallback((e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        
+        const files = Array.from(e.dataTransfer.files);
+        const jsonFile = files.find(file => file.type === 'application/json' || file.name.endsWith('.json'));
+        
+        if (jsonFile) {
+          handleFileUpload(jsonFile);
+        } else {
+          addLog('Please drop a JSON file', 'error');
+        }
+      }, [handleFileUpload]);
+
+      // Handle file input change
+      const handleFileInputChange = useCallback((e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          handleFileUpload(file);
+        }
+      }, [handleFileUpload]);
+
+      // Update mapping
+      const updateMapping = useCallback((jsonKey, layerName) => {
+        setMappings(prev => prev.map(mapping => 
+          mapping.jsonKey === jsonKey 
+            ? { ...mapping, layerName }
+            : mapping
+        ));
+      }, []);
+
+      // Add log entry
+      const addLog = useCallback((message, level = 'info') => {
+        setLogs(prev => [...prev, {
+          message,
+          level,
+          timestamp: new Date().toLocaleTimeString()
+        }]);
+      }, []);
+
+      // Apply data
+      const handleApplyData = useCallback(() => {
+        if (!jsonData || jsonData.length === 0) {
+          addLog('No JSON data loaded', 'error');
+          return;
+        }
+
+        const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
+        if (activeMappings.length === 0) {
+          addLog('No layer mappings configured', 'error');
+          return;
+        }
+
+        if (selectionCount === 0) {
+          addLog('No layers selected in Figma', 'error');
+          return;
+        }
+
+        parent.postMessage({
+          pluginMessage: {
+            type: 'apply-data',
+            jsonData,
+            mappings: activeMappings
+          }
+        }, '*');
+      }, [jsonData, mappings, selectionCount]);
+
+      // Listen for messages from main thread
+      useEffect(() => {
+        const handleMessage = (event) => {
+          const { type, message, level, selectionCount: count } = event.data.pluginMessage || {};
+          
+          if (type === 'log') {
+            addLog(message, level);
+          } else if (type === 'selection-changed') {
+            setSelectionCount(count);
+          }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+      }, [addLog]);
+
+      // Render JSON preview table
+      const renderJsonPreview = () => {
+        if (!jsonData || jsonData.length === 0) return null;
+
+        const previewData = jsonData.slice(0, 10);
+        const displayKeys = jsonKeys.slice(0, 10); // Limit columns for display
+
+        return (
+          <div className="json-preview">
+            <h3>JSON Preview (first 10 rows)</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    {displayKeys.map(key => (
+                      <th key={key}>{key}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewData.map((item, index) => (
+                    <tr key={index}>
+                      {displayKeys.map(key => (
+                        <td key={key}>
+                          {String(getNestedValue(item, key) || '').substring(0, 50)}
+                          {String(getNestedValue(item, key) || '').length > 50 ? '...' : ''}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div className="container">
+          <header>
+            <h1>JSON Data Mapper</h1>
+            <p>Selected: {selectionCount} layer(s)</p>
+          </header>
+
+          <section className="upload-section">
+            <div 
+              className={`drop-zone ${isDragging ? 'dragging' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <p>Drop JSON file here or</p>
+              <label className="file-button">
+                Choose File
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={handleFileInputChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              <p className="file-limit">Max 2MB</p>
+            </div>
+          </section>
+
+          {jsonData && (
+            <>
+              {renderJsonPreview()}
+              
+              <section className="mapping-section">
+                <h3>Key Mapping</h3>
+                <div className="mapping-table">
+                  {mappings.map(mapping => (
+                    <div key={mapping.jsonKey} className="mapping-row">
+                      <label>{mapping.jsonKey}</label>
+                      <input
+                        type="text"
+                        placeholder="Figma layer name"
+                        value={mapping.layerName}
+                        onChange={(e) => updateMapping(mapping.jsonKey, e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="action-section">
+                <button 
+                  className="apply-button"
+                  onClick={handleApplyData}
+                  disabled={selectionCount === 0}
+                >
+                  Apply Data to Selection
+                </button>
+              </section>
+            </>
+          )}
+
+          <section className="logs-section">
+            <h3>Logs</h3>
+            <div className="logs-container">
+              {logs.map((log, index) => (
+                <div key={index} className={`log-entry ${log.level}`}>
+                  <span className="timestamp">{log.timestamp}</span>
+                  <span className="message">{log.message}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      );
+    };
+
+    // Render the app
+    ReactDOM.render(<JsonDataMapper />, document.getElementById('react-page'));
+  </script>
+</body>
+</html>

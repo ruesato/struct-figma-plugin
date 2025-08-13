@@ -1,0 +1,19 @@
+{
+  "name": "JSON Data Mapper",
+  "id": "json-data-mapper",
+  "api": "1.0.0",
+  "main": "main/code.js",
+  "ui": "ui/index.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Required for fetching images from URLs provided in JSON data"
+  },
+  "permissions": ["currentuser"],
+  "relaunchButtons": [
+    {
+      "command": "open",
+      "name": "JSON Data Mapper"
+    }
+  ]
+}
