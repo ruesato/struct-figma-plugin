@@ -1,0 +1,532 @@
+{
+  "patients": [
+		{
+		  "patient_id": "PAT-21",
+		  "first_name": "Michael",
+		  "last_name": "Johnson",
+		  "date_of_birth": "1978-09-21",
+		  "gender": "Male",
+		  "blood_type": "A+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2101",
+		      "encounter_date": "2023-03-15",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Hypertension",
+		      "provider_name": "Dr. Emily Williams",
+		      "details": "Patient presents for his annual physical. Reports occasional headaches.",
+		      "comparison": "Blood pressure was borderline elevated at last year's check-up.",
+		      "findings": "Blood pressure is consistently elevated at 145/95 mmHg. Physical exam is otherwise unremarkable.",
+		      "impression": "Stage 1 Hypertension. Counseled on lifestyle modifications including diet and exercise. To start on Lisinopril 10mg daily."
+		    },
+		    {
+		      "encounter_id": "ENC-2102",
+		      "encounter_date": "2023-06-20",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Hypertension",
+		      "provider_name": "Dr. Emily Williams",
+		      "details": "Follow-up visit to monitor blood pressure after starting medication.",
+		      "comparison": "Previous blood pressure was 145/95 mmHg.",
+		      "findings": "Patient reports good adherence to medication. Blood pressure is now 130/85 mmHg.",
+		      "impression": "Blood pressure is well-controlled on Lisinopril. Continue current dosage and follow up in 6 months."
+		    },
+		    {
+		      "encounter_id": "ENC-2103",
+		      "encounter_date": "2024-01-10",
+		      "encounter_type": "Urgent Care",
+		      "diagnosis": "Acute Sinusitis",
+		      "provider_name": "Dr. Robert Brown",
+		      "details": "Patient complains of facial pain, headache, and nasal congestion for the past week.",
+		      "comparison": "No history of chronic sinus issues.",
+		      "findings": "Tenderness over maxillary sinuses. Nasal endoscopy shows purulent discharge.",
+		      "impression": "Acute Bacterial Sinusitis. Prescribed a 10-day course of Amoxicillin."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-22",
+		  "first_name": "Jessica",
+		  "last_name": "Davis",
+		  "date_of_birth": "1992-04-12",
+		  "gender": "Female",
+		  "blood_type": "O-",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2201",
+		      "encounter_date": "2022-11-05",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Migraine with Aura",
+		      "provider_name": "Dr. Sarah Miller",
+		      "details": "Patient referred for evaluation of recurrent, debilitating headaches preceded by visual disturbances.",
+		      "comparison": "Previously diagnosed with tension headaches.",
+		      "findings": "Neurological examination is normal. Patient's description of symptoms is classic for migraine with aura.",
+		      "impression": "Migraine with aura. Started on preventative medication (Topiramate) and provided with a rescue medication (Sumatriptan)."
+		    },
+		    {
+		      "encounter_id": "ENC-2202",
+		      "encounter_date": "2023-02-10",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Migraine with Aura",
+		      "provider_name": "Dr. Sarah Miller",
+		      "details": "Follow-up to assess response to new migraine regimen.",
+		      "comparison": "Patient was experiencing 3-4 migraines per month.",
+		      "findings": "Patient reports a significant reduction in migraine frequency to 1 per month. Rescue medication is effective.",
+		      "impression": "Good response to treatment. Continue current medication and follow up as needed."
+		    },
+		    {
+		      "encounter_id": "ENC-2203",
+		      "encounter_date": "2023-09-05",
+		      "encounter_type": "Emergency Room",
+		      "diagnosis": "Ankle Sprain",
+		      "provider_name": "Dr. Christopher Garcia",
+		      "details": "Patient presented to the ER after twisting her ankle while hiking.",
+		      "comparison": "No prior significant injuries to the left ankle.",
+		      "findings": "Swelling and ecchymosis over the lateral aspect of the left ankle. X-ray is negative for fracture.",
+		      "impression": "Moderate ankle sprain. Advised RICE protocol and provided with an ankle brace."
+		    },
+		    {
+		      "encounter_id": "ENC-2204",
+		      "encounter_date": "2023-09-15",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Ankle Sprain",
+		      "provider_name": "Dr. Christopher Garcia",
+		      "details": "Follow-up for ankle sprain.",
+		      "comparison": "Significant swelling and pain at the time of injury.",
+		      "findings": "Swelling has decreased, and range of motion is improving. Patient is able to bear some weight.",
+		      "impression": "Healing well. Referred to physical therapy to aid in recovery."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-23",
+		  "first_name": "David",
+		  "last_name": "Rodriguez",
+		  "date_of_birth": "1965-12-30",
+		  "gender": "Male",
+		  "blood_type": "B+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2301",
+		      "encounter_date": "2023-01-20",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Hyperlipidemia",
+		      "provider_name": "Dr. Lisa Martinez",
+		      "details": "Annual physical examination. Patient is asymptomatic.",
+		      "comparison": "Lipid panel from two years ago was borderline high.",
+		      "findings": "Lab results show elevated LDL cholesterol at 165 mg/dL.",
+		      "impression": "Hyperlipidemia. Recommended dietary changes and a follow-up lipid panel in 3 months."
+		    },
+		    {
+		      "encounter_id": "ENC-2302",
+		      "encounter_date": "2023-04-25",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Hyperlipidemia",
+		      "provider_name": "Dr. Lisa Martinez",
+		      "details": "Follow-up to re-evaluate lipid levels after a trial of lifestyle modification.",
+		      "comparison": "Previous LDL was 165 mg/dL.",
+		      "findings": "Repeat lipid panel shows LDL at 150 mg/dL. Modest improvement.",
+		      "impression": "Insufficient response to diet and exercise. Started on Atorvastatin 20mg daily."
+		    },
+		    {
+		      "encounter_id": "ENC-2303",
+		      "encounter_date": "2023-07-30",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Hyperlipidemia",
+		      "provider_name": "Dr. Lisa Martinez",
+		      "details": "Follow-up to assess response to statin therapy.",
+		      "comparison": "LDL was 150 mg/dL prior to starting medication.",
+		      "findings": "LDL cholesterol is now 95 mg/dL. Patient tolerating medication well.",
+		      "impression": "Excellent response to Atorvastatin. Continue current dosage."
+		    },
+		    {
+		      "encounter_id": "ENC-2304",
+		      "encounter_date": "2024-02-18",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Benign Prostatic Hyperplasia",
+		      "provider_name": "Dr. James Wilson",
+		      "details": "Patient complains of urinary frequency and nocturia.",
+		      "comparison": "No previous urological issues.",
+		      "findings": "Digital rectal exam reveals an enlarged, non-tender prostate. PSA level is within the normal range.",
+		      "impression": "Benign Prostatic Hyperplasia (BPH). Started on Tamsulosin to improve urinary symptoms."
+		    },
+		    {
+		        "encounter_id": "ENC-2305",
+		        "encounter_date": "2024-05-22",
+		        "encounter_type": "Follow-up",
+		        "diagnosis": "Benign Prostatic Hyperplasia",
+		        "provider_name": "Dr. James Wilson",
+		        "details": "Follow-up on BPH management.",
+		        "comparison": "Patient had significant urinary frequency and nocturia.",
+		        "findings": "Patient reports a marked improvement in urinary flow and a decrease in nighttime awakenings.",
+		        "impression": "Symptoms are well-managed on Tamsulosin. Continue current therapy."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-24",
+		  "first_name": "Sarah",
+		  "last_name": "Wilson",
+		  "date_of_birth": "1959-07-19",
+		  "gender": "Female",
+		  "blood_type": "AB-",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2401",
+		      "encounter_date": "2023-04-02",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Type 2 Diabetes Mellitus",
+		      "provider_name": "Dr. Maria Hernandez",
+		      "details": "Annual check-up. Patient reports increased thirst and fatigue.",
+		      "comparison": "Last year's fasting blood sugar was in the pre-diabetic range.",
+		      "findings": "Fasting blood glucose is 150 mg/dL, and HbA1c is 7.5%.",
+		      "impression": "New diagnosis of Type 2 Diabetes Mellitus. Started on Metformin and referred to a diabetes educator."
+		    },
+		    {
+		      "encounter_id": "ENC-2402",
+		      "encounter_date": "2023-07-10",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Type 2 Diabetes Mellitus",
+		      "provider_name": "Dr. Maria Hernandez",
+		      "details": "Follow-up to monitor glycemic control.",
+		      "comparison": "HbA1c was 7.5% at the time of diagnosis.",
+		      "findings": "Patient has been monitoring her blood sugar and has made dietary changes. HbA1c is now 6.8%.",
+		      "impression": "Good initial response to treatment. Continue Metformin and lifestyle changes."
+		    },
+		    {
+		      "encounter_id": "ENC-2403",
+		      "encounter_date": "2024-03-05",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Osteoarthritis",
+		      "provider_name": "Dr. Laura Taylor",
+		      "details": "Patient complains of chronic pain and stiffness in both knees.",
+		      "comparison": "Pain has been progressively worsening over the past year.",
+		      "findings": "X-rays of the knees show moderate joint space narrowing and osteophyte formation.",
+		      "impression": "Bilateral Osteoarthritis of the knees. Recommended physical therapy and scheduled for corticosteroid injections."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-25",
+		  "first_name": "Christopher",
+		  "last_name": "Moore",
+		  "date_of_birth": "2007-02-28",
+		  "gender": "Male",
+		  "blood_type": "O+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2501",
+		      "encounter_date": "2023-11-15",
+		      "encounter_type": "Urgent Care",
+		      "diagnosis": "Infectious Mononucleosis",
+		      "provider_name": "Dr. Jessica Anderson",
+		      "details": "Patient presents with a severe sore throat, fever, and profound fatigue for the past week.",
+		      "comparison": "No recent significant illnesses.",
+		      "findings": "Physical exam reveals exudative pharyngitis and posterior cervical lymphadenopathy. Monospot test is positive.",
+		      "impression": "Infectious Mononucleosis. Advised rest, hydration, and avoidance of contact sports."
+		    },
+		    {
+		      "encounter_id": "ENC-2502",
+		      "encounter_date": "2023-12-01",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Infectious Mononucleosis",
+		      "provider_name": "Dr. Jessica Anderson",
+		      "details": "Follow-up for mononucleosis.",
+		      "comparison": "Patient had significant fatigue and sore throat.",
+		      "findings": "Sore throat has resolved, but fatigue persists. Spleen is no longer enlarged.",
+		      "impression": "Recovering from mononucleosis as expected. Cleared for a gradual return to activities."
+		    },
+		    {
+		      "encounter_id": "ENC-2503",
+		      "encounter_date": "2024-05-10",
+		      "encounter_type": "Sports Physical",
+		      "diagnosis": "Healthy",
+		      "provider_name": "Dr. Michael Taylor",
+		      "details": "Pre-participation physical for the upcoming football season.",
+		      "comparison": "History of mononucleosis but has fully recovered.",
+		      "findings": "Physical examination is completely normal. All systems are within expected limits.",
+		      "impression": "Cleared for full sports participation without restrictions."
+		    },
+		    {
+		      "encounter_id": "ENC-2504",
+		      "encounter_date": "2024-08-20",
+		      "encounter_type": "Emergency Room",
+		      "diagnosis": "Concussion",
+		      "provider_name": "Dr. Angela Martinez",
+		      "details": "Patient sustained a blow to the head during football practice and reports a headache and dizziness.",
+		      "comparison": "No prior history of head injuries.",
+		      "findings": "Neurological exam shows no focal deficits. Patient has a mild headache and some photophobia. CT of the head is negative.",
+		      "impression": "Mild Concussion. Placed on concussion protocol with cognitive and physical rest."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-26",
+		  "first_name": "Amanda",
+		  "last_name": "Jackson",
+		  "date_of_birth": "1985-06-14",
+		  "gender": "Female",
+		  "blood_type": "A-",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2601",
+		      "encounter_date": "2023-05-22",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Hypothyroidism",
+		      "provider_name": "Dr. William Harris",
+		      "details": "Patient reports feeling unusually tired and has noticed some weight gain despite no changes in diet or exercise.",
+		      "comparison": "Thyroid function tests were normal three years ago.",
+		      "findings": "TSH level is elevated at 9.2 mIU/L, and free T4 is low.",
+		      "impression": "Primary Hypothyroidism. Started on Levothyroxine 50 mcg daily."
+		    },
+		    {
+		      "encounter_id": "ENC-2602",
+		      "encounter_date": "2023-08-29",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Hypothyroidism",
+		      "provider_name": "Dr. William Harris",
+		      "details": "Follow-up to check thyroid hormone levels after starting treatment.",
+		      "comparison": "Initial TSH was 9.2 mIU/L.",
+		      "findings": "Repeat TSH is 3.5 mIU/L. Patient reports a significant improvement in her energy levels.",
+		      "impression": "Euthyroid on current medication dose. Continue Levothyroxine 50 mcg and recheck in one year."
+		    },
+		    {
+		      "encounter_id": "ENC-2603",
+		      "encounter_date": "2024-04-12",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Carpal Tunnel Syndrome",
+		      "provider_name": "Dr. Elizabeth Clark",
+		      "details": "Patient complains of numbness and tingling in her right hand, particularly at night.",
+		      "comparison": "No prior neurological complaints.",
+		      "findings": "Positive Phalen's and Tinel's signs on the right wrist. Nerve conduction studies confirm carpal tunnel syndrome.",
+		      "impression": "Right-sided Carpal Tunnel Syndrome. Recommended wrist splinting at night and ergonomic adjustments at work."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-27",
+		  "first_name": "Brian",
+		  "last_name": "Lewis",
+		  "date_of_birth": "1998-01-08",
+		  "gender": "Male",
+		  "blood_type": "B-",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2701",
+		      "encounter_date": "2023-08-11",
+		      "encounter_type": "Urgent Care",
+		      "diagnosis": "Gastroenteritis",
+		      "provider_name": "Dr. Daniel White",
+		      "details": "Patient presents with a 24-hour history of nausea, vomiting, and diarrhea.",
+		      "comparison": "No recent travel or sick contacts.",
+		      "findings": "Abdomen is soft with diffuse tenderness. Mild signs of dehydration are present.",
+		      "impression": "Acute Gastroenteritis, likely viral. Advised supportive care with oral rehydration."
+		    },
+		    {
+		      "encounter_id": "ENC-2702",
+		      "encounter_date": "2023-08-14",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Gastroenteritis",
+		      "provider_name": "Dr. Daniel White",
+		      "details": "Follow-up for gastroenteritis.",
+		      "comparison": "Patient was experiencing active vomiting and diarrhea.",
+		      "findings": "Symptoms have completely resolved. Patient is now well-hydrated.",
+		      "impression": "Full recovery from gastroenteritis."
+		    },
+		    {
+		      "encounter_id": "ENC-2703",
+		      "encounter_date": "2024-03-01",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Generalized Anxiety Disorder",
+		      "provider_name": "Dr. Sophia Martin",
+		      "details": "Patient reports experiencing excessive worry, restlessness, and difficulty concentrating for the past several months.",
+		      "comparison": "No prior mental health diagnoses.",
+		      "findings": "Patient scores high on the GAD-7 screening tool. Meets the diagnostic criteria for Generalized Anxiety Disorder.",
+		      "impression": "Generalized Anxiety Disorder. Discussed treatment options, and the patient opted to start cognitive-behavioral therapy."
+		    },
+		    {
+		      "encounter_id": "ENC-2704",
+		      "encounter_date": "2024-06-05",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Generalized Anxiety Disorder",
+		      "provider_name": "Dr. Sophia Martin",
+		      "details": "Follow-up to assess progress with therapy.",
+		      "comparison": "Patient was experiencing significant daily anxiety.",
+		      "findings": "Patient reports that CBT has been very helpful in managing his anxiety. He has learned several coping techniques.",
+		      "impression": "Positive response to therapy. Continue with CBT and follow up as needed."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-28",
+		  "first_name": "Karen",
+		  "last_name": "Hall",
+		  "date_of_birth": "1975-03-25",
+		  "gender": "Female",
+		  "blood_type": "O+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2801",
+		      "encounter_date": "2022-10-15",
+		      "encounter_type": "Annual GYN Exam",
+		      "diagnosis": "Normal Exam",
+		      "provider_name": "Dr. Jennifer Allen",
+		      "details": "Routine annual gynecological examination.",
+		      "comparison": "Previous exam a year ago was also normal.",
+		      "findings": "Pelvic exam is unremarkable. Pap smear results are normal.",
+		      "impression": "Healthy female. Recommend routine follow-up in one year."
+		    },
+		    {
+		      "encounter_id": "ENC-2802",
+		      "encounter_date": "2023-05-12",
+		      "encounter_type": "Urgent Care",
+		      "diagnosis": "Urinary Tract Infection",
+		      "provider_name": "Dr. Christopher Robinson",
+		      "details": "Patient complains of a 3-day history of dysuria and urinary frequency.",
+		      "comparison": "History of occasional UTIs.",
+		      "findings": "Urinalysis is positive for leukocyte esterase, nitrites, and bacteria.",
+		      "impression": "Uncomplicated Cystitis. Prescribed a 3-day course of Trimethoprim-sulfamethoxazole."
+		    },
+		    {
+		      "encounter_id": "ENC-2803",
+		      "encounter_date": "2023-05-20",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Urinary Tract Infection",
+		      "provider_name": "Dr. Christopher Robinson",
+		      "details": "Follow-up phone call to check on UTI symptoms.",
+		      "comparison": "Patient had significant dysuria and frequency.",
+		      "findings": "Patient reports complete resolution of symptoms after finishing the antibiotic course.",
+		      "impression": "Resolution of urinary tract infection."
+		    },
+		    {
+		      "encounter_id": "ENC-2804",
+		      "encounter_date": "2023-11-28",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Iron Deficiency Anemia",
+		      "provider_name": "Dr. Amanda Green",
+		      "details": "Referred for evaluation of persistent fatigue and lightheadedness.",
+		      "comparison": "Previous complete blood count showed borderline anemia.",
+		      "findings": "CBC confirms microcytic anemia with a low hemoglobin and hematocrit. Iron studies show low ferritin and serum iron.",
+		      "impression": "Iron Deficiency Anemia, likely secondary to menorrhagia. Started on oral iron supplementation."
+		    },
+		    {
+		      "encounter_id": "ENC-2805",
+		      "encounter_date": "2024-02-28",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Iron Deficiency Anemia",
+		      "provider_name": "Dr. Amanda Green",
+		      "details": "Follow-up to assess response to iron therapy.",
+		      "comparison": "Hemoglobin was 10.2 g/dL.",
+		      "findings": "Repeat CBC shows hemoglobin has improved to 11.8 g/dL. Patient reports a noticeable increase in her energy levels.",
+		      "impression": "Good response to iron supplementation. Continue for at least three more months to replenish iron stores."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-29",
+		  "first_name": "Steven",
+		  "last_name": "Young",
+		  "date_of_birth": "1988-11-02",
+		  "gender": "Male",
+		  "blood_type": "A+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-2901",
+		      "encounter_date": "2023-07-20",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Healthy",
+		      "provider_name": "Dr. Matthew King",
+		      "details": "Annual physical examination. No new complaints.",
+		      "comparison": "No significant changes in health status since his last visit.",
+		      "findings": "Physical exam and routine screening labs are all within normal limits.",
+		      "impression": "Healthy adult male. Continue with a healthy lifestyle."
+		    },
+		    {
+		      "encounter_id": "ENC-2902",
+		      "encounter_date": "2023-12-10",
+		      "encounter_type": "Emergency Room",
+		      "diagnosis": "Nephrolithiasis",
+		      "provider_name": "Dr. Rachel Walker",
+		      "details": "Patient presents with sudden onset of severe left flank pain radiating to the groin, accompanied by nausea.",
+		      "comparison": "No prior history of kidney stones.",
+		      "findings": "CT scan of the abdomen and pelvis reveals a 5mm calculus at the left ureterovesical junction.",
+		      "impression": "Obstructing nephrolithiasis. Managed with intravenous fluids and pain medication. Patient is a candidate for medical expulsive therapy."
+		    },
+		    {
+		      "encounter_id": "ENC-2903",
+		      "encounter_date": "2023-12-20",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Nephrolithiasis",
+		      "provider_name": "Dr. Rachel Walker",
+		      "details": "Follow-up after his ER visit for a kidney stone.",
+		      "comparison": "Patient was in severe pain at the time of presentation.",
+		      "findings": "Patient reports that he passed the stone two days ago and his pain has completely resolved. A repeat kidney ultrasound is normal.",
+		      "impression": "Resolution of the kidney stone episode. Advised on dietary measures to prevent future stone formation."
+		    }
+		  ]
+		},
+		
+		{
+		  "patient_id": "PAT-30",
+		  "first_name": "Nancy",
+		  "last_name": "Lee",
+		  "date_of_birth": "1963-08-05",
+		  "gender": "Female",
+		  "blood_type": "B+",
+		  "encounters": [
+		    {
+		      "encounter_id": "ENC-3001",
+		      "encounter_date": "2023-09-05",
+		      "encounter_type": "Routine Check-up",
+		      "diagnosis": "Gastroesophageal Reflux Disease (GERD)",
+		      "provider_name": "Dr. Patricia Scott",
+		      "details": "Patient complains of frequent heartburn, especially after meals and when lying down.",
+		      "comparison": "Symptoms have become more bothersome over the last six months.",
+		      "findings": "Physical examination is normal. Based on the classic symptoms, a clinical diagnosis of GERD is made.",
+		      "impression": "GERD. Prescribed a daily proton pump inhibitor (Omeprazole) and advised on lifestyle modifications."
+		    },
+		    {
+		      "encounter_id": "ENC-3002",
+		      "encounter_date": "2023-11-10",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Gastroesophageal Reflux Disease (GERD)",
+		      "provider_name": "Dr. Patricia Scott",
+		      "details": "Follow-up to evaluate the effectiveness of GERD treatment.",
+		      "comparison": "Patient had daily heartburn.",
+		      "findings": "Patient reports a significant reduction in heartburn symptoms with Omeprazole.",
+		      "impression": "Symptoms are well-controlled. Continue the current treatment plan."
+		    },
+		    {
+		      "encounter_id": "ENC-3003",
+		      "encounter_date": "2024-04-01",
+		      "encounter_type": "Specialist Visit",
+		      "diagnosis": "Plantar Fasciitis",
+		      "provider_name": "Dr. Paul Adams",
+		      "details": "Patient presents with a chief complaint of stabbing pain in her right heel, which is worse with the first steps in the morning.",
+		      "comparison": "No prior history of foot problems.",
+		      "findings": "There is point tenderness over the medial calcaneal tuberosity.",
+		      "impression": "Plantar Fasciitis. Recommended stretching exercises, icing, and the use of supportive footwear."
+		    },
+		    {
+		      "encounter_id": "ENC-3004",
+		      "encounter_date": "2024-06-05",
+		      "encounter_type": "Follow-up",
+		      "diagnosis": "Plantar Fasciitis",
+		      "provider_name": "Dr. Paul Adams",
+		      "details": "Follow-up for plantar fasciitis.",
+		      "comparison": "Patient had significant heel pain.",
+		      "findings": "The patient has been compliant with the recommended conservative treatments and reports that her heel pain is much improved.",
+		      "impression": "Good response to conservative management. Continue with the current regimen."
+		    }
+		  ]
+		}
+		
+	]
+}

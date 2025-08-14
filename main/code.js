@@ -2,8 +2,27 @@
 // Main thread code for JSON Data Mapper Figma plugin
 // Helper function to extract nested values from JSON objects
 function getNestedValue(obj, path) {
-    return path.split('.').reduce((current, key) => {
-        return current && current[key] !== undefined ? current[key] : undefined;
+    const parts = path.split('.');
+    return parts.reduce((current, part) => {
+        if (current === null || current === undefined)
+            return undefined;
+        // Handle array indexing like "encounters[0]" or "encounters[]"
+        const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
+        if (arrayMatch) {
+            const [, arrayKey, index] = arrayMatch;
+            const arrayValue = current[arrayKey];
+            if (!Array.isArray(arrayValue))
+                return undefined;
+            if (index === '') {
+                // Return first item for "[]" notation
+                return arrayValue[0];
+            }
+            else {
+                // Return specific index
+                return arrayValue[parseInt(index)];
+            }
+        }
+        return current[part];
     }, obj);
 }
 // Helper function to find a layer by name within a node

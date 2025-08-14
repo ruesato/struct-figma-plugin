@@ -1,0 +1,478 @@
+{
+  "patients": [
+	  {
+	    "patient_id": "PAT-31",
+	    "first_name": "Laura",
+	    "last_name": "Smith",
+	    "date_of_birth": "1990-05-15",
+	    "gender": "Female",
+	    "blood_type": "O-",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3101",
+	        "encounter_date": "2023-02-28",
+	        "encounter_type": "Routine Check-up",
+	        "diagnosis": "Asthma",
+	        "provider_name": "Dr. Kevin White",
+	        "details": "Patient presents for an annual check-up. Reports intermittent shortness of breath and wheezing, especially with exercise.",
+	        "comparison": "No history of respiratory issues noted in previous records.",
+	        "findings": "Lungs have mild expiratory wheezes. Spirometry shows a reversible obstructive pattern consistent with asthma.",
+	        "impression": "New diagnosis of mild persistent asthma. Prescribed a daily inhaled corticosteroid (Fluticasone) and a rescue inhaler (Albuterol)."
+	      },
+	      {
+	        "encounter_id": "ENC-3102",
+	        "encounter_date": "2023-04-15",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Asthma",
+	        "provider_name": "Dr. Kevin White",
+	        "details": "Follow-up visit to assess asthma control after starting new medications.",
+	        "comparison": "Patient was newly diagnosed with asthma and started on inhalers.",
+	        "findings": "Patient reports significant improvement in symptoms and has only used her rescue inhaler twice. Lung exam is clear.",
+	        "impression": "Asthma is well-controlled on the current regimen. Continue treatment and follow up in 6 months."
+	      },
+	      {
+	        "encounter_id": "ENC-3103",
+	        "encounter_date": "2024-01-20",
+	        "encounter_type": "Urgent Care",
+	        "diagnosis": "Acute Bronchitis",
+	        "provider_name": "Dr. Susan Jones",
+	        "details": "Patient complains of a productive cough and chest congestion for five days, following a cold.",
+	        "comparison": "Patient has a history of asthma.",
+	        "findings": "Coarse rhonchi are heard over the large airways, but no wheezing. Chest X-ray is clear.",
+	        "impression": "Acute Bronchitis. Advised supportive care, including rest, fluids, and use of her Albuterol inhaler as needed for any associated wheezing."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-32",
+	    "first_name": "Daniel",
+	    "last_name": "Miller",
+	    "date_of_birth": "1982-11-30",
+	    "gender": "Male",
+	    "blood_type": "A+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3201",
+	        "encounter_date": "2023-06-10",
+	        "encounter_type": "Emergency Room",
+	        "diagnosis": "Distal Radius Fracture",
+	        "provider_name": "Dr. Mark Johnson",
+	        "details": "Patient fell onto his outstretched right hand while playing soccer. Presents with severe wrist pain and deformity.",
+	        "comparison": "No prior injuries to the right wrist.",
+	        "findings": "Visible deformity of the right wrist. X-ray confirms a displaced, intra-articular distal radius fracture.",
+	        "impression": "Complex distal radius fracture. Orthopedic consultation obtained. Patient underwent closed reduction and splinting in the ER."
+	      },
+	      {
+	        "encounter_id": "ENC-3202",
+	        "encounter_date": "2023-06-15",
+	        "encounter_type": "Specialist Visit",
+	        "diagnosis": "Distal Radius Fracture",
+	        "provider_name": "Dr. Grace Lee",
+	        "details": "Orthopedic follow-up for right wrist fracture.",
+	        "comparison": "Initial X-rays showed a displaced fracture.",
+	        "findings": "Repeat X-rays show good alignment of the fracture fragments within the splint.",
+	        "impression": "Stable fracture alignment. Patient will be placed in a cast and will follow up in 2 weeks. Continue to elevate the hand and manage pain."
+	      },
+	      {
+	        "encounter_id": "ENC-3203",
+	        "encounter_date": "2023-08-20",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Distal Radius Fracture",
+	        "provider_name": "Dr. Grace Lee",
+	        "details": "Follow-up for cast removal and assessment.",
+	        "comparison": "Patient has been in a cast for 8 weeks.",
+	        "findings": "Cast removed. X-rays show the fracture has healed. There is significant stiffness in the wrist and fingers.",
+	        "impression": "Healed fracture. Referred to occupational therapy to regain range of motion and strength."
+	      },
+	      {
+	        "encounter_id": "ENC-3204",
+	        "encounter_date": "2023-10-25",
+	        "encounter_type": "Therapy",
+	        "diagnosis": "Post-fracture stiffness",
+	        "provider_name": "Anna Davis, OT",
+	        "details": "Final occupational therapy session.",
+	        "comparison": "Initial evaluation showed a 50% deficit in wrist range of motion.",
+	        "findings": "Patient has made excellent progress with therapy. Range of motion is now nearly full, and grip strength has returned to 90% of the contralateral side.",
+	        "impression": "Discharged from therapy. Continue home exercise program."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-33",
+	    "first_name": "Olivia",
+	    "last_name": "Garcia",
+	    "date_of_birth": "1971-02-10",
+	    "gender": "Female",
+	    "blood_type": "B+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3301",
+	        "encounter_date": "2023-03-05",
+	        "encounter_type": "Specialist Visit",
+	        "diagnosis": "Rheumatoid Arthritis",
+	        "provider_name": "Dr. Peter Adams",
+	        "details": "Patient referred for evaluation of painful, swollen joints in her hands and feet for the past 4 months.",
+	        "comparison": "Previously healthy with no joint issues.",
+	        "findings": "Symmetrical synovitis of the metacarpophalangeal (MCP) and proximal interphalangeal (PIP) joints. Labs show positive rheumatoid factor and anti-CCP antibodies.",
+	        "impression": "Seropositive Rheumatoid Arthritis. Started on Methotrexate and a short course of Prednisone."
+	      },
+	      {
+	        "encounter_id": "ENC-3302",
+	        "encounter_date": "2023-06-12",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Rheumatoid Arthritis",
+	        "provider_name": "Dr. Peter Adams",
+	        "details": "Follow-up to assess response to DMARD therapy.",
+	        "comparison": "Patient had active synovitis in multiple joints.",
+	        "findings": "Patient reports significant improvement in pain and swelling. Prednisone has been tapered off. No new joint involvement.",
+	        "impression": "Good response to Methotrexate. Continue current dose and monitor for side effects."
+	      },
+	      {
+	        "encounter_id": "ENC-3303",
+	        "encounter_date": "2023-12-18",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Rheumatoid Arthritis",
+	        "provider_name": "Dr. Peter Adams",
+	        "details": "Routine follow-up for RA.",
+	        "comparison": "Previous visit showed good disease control.",
+	        "findings": "Patient is in clinical remission with no tender or swollen joints. Inflammatory markers are normal.",
+	        "impression": "Rheumatoid Arthritis in remission. Continue Methotrexate and monitor labs quarterly."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-34",
+	    "first_name": "Ethan",
+	    "last_name": "Martinez",
+	    "date_of_birth": "2018-07-22",
+	    "gender": "Male",
+	    "blood_type": "AB+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3401",
+	        "encounter_date": "2023-07-25",
+	        "encounter_type": "Well Child Check",
+	        "diagnosis": "Healthy Child",
+	        "provider_name": "Dr. Linda Harris",
+	        "details": "Patient presents for his 5-year well-child check.",
+	        "comparison": "Developmentally on track at his 4-year check.",
+	        "findings": "Growth and development are appropriate for age. Physical exam is normal. Vaccinations are up to date.",
+	        "impression": "Healthy 5-year-old. Discussed school readiness and safety."
+	      },
+	      {
+	        "encounter_id": "ENC-3402",
+	        "encounter_date": "2023-10-30",
+	        "encounter_type": "Sick Visit",
+	        "diagnosis": "Acute Otitis Media",
+	        "provider_name": "Dr. Linda Harris",
+	        "details": "Patient has a 2-day history of fever and right ear pain.",
+	        "comparison": "One previous ear infection at age 2.",
+	        "findings": "Otoscopy reveals a bulging, erythematous right tympanic membrane with loss of landmarks.",
+	        "impression": "Acute Otitis Media of the right ear. Prescribed a 10-day course of Amoxicillin."
+	      },
+	      {
+	        "encounter_id": "ENC-3403",
+	        "encounter_date": "2024-02-15",
+	        "encounter_type": "Sick Visit",
+	        "diagnosis": "Viral Upper Respiratory Infection",
+	        "provider_name": "Dr. Linda Harris",
+	        "details": "Patient has a runny nose, cough, and low-grade fever.",
+	        "comparison": "History of a recent ear infection.",
+	        "findings": "Lungs are clear. Ears are non-infected. Throat is mildly red.",
+	        "impression": "Common cold. Advised supportive care."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-35",
+	    "first_name": "Barbara",
+	    "last_name": "Thompson",
+	    "date_of_birth": "1955-09-03",
+	    "gender": "Female",
+	    "blood_type": "A-",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3501",
+	        "encounter_date": "2023-04-11",
+	        "encounter_type": "Screening",
+	        "diagnosis": "Screening Colonoscopy",
+	        "provider_name": "Dr. Robert Clark",
+	        "details": "Routine screening colonoscopy for a patient of average risk.",
+	        "comparison": "This is the patient's first colonoscopy.",
+	        "findings": "A 1.5 cm sessile polyp was found in the sigmoid colon and was completely removed via polypectomy.",
+	        "impression": "Sigmoid colon polyp. The specimen was sent to pathology."
+	      },
+	      {
+	        "encounter_id": "ENC-3502",
+	        "encounter_date": "2023-04-18",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Tubular Adenoma",
+	        "provider_name": "Dr. Robert Clark",
+	        "details": "Follow-up to discuss pathology results from colonoscopy.",
+	        "comparison": "A 1.5 cm polyp was removed.",
+	        "findings": "Pathology report confirms the polyp was a tubular adenoma with no high-grade dysplasia.",
+	        "impression": "Benign but pre-cancerous polyp removed. Due to the size of the adenoma, a repeat surveillance colonoscopy is recommended in 3 years."
+	      },
+	      {
+	        "encounter_id": "ENC-3503",
+	        "encounter_date": "2024-03-20",
+	        "encounter_type": "Annual GYN Exam",
+	        "diagnosis": "Postmenopausal, Atrophic Vaginitis",
+	        "provider_name": "Dr. Brenda Davis",
+	        "details": "Routine annual exam. Patient reports vaginal dryness and discomfort.",
+	        "comparison": "Last year's exam was normal.",
+	        "findings": "Pelvic exam reveals pale, thin vaginal mucosa consistent with atrophic changes.",
+	        "impression": "Atrophic vaginitis. Discussed treatment options, and the patient was prescribed a topical estrogen cream."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-36",
+	    "first_name": "James",
+	    "last_name": "Davis",
+	    "date_of_birth": "1995-01-25",
+	    "gender": "Male",
+	    "blood_type": "O+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3601",
+	        "encounter_date": "2023-08-01",
+	        "encounter_type": "Mental Health Consultation",
+	        "diagnosis": "Major Depressive Disorder",
+	        "provider_name": "Dr. Michelle Robinson",
+	        "details": "Patient self-referred for evaluation of a 6-month history of low mood, anhedonia, and poor sleep.",
+	        "comparison": "No prior psychiatric history.",
+	        "findings": "Patient meets DSM-5 criteria for a moderate episode of Major Depressive Disorder based on the PHQ-9 score and clinical interview.",
+	        "impression": "Major Depressive Disorder. Started on an SSRI (Sertraline) and referred for weekly psychotherapy."
+	      },
+	      {
+	        "encounter_id": "ENC-3602",
+	        "encounter_date": "2023-09-05",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Major Depressive Disorder",
+	        "provider_name": "Dr. Michelle Robinson",
+	        "details": "Medication management follow-up.",
+	        "comparison": "Patient was started on Sertraline one month ago.",
+	        "findings": "Patient reports a gradual improvement in mood and energy levels. He is tolerating the medication well and attending therapy.",
+	        "impression": "Positive initial response to treatment. Continue Sertraline at the current dose and follow up in 2 months."
+	      },
+	      {
+	        "encounter_id": "ENC-3603",
+	        "encounter_date": "2023-11-10",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Major Depressive Disorder",
+	        "provider_name": "Dr. Michelle Robinson",
+	        "details": "Follow-up visit to assess continued progress.",
+	        "comparison": "Previous visit showed partial response.",
+	        "findings": "Patient's PHQ-9 score is now in the mild range. He reports significant functional improvement and is benefiting from therapy.",
+	        "impression": "Good response to combined treatment. Continue current plan."
+	      },
+	      {
+	        "encounter_id": "ENC-3604",
+	        "encounter_date": "2024-05-15",
+	        "encounter_type": "Urgent Care",
+	        "diagnosis": "Allergic Rhinitis",
+	        "provider_name": "Dr. Kevin White",
+	        "details": "Patient presents with seasonal complaints of sneezing, nasal congestion, and itchy eyes.",
+	        "comparison": "Experiences similar symptoms every spring.",
+	        "findings": "Nasal mucosa is pale and boggy. Eyes are injected.",
+	        "impression": "Seasonal Allergic Rhinitis. Recommended an over-the-counter antihistamine and a nasal steroid spray."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-37",
+	    "first_name": "Chloe",
+	    "last_name": "Brown",
+	    "date_of_birth": "2002-04-18",
+	    "gender": "Female",
+	    "blood_type": "B-",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3701",
+	        "encounter_date": "2023-09-20",
+	        "encounter_type": "Urgent Care",
+	        "diagnosis": "Urticaria",
+	        "provider_name": "Dr. David Green",
+	        "details": "Patient developed hives and intense itching over her trunk and arms after eating at a new seafood restaurant.",
+	        "comparison": "No known allergies.",
+	        "findings": "Widespread, blanching, erythematous plaques (wheals) are present on the skin. No signs of anaphylaxis.",
+	        "impression": "Acute Urticaria, likely due to a food allergy. Treated with an injection of Diphenhydramine and a prescription for oral Cetirizine."
+	      },
+	      {
+	        "encounter_id": "ENC-3702",
+	        "encounter_date": "2023-10-15",
+	        "encounter_type": "Specialist Visit",
+	        "diagnosis": "Shellfish Allergy",
+	        "provider_name": "Dr. Angela King",
+	        "details": "Allergy consultation following an episode of acute urticaria.",
+	        "comparison": "The suspected trigger was a seafood meal.",
+	        "findings": "Skin prick testing is strongly positive for shrimp and crab.",
+	        "impression": "Confirmed IgE-mediated allergy to shellfish. Patient was counseled on strict avoidance, and an epinephrine auto-injector was prescribed."
+	      },
+	      {
+	        "encounter_id": "ENC-3703",
+	        "encounter_date": "2024-04-05",
+	        "encounter_type": "Routine Check-up",
+	        "diagnosis": "Healthy",
+	        "provider_name": "Dr. Kevin White",
+	        "details": "Annual physical exam.",
+	        "comparison": "New diagnosis of shellfish allergy since last visit.",
+	        "findings": "Exam is normal. Patient verbalizes understanding of her allergy and how to use her epinephrine auto-injector.",
+	        "impression": "Healthy young woman. Reinforced allergy action plan."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-38",
+	    "first_name": "Richard",
+	    "last_name": "Jones",
+	    "date_of_birth": "1960-12-01",
+	    "gender": "Male",
+	    "blood_type": "O+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3801",
+	        "encounter_date": "2023-11-05",
+	        "encounter_type": "Specialist Visit",
+	        "diagnosis": "Cholelithiasis",
+	        "provider_name": "Dr. Sarah Adams",
+	        "details": "Patient evaluated for recurrent episodes of right upper quadrant pain after eating fatty foods.",
+	        "comparison": "Pain has been occurring for 6 months.",
+	        "findings": "Abdominal ultrasound confirms the presence of multiple gallstones within the gallbladder, without signs of acute inflammation.",
+	        "impression": "Symptomatic Cholelithiasis. Patient is a candidate for elective cholecystectomy."
+	      },
+	      {
+	        "encounter_id": "ENC-3802",
+	        "encounter_date": "2023-11-20",
+	        "encounter_type": "Pre-operative Evaluation",
+	        "diagnosis": "Pre-operative clearance",
+	        "provider_name": "Dr. Kevin White",
+	        "details": "Pre-operative history and physical for upcoming laparoscopic cholecystectomy.",
+	        "comparison": "Patient has a history of well-controlled hypertension.",
+	        "findings": "Exam is normal. EKG and labs are unremarkable. Blood pressure is well-controlled.",
+	        "impression": "Patient is cleared for surgery."
+	      },
+	      {
+	        "encounter_id": "ENC-3803",
+	        "encounter_date": "2023-12-05",
+	        "encounter_type": "Inpatient Surgery",
+	        "diagnosis": "Laparoscopic Cholecystectomy",
+	        "provider_name": "Dr. Sarah Adams",
+	        "details": "Patient underwent an uncomplicated laparoscopic removal of the gallbladder.",
+	        "comparison": "Pre-operative diagnosis was cholelithiasis.",
+	        "findings": "The procedure was successful. The patient tolerated it well and was discharged home the same day.",
+	        "impression": "Successful cholecystectomy. Follow up in 2 weeks."
+	      },
+	      {
+	        "encounter_id": "ENC-3804",
+	        "encounter_date": "2023-12-19",
+	        "encounter_type": "Post-operative Follow-up",
+	        "diagnosis": "Post-cholecystectomy follow-up",
+	        "provider_name": "Dr. Sarah Adams",
+	        "details": "Routine post-operative check.",
+	        "comparison": "Patient is 2 weeks post-op.",
+	        "findings": "Incisions are clean, dry, and intact. Patient's abdominal pain has completely resolved, and he is tolerating a regular diet.",
+	        "impression": "Excellent recovery. No further follow-up needed."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-39",
+	    "first_name": "Megan",
+	    "last_name": "Scott",
+	    "date_of_birth": "2000-08-16",
+	    "gender": "Female",
+	    "blood_type": "A+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-3901",
+	        "encounter_date": "2023-05-10",
+	        "encounter_type": "Specialist Visit",
+	        "diagnosis": "Acne Vulgaris",
+	        "provider_name": "Dr. Emily Chen",
+	        "details": "Patient seeking treatment for persistent comedonal and inflammatory acne on her face and back.",
+	        "comparison": "Over-the-counter treatments have failed.",
+	        "findings": "Numerous open and closed comedones, papules, and pustules are present on the face and upper back.",
+	        "impression": "Moderate Acne Vulgaris. Prescribed a combination of topical tretinoin and oral doxycycline."
+	      },
+	      {
+	        "encounter_id": "ENC-3902",
+	        "encounter_date": "2023-08-15",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "Acne Vulgaris",
+	        "provider_name": "Dr. Emily Chen",
+	        "details": "Follow-up for acne treatment.",
+	        "comparison": "Patient had moderate inflammatory acne at the initial visit.",
+	        "findings": "There is a significant reduction in inflammatory lesions. Comedones are still present but improved.",
+	        "impression": "Good response to treatment. Discontinue doxycycline and continue with topical tretinoin. Add a topical benzoyl peroxide wash."
+	      },
+	      {
+	        "encounter_id": "ENC-3903",
+	        "encounter_date": "2024-03-01",
+	        "encounter_type": "Skin Procedure",
+	        "diagnosis": "Benign Nevus",
+	        "provider_name": "Dr. Emily Chen",
+	        "details": "Patient requested removal of a mole on her shoulder for cosmetic reasons.",
+	        "comparison": "The mole has been present since childhood and is unchanged.",
+	        "findings": "A 4mm, symmetrical, uniformly brown nevus is present on the left shoulder. No suspicious features.",
+	        "impression": "Shave removal of a benign-appearing nevus was performed under local anesthesia. The specimen was sent for pathology as a precaution."
+	      }
+	    ]
+	  },
+	  {
+	    "patient_id": "PAT-40",
+	    "first_name": "William",
+	    "last_name": "Taylor",
+	    "date_of_birth": "1948-03-12",
+	    "gender": "Male",
+	    "blood_type": "B+",
+	    "encounters": [
+	      {
+	        "encounter_id": "ENC-4001",
+	        "encounter_date": "2023-01-15",
+	        "encounter_type": "Routine Check-up",
+	        "diagnosis": "Chronic Obstructive Pulmonary Disease (COPD)",
+	        "provider_name": "Dr. Paul Anderson",
+	        "details": "Patient presents for an annual exam. Reports a chronic productive cough and increasing shortness of breath on exertion.",
+	        "comparison": "Patient has a 50-pack-year smoking history.",
+	        "findings": "Decreased breath sounds and a prolonged expiratory phase. Chest X-ray shows hyperinflation. Spirometry confirms moderate, non-reversible obstruction.",
+	        "impression": "Moderate COPD. Counseled on smoking cessation. Started on a long-acting bronchodilator (Tiotropium)."
+	      },
+	      {
+	        "encounter_id": "ENC-4002",
+	        "encounter_date": "2023-04-20",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "COPD",
+	        "provider_name": "Dr. Paul Anderson",
+	        "details": "Follow-up for COPD management.",
+	        "comparison": "Patient was recently diagnosed and started on Tiotropium.",
+	        "findings": "Patient reports a noticeable improvement in his baseline shortness of breath. He has successfully quit smoking.",
+	        "impression": "Good response to initial therapy and smoking cessation. Continue Tiotropium and schedule for pulmonary rehabilitation."
+	      },
+	      {
+	        "encounter_id": "ENC-4003",
+	        "encounter_date": "2023-10-05",
+	        "encounter_type": "Urgent Care",
+	        "diagnosis": "COPD Exacerbation",
+	        "provider_name": "Dr. Susan Jones",
+	        "details": "Patient presents with a 3-day history of worsening cough, increased sputum production, and increased shortness of breath.",
+	        "comparison": "His baseline COPD symptoms were previously stable.",
+	        "findings": "Patient is in mild respiratory distress with wheezing. Oxygen saturation is 91% on room air.",
+	        "impression": "Acute exacerbation of COPD, likely triggered by a viral infection. Treated with oral steroids, nebulized bronchodilators, and a course of antibiotics."
+	      },
+	      {
+	        "encounter_id": "ENC-4004",
+	        "encounter_date": "2023-10-15",
+	        "encounter_type": "Follow-up",
+	        "diagnosis": "COPD",
+	        "provider_name": "Dr. Paul Anderson",
+	        "details": "Follow-up after a recent COPD exacerbation.",
+	        "comparison": "Patient was treated in urgent care 10 days ago.",
+	        "findings": "Patient's symptoms have returned to his baseline. He has completed the course of steroids and antibiotics.",
+	        "impression": "Resolution of the acute exacerbation. Reinforced the importance of the action plan and added a combination LABA/LAMA inhaler to his daily regimen."
+	      }
+	    ]
+	  }
+	]
+}

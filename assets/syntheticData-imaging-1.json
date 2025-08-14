@@ -1,0 +1,412 @@
+{
+  "patients": [
+    {
+      "patient_id": "PAT-011",
+      "first_name": "Daniel",
+      "last_name": "Lee",
+      "date_of_birth": "1995-04-12",
+      "gender": "Male",
+      "blood_type": "A+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0064",
+          "encounter_date": "2023-01-15",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Left Knee Pain",
+          "provider_name": "Dr. Kim (Ortho)",
+          "details": "Patient is a 27-year-old male who sustained an injury to his left knee while playing basketball 3 days ago. He reports a 'popping' sensation, followed by immediate pain and swelling. He has difficulty bearing weight.",
+          "comparison": "No prior imaging or specialist evaluation of the left knee.",
+          "findings": "Physical exam reveals a significant joint effusion. There is positive Lachman's test and anterior drawer test, suggesting ACL instability. The McMurray test for meniscal injury is inconclusive due to swelling and guarding.",
+          "impression": "High clinical suspicion for an acute anterior cruciate ligament (ACL) tear. An MRI of the left knee is ordered to confirm the diagnosis and evaluate for associated injuries."
+        },
+        {
+          "encounter_id": "ENC-0065",
+          "encounter_date": "2023-01-18",
+          "encounter_type": "Imaging",
+          "diagnosis": "ACL Tear",
+          "provider_name": "Dr. Avery",
+          "details": "MRI of the left knee without contrast performed to evaluate for internal derangement after an acute injury.",
+          "comparison": "None.",
+          "findings": "There is a full-thickness tear of the anterior cruciate ligament with associated bone marrow edema in the lateral femoral condyle and posterior tibial plateau (pivot-shift contusion pattern). A small tear is also noted in the posterior horn of the medial meniscus. A moderate joint effusion is present.",
+          "impression": "1. Complete tear of the ACL. 2. Small tear of the medial meniscus. 3. Bone contusions consistent with an acute pivot-shift injury."
+        },
+        {
+          "encounter_id": "ENC-0066",
+          "encounter_date": "2023-01-25",
+          "encounter_type": "Office Visit",
+          "diagnosis": "ACL Tear, Medial Meniscus Tear",
+          "provider_name": "Dr. Kim (Ortho)",
+          "details": "Follow-up visit to discuss MRI results. The findings confirming a full ACL tear and meniscal tear were reviewed with the patient. Surgical and non-surgical options were discussed at length.",
+          "comparison": "Correlated with MRI from 2023-01-18.",
+          "findings": "Patient understands the diagnosis and treatment options. He has elected to proceed with surgical reconstruction of the ACL. Pre-operative clearance and physical therapy referral were provided.",
+          "impression": "Patient scheduled for left knee ACL reconstruction. Plan is to proceed with surgery in the coming weeks."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-012",
+      "first_name": "Karen",
+      "last_name": "Hall",
+      "date_of_birth": "1980-11-08",
+      "gender": "Female",
+      "blood_type": "B-",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0067",
+          "encounter_date": "2022-11-20",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Abnormal Uterine Bleeding",
+          "provider_name": "Dr. Garcia",
+          "details": "Patient presents with a 4-month history of heavy and irregular menstrual cycles (menorrhagia and metrorrhagia). She denies any new medications or significant medical history. A pelvic ultrasound is ordered to evaluate for structural abnormalities.",
+          "comparison": "No recent gynecological imaging.",
+          "findings": "Pelvic exam reveals a slightly enlarged, non-tender uterus. No adnexal masses are palpated. Pap smear is up to date and was normal.",
+          "impression": "Abnormal Uterine Bleeding. Need to rule out structural causes such as fibroids or polyps. Pelvic ultrasound is pending."
+        },
+        {
+          "encounter_id": "ENC-0068",
+          "encounter_date": "2022-11-28",
+          "encounter_type": "Imaging",
+          "diagnosis": "Thickened Endometrium",
+          "provider_name": "Dr. Avery",
+          "details": "Transvaginal and transabdominal pelvic ultrasound performed to evaluate for abnormal uterine bleeding.",
+          "comparison": "None.",
+          "findings": "The uterus measures 9.5 x 5.0 x 6.2 cm. The myometrium is homogeneous. The endometrium appears markedly thickened and heterogeneous, measuring 18 mm in maximum thickness. The ovaries are normal in appearance bilaterally.",
+          "impression": "Thickened, heterogeneous endometrium. These findings are non-specific but raise concern for endometrial hyperplasia or polyps. Endometrial sampling is recommended for definitive diagnosis."
+        },
+        {
+          "encounter_id": "ENC-0069",
+          "encounter_date": "2022-12-09",
+          "encounter_type": "Procedure",
+          "diagnosis": "Endometrial Hyperplasia",
+          "provider_name": "Dr. Garcia",
+          "details": "In-office endometrial biopsy performed due to ultrasound findings of a thickened endometrium. The patient tolerated the procedure well.",
+          "comparison": "Correlated with ultrasound from 2022-11-28.",
+          "findings": "An adequate endometrial tissue sample was obtained and sent to pathology. Pathology report returned showing 'Disordered proliferative endometrium without atypia'.",
+          "impression": "Benign endometrial findings. The patient's abnormal bleeding is likely due to hormonal imbalance rather than malignancy. Plan to start a trial of hormonal therapy."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-013",
+      "first_name": "Thomas",
+      "last_name": "Wright",
+      "date_of_birth": "1962-07-30",
+      "gender": "Male",
+      "blood_type": "O-",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0070",
+          "encounter_date": "2023-06-05",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Atypical Chest Pain",
+          "provider_name": "Dr. Chen",
+          "details": "Patient reports several episodes of intermittent chest pressure over the last month, primarily occurring with exertion and resolving with rest. He has a history of hyperlipidemia but no known coronary artery disease. An EKG in the office is normal.",
+          "comparison": "EKG from 2 years prior was also normal.",
+          "findings": "Vitals are stable, BP 140/85. EKG shows normal sinus rhythm without acute ST changes. Cardiac exam reveals a regular rhythm without murmurs. Lungs are clear.",
+          "impression": "Atypical chest pain concerning for stable angina given risk factors and exertional nature. A referral to cardiology for a stress test is warranted."
+        },
+        {
+          "encounter_id": "ENC-0071",
+          "encounter_date": "2023-06-20",
+          "encounter_type": "Procedure",
+          "diagnosis": "Coronary Artery Disease",
+          "provider_name": "Dr. Reed (Cardiology)",
+          "details": "Patient underwent a Bruce protocol exercise stress test with nuclear imaging to evaluate for myocardial ischemia.",
+          "comparison": "No prior stress tests.",
+          "findings": "The patient exercised for 8 minutes and 30 seconds, achieving 95% of his maximum predicted heart rate. He developed mild chest pressure at peak exercise, which resolved in recovery. EKG showed 1.5mm of horizontal ST depression in the inferior leads. Nuclear imaging revealed a moderate-sized, reversible perfusion defect in the inferior wall of the myocardium.",
+          "impression": "Positive exercise stress test for moderate ischemia in the inferior myocardial wall, suggestive of significant coronary artery disease, likely in the right coronary artery territory. Medical management to be initiated, and cardiac catheterization will be considered."
+        },
+        {
+          "encounter_id": "ENC-0072",
+          "encounter_date": "2023-06-22",
+          "encounter_type": "Prescription",
+          "diagnosis": "Coronary Artery Disease",
+          "provider_name": "Dr. Reed (Cardiology)",
+          "details": "Based on the positive stress test, medical therapy is initiated to manage the patient's coronary artery disease and symptoms.",
+          "comparison": "Not applicable.",
+          "findings": "New prescriptions for Aspirin 81mg daily, Metoprolol Succinate 50mg daily, and sublingual Nitroglycerin as needed for chest pain have been sent to the pharmacy. The patient was counseled extensively on the new medications and lifestyle modifications.",
+          "impression": "Initiation of optimal medical therapy for stable angina."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-014",
+      "first_name": "Olivia",
+      "last_name": "Scott",
+      "date_of_birth": "2005-09-01",
+      "gender": "Female",
+      "blood_type": "AB+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0073",
+          "encounter_date": "2023-10-10",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Pharyngitis",
+          "provider_name": "Dr. Patel",
+          "details": "18-year-old female presents with a 2-day history of severe sore throat, fever, and difficulty swallowing. Denies cough. A rapid strep test was performed in the office.",
+          "comparison": "No recent visits.",
+          "findings": "Vitals: Temp 101.5°F. Exam shows erythematous posterior pharynx with tonsillar exudates and tender anterior cervical lymphadenopathy. Lungs are clear.",
+          "impression": "Acute exudative pharyngitis, clinically consistent with streptococcal infection. Pending rapid strep test results."
+        },
+        {
+          "encounter_id": "ENC-0074",
+          "encounter_date": "2023-10-10",
+          "encounter_type": "Lab Results",
+          "diagnosis": "Streptococcal Pharyngitis",
+          "provider_name": "Dr. Patel",
+          "details": "Results of the in-office rapid antigen detection test for Group A Streptococcus.",
+          "comparison": "Not applicable.",
+          "findings": "The rapid strep test is positive. A prescription for Amoxicillin 500mg twice daily for 10 days was sent to the pharmacy. Patient was advised on supportive care.",
+          "impression": "Confirmed Group A Streptococcal Pharyngitis. Antibiotic therapy initiated to treat the infection and prevent rheumatic fever."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-015",
+      "first_name": "Brian",
+      "last_name": "King",
+      "date_of_birth": "1978-02-20",
+      "gender": "Male",
+      "blood_type": "B+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0075",
+          "encounter_date": "2023-03-01",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Atypical Nevus",
+          "provider_name": "Dr. Clark (Derm)",
+          "details": "Patient presents for evaluation of a mole on his back that he believes has become darker and larger over the past year. He has a history of significant sun exposure.",
+          "comparison": "First dermatological exam for this patient.",
+          "findings": "Full-body skin exam is performed. A 7 mm pigmented lesion is noted on the right upper back. Dermatoscopy reveals an asymmetric shape, irregular borders, and multiple colors (brown, black, and tan). The lesion meets several criteria for atypia.",
+          "impression": "Atypical nevus with features concerning for melanoma. An excisional biopsy is recommended for definitive diagnosis."
+        },
+        {
+          "encounter_id": "ENC-0076",
+          "encounter_date": "2023-03-15",
+          "encounter_type": "Procedure",
+          "diagnosis": "Excisional Biopsy",
+          "provider_name": "Dr. Clark (Derm)",
+          "details": "Patient underwent an excisional biopsy of the atypical nevus on his right upper back under local anesthesia. The lesion was removed with 2 mm margins and the wound was closed with sutures.",
+          "comparison": "Not applicable.",
+          "findings": "The procedure was well-tolerated and without complication. The specimen was sent to pathology. The patient was given wound care instructions and a follow-up appointment was scheduled.",
+          "impression": "Successful excisional biopsy of a suspicious pigmented lesion. Awaiting pathology results."
+        },
+        {
+          "encounter_id": "ENC-0077",
+          "encounter_date": "2023-03-22",
+          "encounter_type": "Lab Results",
+          "diagnosis": "Dysplastic Nevus",
+          "provider_name": "Dr. Clark (Derm)",
+          "details": "Pathology results from the excisional biopsy of 2023-03-15.",
+          "comparison": "Not applicable.",
+          "findings": "Pathology report describes a compound nevus with moderate architectural disorder and cytologic atypia (dysplastic nevus). The lesion is fully contained within the specimen and all margins are clear of involvement.",
+          "impression": "Dysplastic nevus with moderate atypia, completely excised. While benign, this finding places the patient at a higher risk for developing melanoma in the future. Recommend annual full-body skin exams."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-016",
+      "first_name": "Nancy",
+      "last_name": "Green",
+      "date_of_birth": "1955-12-18",
+      "gender": "Female",
+      "blood_type": "A-",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0078",
+          "encounter_date": "2023-01-11",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Postmenopausal Health Maintenance",
+          "provider_name": "Dr. Williams",
+          "details": "Patient presents for her annual wellness visit. She is post-menopausal and has a family history of osteoporosis (mother had a hip fracture). A baseline bone density scan (DEXA) is ordered as part of her preventative health screening.",
+          "comparison": "No prior DEXA scans.",
+          "findings": "Physical exam is normal. Patient's risk factors for osteoporosis were discussed, including age, post-menopausal status, and family history. An order for a DEXA scan was placed.",
+          "impression": "Routine health maintenance. Bone density screening indicated due to multiple risk factors."
+        },
+        {
+          "encounter_id": "ENC-0079",
+          "encounter_date": "2023-01-25",
+          "encounter_type": "Imaging",
+          "diagnosis": "Osteoporosis",
+          "provider_name": "Dr. Avery",
+          "details": "Dual-energy X-ray absorptiometry (DEXA) scan performed to assess bone mineral density.",
+          "comparison": "None.",
+          "findings": "The bone mineral density T-score at the lumbar spine is -2.7. The T-score at the femoral neck is -2.1. The lowest T-score is used for diagnosis.",
+          "impression": "Osteoporosis of the lumbar spine based on WHO criteria (T-score ≤ -2.5). Osteopenia of the femoral neck. Results indicate a high risk for fracture."
+        },
+        {
+          "encounter_id": "ENC-0080",
+          "encounter_date": "2023-02-02",
+          "encounter_type": "Prescription",
+          "diagnosis": "Osteoporosis",
+          "provider_name": "Dr. Williams",
+          "details": "The results of the DEXA scan confirming osteoporosis were discussed with the patient. Treatment options were reviewed to reduce her fracture risk.",
+          "comparison": "Correlated with DEXA from 2023-01-25.",
+          "findings": "A prescription for Alendronate 70mg weekly was provided. Patient was also counseled on the importance of adequate Calcium and Vitamin D intake and weight-bearing exercise. She verbalized understanding of how to take the medication correctly to prevent esophageal irritation.",
+          "impression": "Initiation of bisphosphonate therapy for the treatment of osteoporosis."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-017",
+      "first_name": "Kevin",
+      "last_name": "Adams",
+      "date_of_birth": "1989-08-15",
+      "gender": "Male",
+      "blood_type": "O+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0081",
+          "encounter_date": "2022-09-14",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Depression",
+          "provider_name": "Dr. Chen",
+          "details": "Patient presents with a 6-month history of low mood, anhedonia, low energy, and poor sleep. He completed a PHQ-9 questionnaire in the office.",
+          "comparison": "No prior mental health history.",
+          "findings": "Patient appears fatigued and has a flat affect. PHQ-9 score is 18, indicating moderately severe depression. He denies suicidal ideation. Basic lab work (CBC, TSH) ordered to rule out organic causes.",
+          "impression": "Major Depressive Disorder, single episode, moderate severity. Awaiting labs. Discussed treatment options, including therapy and medication."
+        },
+        {
+          "encounter_id": "ENC-0082",
+          "encounter_date": "2022-09-28",
+          "encounter_type": "Prescription",
+          "diagnosis": "Depression",
+          "provider_name": "Dr. Chen",
+          "details": "Follow-up visit. Lab results were normal. The patient has agreed to start an antidepressant medication.",
+          "comparison": "Compared to initial visit on 2022-09-14.",
+          "findings": "A prescription for Escitalopram 10mg daily was sent to the pharmacy. The patient was educated that it may take 4-6 weeks to see the full effect and was counseled on potential side effects. A follow-up is scheduled in one month.",
+          "impression": "Initiation of SSRI therapy for Major Depressive Disorder."
+        },
+        {
+          "encounter_id": "ENC-0083",
+          "encounter_date": "2022-10-28",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Depression",
+          "provider_name": "Dr. Chen",
+          "details": "One-month follow-up after starting Escitalopram. The patient reports some improvement in mood and energy levels but still feels significant symptoms.",
+          "comparison": "PHQ-9 score was 18 at the initial visit.",
+          "findings": "Patient is tolerating the medication well without significant side effects. His PHQ-9 score today is 13, showing a partial response. He is agreeable to increasing the dose for better symptom control.",
+          "impression": "Partial response to Escitalopram 10mg. The dose will be increased to 20mg daily. Continue to monitor for improvement."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-018",
+      "first_name": "Jessica",
+      "last_name": "Nelson",
+      "date_of_birth": "1992-06-10",
+      "gender": "Female",
+      "blood_type": "A+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0084",
+          "encounter_date": "2023-07-12",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Pregnancy",
+          "provider_name": "Dr. Garcia",
+          "details": "Patient presents for her first obstetric visit after a positive home pregnancy test. Her last menstrual period (LMP) was approximately 6 weeks ago. A urine hCG test in the office is positive.",
+          "comparison": "Not applicable.",
+          "findings": "Based on LMP, the estimated due date is calculated. A dating ultrasound is ordered to confirm gestational age and viability. Prenatal vitamins and routine pregnancy counseling were provided. Prenatal lab panel was drawn.",
+          "impression": "New intrauterine pregnancy, estimated at 6 weeks gestation. Awaiting dating ultrasound and initial prenatal lab results."
+        },
+        {
+          "encounter_id": "ENC-0085",
+          "encounter_date": "2023-07-19",
+          "encounter_type": "Imaging",
+          "diagnosis": "Intrauterine Pregnancy",
+          "provider_name": "Dr. Avery",
+          "details": "First-trimester transvaginal ultrasound performed for pregnancy dating and viability.",
+          "comparison": "None.",
+          "findings": "A single live intrauterine pregnancy is identified. The crown-rump length (CRL) measures 1.2 cm, corresponding to a gestational age of 7 weeks and 2 days. Fetal heart rate is 150 bpm. The yolk sac is present and normal. Ovaries are unremarkable.",
+          "impression": "Single live intrauterine pregnancy at 7 weeks and 2 days gestational age. The estimated due date is adjusted based on these findings."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-019",
+      "first_name": "Walter",
+      "last_name": "Campbell",
+      "date_of_birth": "1948-03-05",
+      "gender": "Male",
+      "blood_type": "O-",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0086",
+          "encounter_date": "2022-05-18",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Dyspnea",
+          "provider_name": "Dr. Chen",
+          "details": "Patient with a 50-pack-year smoking history presents with a multi-year history of progressive shortness of breath on exertion and a chronic morning cough. A chest X-ray and pulmonary function tests (PFTs) are ordered.",
+          "comparison": "No prior pulmonary testing.",
+          "findings": "Exam reveals decreased breath sounds and a prolonged expiratory phase. No wheezes or crackles. Chest X-ray shows hyperinflated lungs and flattened diaphragms.",
+          "impression": "Symptoms and exam findings are highly suggestive of Chronic Obstructive Pulmonary Disease (COPD). PFTs needed for confirmation and staging."
+        },
+        {
+          "encounter_id": "ENC-0087",
+          "encounter_date": "2022-06-01",
+          "encounter_type": "Procedure",
+          "diagnosis": "COPD",
+          "provider_name": "Dr. Evans (Pulm)",
+          "details": "Full pulmonary function tests with pre- and post-bronchodilator spirometry performed.",
+          "comparison": "None.",
+          "findings": "Pre-bronchodilator spirometry shows a Forced Expiratory Volume in 1 second (FEV1) of 1.5L (55% of predicted) and a Forced Vital Capacity (FVC) of 3.0L. The FEV1/FVC ratio is 0.50. Following bronchodilator administration, there is minimal improvement in FEV1.",
+          "impression": "Spirometry results confirm moderate, non-reversible airflow obstruction, consistent with a diagnosis of COPD (GOLD Stage 2)."
+        },
+        {
+          "encounter_id": "ENC-0088",
+          "encounter_date": "2022-06-08",
+          "encounter_type": "Prescription",
+          "diagnosis": "COPD",
+          "provider_name": "Dr. Chen",
+          "details": "PFT results were reviewed with the patient, confirming COPD. A long-acting maintenance inhaler is prescribed.",
+          "comparison": "Correlated with PFTs from 2022-06-01.",
+          "findings": "A prescription for a combination long-acting beta-agonist and long-acting muscarinic antagonist (LAMA/LABA) inhaler was provided. The patient was counseled extensively on smoking cessation and proper inhaler technique.",
+          "impression": "Initiation of maintenance therapy for moderate COPD."
+        }
+      ]
+    },
+    {
+      "patient_id": "PAT-020",
+      "first_name": "Susan",
+      "last_name": "Parker",
+      "date_of_birth": "1968-10-21",
+      "gender": "Female",
+      "blood_type": "A+",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0089",
+          "encounter_date": "2023-08-01",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Biliary Colic",
+          "provider_name": "Dr. Patel",
+          "details": "Patient presents with recurrent episodes of severe, sharp pain in her right upper quadrant, often occurring after eating fatty meals and lasting for 1-2 hours. Physical exam is benign between episodes.",
+          "comparison": "No prior workup for this issue.",
+          "findings": "Exam today is unremarkable, with a soft, non-tender abdomen. Murphy's sign is negative. The patient's history is classic for biliary colic.",
+          "impression": "Symptoms highly suspicious for cholelithiasis (gallstones). An abdominal ultrasound is ordered to evaluate the gallbladder."
+        },
+        {
+          "encounter_id": "ENC-0090",
+          "encounter_date": "2023-08-04",
+          "encounter_type": "Imaging",
+          "diagnosis": "Cholelithiasis",
+          "provider_name": "Dr. Avery",
+          "details": "Ultrasound of the right upper quadrant performed to evaluate for gallstones.",
+          "comparison": "None.",
+          "findings": "The gallbladder is well-distended and contains multiple small, mobile, echogenic foci with posterior acoustic shadowing, consistent with gallstones. The gallbladder wall thickness is normal. The common bile duct is not dilated. No sonographic Murphy's sign.",
+          "impression": "Cholelithiasis without evidence of acute cholecystitis."
+        },
+        {
+          "encounter_id": "ENC-0091",
+          "encounter_date": "2023-08-15",
+          "encounter_type": "Office Visit",
+          "diagnosis": "Symptomatic Cholelithiasis",
+          "provider_name": "Dr. Patel",
+          "details": "Follow-up to discuss ultrasound results, which confirmed gallstones. The patient continues to have episodes of biliary colic.",
+          "comparison": "Correlated with ultrasound from 2023-08-04.",
+          "findings": "Given her symptomatic cholelithiasis, the patient is a candidate for elective surgery. The risks and benefits of cholecystectomy were discussed.",
+          "impression": "A referral has been placed to General Surgery for consultation regarding elective laparoscopic cholecystectomy."
+        }
+      ]
+    }
+  ]
+}

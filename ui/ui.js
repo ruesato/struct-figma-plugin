@@ -13,8 +13,22 @@ function extractJsonKeys(data, maxDepth = 3) {
             if (obj.hasOwnProperty(key)) {
                 const fullKey = prefix ? `${prefix}.${key}` : key;
                 keys.add(fullKey);
-                if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-                    extractKeysRecursive(obj[key], fullKey, depth + 1);
+                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    if (Array.isArray(obj[key])) {
+                        // For arrays, examine the first few items to extract their keys
+                        const arrayItems = obj[key].slice(0, 3); // Check first 3 items
+                        arrayItems.forEach((item, index) => {
+                            if (typeof item === 'object' && item !== null) {
+                                // Add both indexed and non-indexed paths
+                                extractKeysRecursive(item, `${fullKey}[${index}]`, depth + 1);
+                                extractKeysRecursive(item, `${fullKey}[]`, depth + 1);
+                            }
+                        });
+                    }
+                    else {
+                        // Regular object
+                        extractKeysRecursive(obj[key], fullKey, depth + 1);
+                    }
                 }
             }
         }
@@ -24,8 +38,27 @@ function extractJsonKeys(data, maxDepth = 3) {
 }
 // Helper function to get nested value for preview
 function getNestedValue(obj, path) {
-    return path.split('.').reduce((current, key) => {
-        return current && current[key] !== undefined ? current[key] : undefined;
+    const parts = path.split('.');
+    return parts.reduce((current, part) => {
+        if (current === null || current === undefined)
+            return undefined;
+        // Handle array indexing like "encounters[0]" or "encounters[]"
+        const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
+        if (arrayMatch) {
+            const [, arrayKey, index] = arrayMatch;
+            const arrayValue = current[arrayKey];
+            if (!Array.isArray(arrayValue))
+                return undefined;
+            if (index === '') {
+                // Return first item for "[]" notation
+                return arrayValue[0];
+            }
+            else {
+                // Return specific index
+                return arrayValue[parseInt(index)];
+            }
+        }
+        return current[part];
     }, obj);
 }
 const JsonDataMapper = () => {
@@ -47,11 +80,36 @@ const JsonDataMapper = () => {
                 const content = e.target?.result;
                 const parsed = JSON.parse(content);
                 let dataArray;
+                // Debug logging
+                addLog(`Parsed JSON type: ${Array.isArray(parsed) ? 'array' : typeof parsed}`, 'info');
                 if (Array.isArray(parsed)) {
                     dataArray = parsed;
+                    addLog('Using direct array', 'info');
+                }
+                else if (typeof parsed === 'object' && parsed !== null) {
+                    // Check if the object has a single property that contains an array
+                    const keys = Object.keys(parsed);
+                    addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');
+                    if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
+                        dataArray = parsed[keys[0]];
+                        addLog(`Found array data in property "${keys[0]}" with ${dataArray.length} items`, 'info');
+                    }
+                    else {
+                        // Check if any property contains an array (prefer arrays over single objects)
+                        const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
+                        if (arrayProperty) {
+                            dataArray = parsed[arrayProperty];
+                            addLog(`Using array data from property "${arrayProperty}" with ${dataArray.length} items`, 'info');
+                        }
+                        else {
+                            dataArray = [parsed];
+                            addLog('No arrays found, wrapping object in array', 'info');
+                        }
+                    }
                 }
                 else {
                     dataArray = [parsed];
+                    addLog('Wrapping primitive value in array', 'info');
                 }
                 setJsonData(dataArray);
                 const keys = extractJsonKeys(dataArray);
