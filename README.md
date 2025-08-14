@@ -1,18 +1,23 @@
 # JSON Data Mapper - Figma Plugin
 
-A Figma plugin that allows you to import JSON data and map it to layer properties in your designs. Perfect for populating designs with real data, creating data-driven prototypes, and automating content updates.
+A powerful Figma plugin that allows you to import JSON data and map it to layer properties in your designs. Perfect for populating designs with real data, creating data-driven prototypes, and automating content updates with complex, nested data structures.
 
 ## Features
 
-- **JSON Import**: Drag-and-drop or file picker support for JSON files (max 2MB)
-- **Data Preview**: View the first 10 rows of your JSON data in a table format
-- **Flexible Mapping**: Map JSON keys (including nested keys) to Figma layer names
+- **Smart JSON Import**: Drag-and-drop or file picker support for JSON files (max 2MB)
+  - Automatically detects and extracts arrays from wrapped objects (e.g., `{"patients": [...]}`)
+  - Supports both direct arrays and nested object structures
+- **Advanced Data Preview**: View the first 10 rows of your JSON data in a table format with nested key support
+- **Intelligent Mapping**: 
+  - **Auto-populated defaults**: Key mappings automatically use smart layer names based on JSON keys
+  - **Nested object support**: Handle complex data like `user.profile.name` or `encounters[].diagnosis`
+  - **Array indexing**: Access specific array items with `encounters[0].encounter_id` or use `encounters[].encounter_id` for first item
 - **Multiple Data Types**: 
-  - Text layers: Updates with string values
-  - Image fills: Fetches and applies images from URLs
-  - Component variants: Updates variant properties
+  - **Text layers**: Updates with string values from any nested level
+  - **Image fills**: Fetches and applies images from URLs
+  - **Component variants**: Updates variant properties with string values
 - **Batch Processing**: Apply data to multiple selected instances at once
-- **Real-time Logs**: See progress, warnings, and errors in the sidebar
+- **Real-time Logs**: See detailed progress, warnings, and errors with debug information
 - **Client-side Only**: All processing happens locally, no backend required
 
 ## How to Use
@@ -22,18 +27,22 @@ A Figma plugin that allows you to import JSON data and map it to layer propertie
 3. **Import JSON**: 
    - Drag and drop a JSON file into the plugin sidebar, or
    - Click "Choose File" to browse for a JSON file
-4. **Preview Data**: Review the first 10 rows of your JSON data
-5. **Map Keys**: 
-   - Each JSON key will appear with an input field
-   - Enter the corresponding Figma layer name for each key you want to map
+4. **Review Automatic Detection**: Check the logs to see how your JSON was parsed
+   - The plugin automatically detects arrays in wrapped objects
+   - Debug messages show the extraction process
+5. **Preview Data**: Review the first 10 rows of your JSON data with all nested keys visible
+6. **Review Smart Mappings**: 
+   - Each JSON key appears with an **auto-populated layer name**
+   - Default names are intelligently chosen (e.g., `encounters[].diagnosis` → `diagnosis`)
+   - Edit any mapping if your layer names differ
    - Leave empty to skip mapping for that key
-6. **Apply Data**: Click "Apply Data to Selection" to update your layers
+7. **Apply Data**: Click "Apply Data to Selection" to update your layers
 
 ## JSON Data Format
 
-The plugin supports both array and object formats:
+The plugin intelligently handles various JSON formats:
 
-### Array Format (Recommended)
+### Direct Array Format
 ```json
 [
   {
@@ -57,27 +66,79 @@ The plugin supports both array and object formats:
 ]
 ```
 
-### Object Format
+### Wrapped Array Format (Auto-detected)
 ```json
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "avatar": "https://example.com/avatar1.jpg"
+  "patients": [
+    {
+      "patient_id": "PAT-011",
+      "first_name": "Daniel",
+      "encounters": [
+        {
+          "encounter_id": "ENC-0064",
+          "diagnosis": "Left Knee Pain",
+          "provider_name": "Dr. Kim"
+        }
+      ]
+    }
+  ]
 }
 ```
+*The plugin automatically extracts the `patients` array and uses it as the data source.*
+
+### Complex Nested Format
+```json
+{
+  "users": [
+    {
+      "personal": {
+        "name": "John Doe",
+        "contact": {
+          "email": "john@example.com",
+          "phone": "+1-555-0123"
+        }
+      },
+      "work": {
+        "projects": [
+          {
+            "name": "Project Alpha",
+            "status": "In Progress"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+*Supports deep nesting with keys like `personal.contact.email` and `work.projects[].status`*
 
 ## Mapping Examples
 
+### Smart Default Mappings (Auto-populated)
+- `patient_id` → `patient_id` *(simple key, used as-is)*
+- `encounters[]` → `encounters` *(array, uses base name)*
+- `encounters[].diagnosis` → `diagnosis` *(nested array, uses final property)*
+- `personal.contact.email` → `email` *(nested object, uses final property)*
+
 ### Text Mapping
-- JSON key: `name` → Figma layer: `user-name`
-- JSON key: `profile.role` → Figma layer: `role-text`
+- JSON key: `name` → Figma layer: `name` *(auto-populated)*
+- JSON key: `encounters[0].diagnosis` → Figma layer: `diagnosis` *(auto-populated)*
+- JSON key: `profile.role` → Figma layer: `role` *(auto-populated, can be customized)*
 
 ### Image Mapping
-- JSON key: `avatar` → Figma layer: `profile-image`
+- JSON key: `avatar` → Figma layer: `avatar` *(auto-populated)*
+- JSON key: `patient.photo_url` → Figma layer: `photo` *(customized from default `photo_url`)*
 - The plugin will fetch the image from the URL and apply it as a fill
 
 ### Variant Mapping
-- JSON key: `profile.status` → Figma layer: `status` (for component variant property)
+- JSON key: `profile.status` → Figma layer: `status` *(auto-populated for component variant property)*
+- JSON key: `encounters[].encounter_type` → Figma layer: `type` *(customized from default `encounter_type`)*
+
+### Array Access Patterns
+- `encounters[0].provider_name` → Access first encounter's provider
+- `encounters[1].diagnosis` → Access second encounter's diagnosis  
+- `encounters[].encounter_date` → Access first encounter's date (shorthand)
+- `work.projects[].status` → Access first project's status
 
 ## File Structure
 
@@ -119,10 +180,21 @@ json-data-mapper/
 ## Technical Details
 
 - **Framework**: TypeScript, React (via CDN), Figma Plugin API
+- **Architecture**: 
+  - Main thread: `main/code.ts` - Handles Figma API operations
+  - UI thread: `ui/index.html` - Embedded React app for user interface
 - **Processing**: Client-side only, no external dependencies
 - **File Size**: Maximum 2MB JSON files
-- **Image Support**: Fetches images from HTTP/HTTPS URLs
-- **Nested Keys**: Supports dot notation (e.g., `user.profile.name`)
+- **JSON Parsing**: 
+  - Smart array detection (handles wrapped arrays like `{"data": [...]}`)
+  - Nested object traversal up to 3 levels deep
+  - Array indexing with bracket notation (`array[0].property`)
+- **Data Mapping**: Auto-populated smart defaults based on JSON key structure
+- **Image Support**: Fetches images from HTTP/HTTPS URLs with error handling
+- **Key Path Support**: 
+  - Dot notation: `user.profile.name`
+  - Array notation: `encounters[0].diagnosis` or `encounters[].diagnosis`
+  - Mixed notation: `patient.encounters[].provider_name`
 
 ## Error Handling
 
