@@ -188,6 +188,114 @@
       background: #c0392b;
     }
 
+    /* Configuration Save/Load Styles */
+    .config-section {
+      margin-bottom: 20px;
+      padding: 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      background: #f8f9fa;
+    }
+
+    .config-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .config-btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .config-btn:hover:not(:disabled) {
+      background: #0052a3;
+    }
+
+    .config-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .config-btn.danger {
+      background: #e74c3c;
+    }
+
+    .config-btn.danger:hover:not(:disabled) {
+      background: #c0392b;
+    }
+
+    .config-list {
+      max-height: 100px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: white;
+    }
+
+    .config-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 11px;
+    }
+
+    .config-item:last-child {
+      border-bottom: none;
+    }
+
+    .config-item:hover {
+      background: #f0f8ff;
+    }
+
+    .config-name {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .config-meta {
+      font-size: 10px;
+      color: #666;
+      margin-right: 8px;
+    }
+
+    .config-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .config-action-btn {
+      background: none;
+      border: none;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-size: 10px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .config-action-btn:hover {
+      background: #e9ecef;
+      color: #333;
+    }
+
+    .config-save-input {
+      width: 100%;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
     /* Modal Styles */
     .modal-overlay {
       position: fixed;
@@ -255,6 +363,26 @@
       border: 1px solid #e5e5e5;
       border-radius: 4px;
       background: #f8f9fa;
+      cursor: move;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .builder-part:hover {
+      background: #e9ecef;
+      border-color: #0066cc;
+    }
+
+    .builder-part.dragging {
+      opacity: 0.5;
+      transform: rotate(2deg);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .builder-part.drag-over {
+      border-color: #18a0fb;
+      background: #f0f8ff;
+      transform: translateY(-2px);
     }
 
     .builder-part select,
@@ -279,6 +407,51 @@
 
     .remove-part-btn:hover {
       background: #c0392b;
+    }
+
+    .reorder-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-right: 8px;
+    }
+
+    .reorder-btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-size: 10px;
+      cursor: pointer;
+      width: 20px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .reorder-btn:hover:not(:disabled) {
+      background: #0052a3;
+    }
+
+    .reorder-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .drag-handle {
+      color: #999;
+      font-size: 12px;
+      margin-right: 4px;
+      cursor: move;
+      padding: 2px;
+    }
+
+    .drag-handle:hover {
+      color: #666;
     }
 
     .add-part-buttons {
@@ -691,6 +864,12 @@
       });
       const [isLoadingData, setIsLoadingData] = useState(false);
       
+      // Configuration state
+      const [savedConfigs, setSavedConfigs] = useState([]);
+      const [showConfigSave, setShowConfigSave] = useState(false);
+      const [configName, setConfigName] = useState('');
+      const [showConfigList, setShowConfigList] = useState(false);
+      
       // Value builder state
       const [valueBuilderModal, setValueBuilderModal] = useState({ 
         isOpen: false, 
@@ -717,14 +896,31 @@
             addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');
             
             if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
+              // Single array property - use the array
               dataArray = parsed[keys[0]];
               addLog(`Found array data in property "${keys[0]}" with ${dataArray.length} items`, 'info');
             } else {
-              // Check if any property contains an array (prefer arrays over single objects)
+              // Check if any property contains an array
               const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
               if (arrayProperty) {
-                dataArray = parsed[arrayProperty];
-                addLog(`Using array data from property "${arrayProperty}" with ${dataArray.length} items`, 'info');
+                // Multiple properties with one array - merge metadata with array items
+                const arrayData = parsed[arrayProperty];
+                const metadata = {};
+                
+                // Extract non-array properties as metadata
+                keys.forEach(key => {
+                  if (key !== arrayProperty) {
+                    metadata[key] = parsed[key];
+                  }
+                });
+                
+                // Merge metadata into each array item
+                dataArray = arrayData.map(item => ({
+                  ...metadata,
+                  ...item
+                }));
+                
+                addLog(`Merged ${Object.keys(metadata).length} metadata keys with ${arrayData.length} array items from "${arrayProperty}"`, 'info');
               } else {
                 dataArray = [parsed];
                 addLog('No arrays found, wrapping object in array', 'info');
@@ -997,15 +1193,163 @@
         addLog(`Value builder cleared for "${mappingKey}"`, 'info');
       }, []);
 
+      // Reordering functions
+      const moveBuilderPart = useCallback((fromIndex, toIndex) => {
+        setCurrentBuilder(prev => {
+          const newParts = [...prev.parts];
+          const [movedItem] = newParts.splice(fromIndex, 1);
+          newParts.splice(toIndex, 0, movedItem);
+          return { ...prev, parts: newParts };
+        });
+      }, []);
+
+      const movePartUp = useCallback((index) => {
+        if (index > 0) {
+          moveBuilderPart(index, index - 1);
+        }
+      }, [moveBuilderPart]);
+
+      const movePartDown = useCallback((index) => {
+        if (index < currentBuilder.parts.length - 1) {
+          moveBuilderPart(index, index + 1);
+        }
+      }, [moveBuilderPart, currentBuilder.parts.length]);
+
+      // Drag and drop handlers
+      const handleDragStart = useCallback((e, index) => {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', index.toString());
+        e.target.style.opacity = '0.5';
+      }, []);
+
+      const handleDragEnd = useCallback((e) => {
+        e.target.style.opacity = '1';
+      }, []);
+
+      const handleBuilderDragOver = useCallback((e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }, []);
+
+      const handleBuilderDrop = useCallback((e, dropIndex) => {
+        e.preventDefault();
+        const dragIndex = parseInt(e.dataTransfer.getData('text/plain'));
+        if (dragIndex !== dropIndex) {
+          moveBuilderPart(dragIndex, dropIndex);
+        }
+      }, [moveBuilderPart]);
+
+      // Configuration save/load functions
+      const saveConfiguration = useCallback((name) => {
+        if (!name.trim()) {
+          addLog('Configuration name is required', 'error');
+          return;
+        }
+
+        const config = {
+          name: name.trim(),
+          timestamp: new Date().toISOString(),
+          dataSource,
+          apiConfig: dataSource === 'api' ? apiConfig : null,
+          mappings: mappings.map(m => ({
+            jsonKey: m.jsonKey,
+            layerName: m.layerName,
+            valueBuilder: m.valueBuilder
+          })),
+          jsonKeys
+        };
+
+        // Send save request to main thread
+        parent.postMessage({
+          pluginMessage: {
+            type: 'save-config',
+            data: config
+          }
+        }, '*');
+        
+        setConfigName('');
+        setShowConfigSave(false);
+      }, [dataSource, apiConfig, mappings, jsonKeys]);
+
+      const loadConfiguration = useCallback((config) => {
+        try {
+          // Restore data source and API config
+          setDataSource(config.dataSource || 'file');
+          if (config.apiConfig) {
+            setApiConfig(config.apiConfig);
+          }
+          
+          // Restore mappings
+          if (config.mappings && config.mappings.length > 0) {
+            setMappings(config.mappings);
+            addLog(`Loaded ${config.mappings.length} key mappings`, 'info');
+          }
+          
+          // Restore JSON keys if available
+          if (config.jsonKeys && config.jsonKeys.length > 0) {
+            setJsonKeys(config.jsonKeys);
+          }
+          
+          addLog(`Configuration "${config.name}" loaded successfully`, 'info');
+          setShowConfigList(false);
+        } catch (error) {
+          addLog('Failed to load configuration', 'error');
+          console.error('Config load error:', error);
+        }
+      }, []);
+
+      const deleteConfiguration = useCallback((configName) => {
+        // Send delete request to main thread
+        parent.postMessage({
+          pluginMessage: {
+            type: 'delete-config',
+            configName: configName
+          }
+        }, '*');
+      }, []);
+
+      const clearAllConfigurations = useCallback(() => {
+        if (confirm('Delete all saved configurations? This cannot be undone.')) {
+          // Send clear request to main thread
+          parent.postMessage({
+            pluginMessage: {
+              type: 'clear-configs'
+            }
+          }, '*');
+        }
+      }, []);
+
+      // Request configurations from main thread on component mount
+      useEffect(() => {
+        parent.postMessage({
+          pluginMessage: {
+            type: 'load-configs'
+          }
+        }, '*');
+      }, []);
+
       // Listen for messages from main thread
       useEffect(() => {
         const handleMessage = (event) => {
-          const { type, message, level, selectionCount: count } = event.data.pluginMessage || {};
+          const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
           
           if (type === 'log') {
             addLog(message, level);
           } else if (type === 'selection-changed') {
             setSelectionCount(count);
+          } else if (type === 'configs-loaded') {
+            setSavedConfigs(data || []);
+          } else if (type === 'config-saved') {
+            setSavedConfigs(data || []);
+            addLog(message, 'info');
+          } else if (type === 'config-deleted') {
+            setSavedConfigs(data || []);
+            addLog(message, 'info');
+          } else if (type === 'configs-cleared') {
+            setSavedConfigs([]);
+            addLog(message, 'info');
+          } else if (type === 'storage-error') {
+            addLog(message, 'error');
           }
         };
 
@@ -1018,7 +1362,7 @@
         if (!jsonData || jsonData.length === 0) return null;
 
         const previewData = jsonData.slice(0, 10);
-        const displayKeys = jsonKeys.slice(0, 10); // Limit columns for display
+        const displayKeys = jsonKeys.slice(0, 15); // Limit columns for display
 
         return (
           <div className="json-preview">
@@ -1185,6 +1529,102 @@
             </div>
           </section>
 
+          {/* Configuration Section */}
+          <section className="config-section">
+            <h3>💾 Configuration</h3>
+            <div className="config-controls">
+              <button
+                className="config-btn"
+                onClick={() => setShowConfigSave(!showConfigSave)}
+                disabled={!jsonData || mappings.length === 0}
+                title="Save current mapping configuration"
+              >
+                💾 Save Config
+              </button>
+              <button
+                className="config-btn"
+                onClick={() => setShowConfigList(!showConfigList)}
+                disabled={savedConfigs.length === 0}
+                title="Load saved configuration"
+              >
+                📁 Load Config ({savedConfigs.length})
+              </button>
+              {savedConfigs.length > 0 && (
+                <button
+                  className="config-btn danger"
+                  onClick={clearAllConfigurations}
+                  title="Delete all saved configurations"
+                >
+                  🗑️ Clear All
+                </button>
+              )}
+            </div>
+
+            {showConfigSave && (
+              <div>
+                <input
+                  type="text"
+                  className="config-save-input"
+                  placeholder="Enter configuration name..."
+                  value={configName}
+                  onChange={(e) => setConfigName(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && configName.trim()) {
+                      saveConfiguration(configName);
+                    }
+                  }}
+                />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    className="config-btn"
+                    onClick={() => saveConfiguration(configName)}
+                    disabled={!configName.trim()}
+                  >
+                    💾 Save
+                  </button>
+                  <button
+                    className="config-btn"
+                    onClick={() => {
+                      setShowConfigSave(false);
+                      setConfigName('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {showConfigList && savedConfigs.length > 0 && (
+              <div className="config-list">
+                {savedConfigs.map((config, index) => (
+                  <div key={index} className="config-item">
+                    <div className="config-name">{config.name}</div>
+                    <div className="config-meta">
+                      {config.mappings?.length || 0} mappings • {new Date(config.timestamp).toLocaleDateString()}
+                    </div>
+                    <div className="config-actions">
+                      <button
+                        className="config-action-btn"
+                        onClick={() => loadConfiguration(config)}
+                        title="Load this configuration"
+                      >
+                        📁 Load
+                      </button>
+                      <button
+                        className="config-action-btn"
+                        onClick={() => deleteConfiguration(config.name)}
+                        title="Delete this configuration"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
           {jsonData && (
             <>
               {renderJsonPreview()}
@@ -1259,6 +1699,18 @@
                   </button>
                 </div>
 
+                <div style={{
+                  fontSize: '11px', 
+                  color: '#666', 
+                  marginBottom: '16px', 
+                  padding: '8px 12px', 
+                  background: '#f8f9fa', 
+                  borderRadius: '4px',
+                  borderLeft: '3px solid #0066cc'
+                }}>
+                  💡 <strong>Tip:</strong> Drag the ⋮⋮ handle or use ▲▼ buttons to reorder parts. The preview shows your combined result.
+                </div>
+
                 <div className="add-part-buttons">
                   <button
                     className="add-part-btn"
@@ -1276,7 +1728,38 @@
 
                 <div className="builder-parts">
                   {currentBuilder.parts.map((part, index) => (
-                    <div key={index} className="builder-part">
+                    <div 
+                      key={index} 
+                      className="builder-part"
+                      draggable="true"
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={handleBuilderDragOver}
+                      onDrop={(e) => handleBuilderDrop(e, index)}
+                    >
+                      <div className="drag-handle" title="Drag to reorder">
+                        ⋮⋮
+                      </div>
+                      
+                      <div className="reorder-controls">
+                        <button
+                          className="reorder-btn"
+                          onClick={() => movePartUp(index)}
+                          disabled={index === 0}
+                          title="Move up"
+                        >
+                          ▲
+                        </button>
+                        <button
+                          className="reorder-btn"
+                          onClick={() => movePartDown(index)}
+                          disabled={index === currentBuilder.parts.length - 1}
+                          title="Move down"
+                        >
+                          ▼
+                        </button>
+                      </div>
+
                       <select
                         value={part.type}
                         onChange={(e) => updateBuilderPart(index, 'type', e.target.value)}

@@ -1,0 +1,92 @@
+{
+  "images": {
+    "base_url": "https://image.tmdb.org/t/p/",
+    "secure_base_url": "https://image.tmdb.org/t/p/",
+    "backdrop_sizes": [
+      "w300",
+      "w780", 
+      "w1280",
+      "original"
+    ],
+    "logo_sizes": [
+      "w45",
+      "w92",
+      "w154",
+      "w185",
+      "w300",
+      "w500",
+      "original"
+    ],
+    "poster_sizes": [
+      "w92",
+      "w154",
+      "w185", 
+      "w342",
+      "w500",
+      "w780",
+      "original"
+    ],
+    "profile_sizes": [
+      "w45",
+      "w185",
+      "h632",
+      "original"
+    ],
+    "still_sizes": [
+      "w92",
+      "w185",
+      "w300", 
+      "original"
+    ]
+  },
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",
+      "genre_ids": [18, 53, 35],
+      "id": 550,
+      "original_language": "en",
+      "original_title": "Fight Club",
+      "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+      "popularity": 61.416,
+      "poster_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+      "release_date": "1999-10-15",
+      "title": "Fight Club",
+      "video": false,
+      "vote_average": 8.433,
+      "vote_count": 26280
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg",
+      "genre_ids": [18, 28, 80, 53],
+      "id": 155,
+      "original_language": "en", 
+      "original_title": "The Dark Knight",
+      "overview": "Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent.",
+      "popularity": 123.167,
+      "poster_path": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "release_date": "2008-07-18",
+      "title": "The Dark Knight",
+      "video": false,
+      "vote_average": 8.515,
+      "vote_count": 31555
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/3h1JZGDhZ8nzxdgvkxha0qBqi05.jpg",
+      "genre_ids": [35, 18, 10749],
+      "id": 13,
+      "original_language": "en",
+      "original_title": "Forrest Gump", 
+      "overview": "A man with a low IQ has accomplished great things in his life and been present during significant historic events.",
+      "popularity": 75.982,
+      "poster_path": "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+      "release_date": "1994-06-23",
+      "title": "Forrest Gump",
+      "video": false,
+      "vote_average": 8.471,
+      "vote_count": 26839
+    }
+  ]
+}

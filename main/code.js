@@ -201,12 +201,95 @@ figma.showUI(__html__, {
     height: 600,
     themeColors: true
 });
+// Storage functions using Figma's clientStorage
+async function saveConfiguration(config) {
+    try {
+        const existing = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
+        const updated = existing.filter((c) => c.name !== config.name);
+        updated.unshift(config);
+        // Keep only last 20 configs
+        const limited = updated.slice(0, 20);
+        await figma.clientStorage.setAsync('figmaJsonMapperConfigs', limited);
+        figma.ui.postMessage({
+            type: 'config-saved',
+            data: limited,
+            message: `Configuration "${config.name}" saved successfully`
+        });
+    }
+    catch (error) {
+        figma.ui.postMessage({
+            type: 'storage-error',
+            message: 'Failed to save configuration'
+        });
+    }
+}
+async function loadConfigurations() {
+    try {
+        const configs = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
+        figma.ui.postMessage({
+            type: 'configs-loaded',
+            data: configs
+        });
+    }
+    catch (error) {
+        figma.ui.postMessage({
+            type: 'storage-error',
+            message: 'Failed to load configurations'
+        });
+    }
+}
+async function deleteConfiguration(configName) {
+    try {
+        const existing = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
+        const updated = existing.filter((c) => c.name !== configName);
+        await figma.clientStorage.setAsync('figmaJsonMapperConfigs', updated);
+        figma.ui.postMessage({
+            type: 'config-deleted',
+            data: updated,
+            message: `Configuration "${configName}" deleted`
+        });
+    }
+    catch (error) {
+        figma.ui.postMessage({
+            type: 'storage-error',
+            message: 'Failed to delete configuration'
+        });
+    }
+}
+async function clearAllConfigurations() {
+    try {
+        await figma.clientStorage.setAsync('figmaJsonMapperConfigs', []);
+        figma.ui.postMessage({
+            type: 'configs-cleared',
+            data: [],
+            message: 'All configurations cleared'
+        });
+    }
+    catch (error) {
+        figma.ui.postMessage({
+            type: 'storage-error',
+            message: 'Failed to clear configurations'
+        });
+    }
+}
 // Message handler for UI communications
 figma.ui.onmessage = async (msg) => {
     switch (msg.type) {
         case 'apply-data':
             const { jsonData, mappings, valueBuilders } = msg;
             await applyDataToInstances(jsonData, mappings, valueBuilders || {});
+            break;
+        case 'save-config':
+            await saveConfiguration(msg.data);
+            break;
+        case 'load-configs':
+            await loadConfigurations();
+            break;
+        case 'delete-config':
+            await deleteConfiguration(msg.configName);
+            break;
+        case 'clear-configs':
+            await clearAllConfigurations();
             break;
         case 'close':
             figma.closePlugin();
@@ -222,8 +305,10 @@ figma.on('selectionchange', () => {
         selectionCount: figma.currentPage.selection.length
     });
 });
-// Send initial selection count
+// Send initial selection count and load configurations
 figma.ui.postMessage({
     type: 'selection-changed',
     selectionCount: figma.currentPage.selection.length
 });
+// Load saved configurations on startup
+loadConfigurations();
