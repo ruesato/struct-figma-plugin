@@ -5,10 +5,20 @@ interface JsonMapping {
   layerName: string;
 }
 
+interface ValueBuilderPart {
+  type: 'key' | 'text';
+  value: string;
+}
+
+interface ValueBuilder {
+  parts: ValueBuilderPart[];
+}
+
 interface ApplyDataMessage {
   type: 'apply-data';
   jsonData: any[];
   mappings: JsonMapping[];
+  valueBuilders: { [key: string]: ValueBuilder };
 }
 
 interface LogMessage {
@@ -118,6 +128,27 @@ function applyVariantProperty(node: InstanceNode, propertyName: string, value: s
   }
 }
 
+// Helper function to build value from parts
+function buildValueFromParts(parts: ValueBuilderPart[], dataItem: any): string {
+  return parts.map(part => {
+    if (part.type === 'text') {
+      return part.value;
+    } else if (part.type === 'key') {
+      return getNestedValue(dataItem, part.value) || '';
+    }
+    return '';
+  }).join('');
+}
+
+// Helper function to get value for mapping (with value builder support)
+function getValueForMapping(mapping: JsonMapping, dataItem: any, valueBuilders: { [key: string]: ValueBuilder }): any {
+  const valueBuilder = valueBuilders[mapping.jsonKey];
+  if (valueBuilder) {
+    return buildValueFromParts(valueBuilder.parts, dataItem);
+  }
+  return getNestedValue(dataItem, mapping.jsonKey);
+}
+
 // Helper function to send log messages to UI
 function sendLog(message: string, level: 'info' | 'warning' | 'error' = 'info'): void {
   figma.ui.postMessage({
@@ -128,7 +159,7 @@ function sendLog(message: string, level: 'info' | 'warning' | 'error' = 'info'):
 }
 
 // Main function to apply data to selected instances
-async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[]): Promise<void> {
+async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], valueBuilders: { [key: string]: ValueBuilder } = {}): Promise<void> {
   const selection = figma.currentPage.selection;
   
   if (selection.length === 0) {
@@ -149,7 +180,7 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[]): P
     
     // Process each mapping
     for (const mapping of mappings) {
-      const value = getNestedValue(dataItem, mapping.jsonKey);
+      const value = getValueForMapping(mapping, dataItem, valueBuilders);
       
       if (value === undefined || value === null) {
         sendLog(`Missing value for key "${mapping.jsonKey}" in data item ${i + 1}`, 'warning');
@@ -225,8 +256,8 @@ figma.showUI(__html__, {
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'apply-data':
-      const { jsonData, mappings } = msg as ApplyDataMessage;
-      await applyDataToInstances(jsonData, mappings);
+      const { jsonData, mappings, valueBuilders } = msg as ApplyDataMessage;
+      await applyDataToInstances(jsonData, mappings, valueBuilders || {});
       break;
       
     case 'close':

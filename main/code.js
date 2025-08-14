@@ -92,6 +92,26 @@ function applyVariantProperty(node, propertyName, value) {
         return false;
     }
 }
+// Helper function to build value from parts
+function buildValueFromParts(parts, dataItem) {
+    return parts.map(part => {
+        if (part.type === 'text') {
+            return part.value;
+        }
+        else if (part.type === 'key') {
+            return getNestedValue(dataItem, part.value) || '';
+        }
+        return '';
+    }).join('');
+}
+// Helper function to get value for mapping (with value builder support)
+function getValueForMapping(mapping, dataItem, valueBuilders) {
+    const valueBuilder = valueBuilders[mapping.jsonKey];
+    if (valueBuilder) {
+        return buildValueFromParts(valueBuilder.parts, dataItem);
+    }
+    return getNestedValue(dataItem, mapping.jsonKey);
+}
 // Helper function to send log messages to UI
 function sendLog(message, level = 'info') {
     figma.ui.postMessage({
@@ -101,7 +121,7 @@ function sendLog(message, level = 'info') {
     });
 }
 // Main function to apply data to selected instances
-async function applyDataToInstances(jsonData, mappings) {
+async function applyDataToInstances(jsonData, mappings, valueBuilders = {}) {
     const selection = figma.currentPage.selection;
     if (selection.length === 0) {
         sendLog('No layers selected. Please select one or more component instances or layers.', 'warning');
@@ -116,7 +136,7 @@ async function applyDataToInstances(jsonData, mappings) {
         sendLog(`Processing instance ${i + 1}/${maxItems}: ${selectedNode.name}`, 'info');
         // Process each mapping
         for (const mapping of mappings) {
-            const value = getNestedValue(dataItem, mapping.jsonKey);
+            const value = getValueForMapping(mapping, dataItem, valueBuilders);
             if (value === undefined || value === null) {
                 sendLog(`Missing value for key "${mapping.jsonKey}" in data item ${i + 1}`, 'warning');
                 continue;
@@ -185,8 +205,8 @@ figma.showUI(__html__, {
 figma.ui.onmessage = async (msg) => {
     switch (msg.type) {
         case 'apply-data':
-            const { jsonData, mappings } = msg;
-            await applyDataToInstances(jsonData, mappings);
+            const { jsonData, mappings, valueBuilders } = msg;
+            await applyDataToInstances(jsonData, mappings, valueBuilders || {});
             break;
         case 'close':
             figma.closePlugin();

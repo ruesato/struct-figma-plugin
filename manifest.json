@@ -7,7 +7,7 @@
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": ["*"],
-    "reasoning": "Required for fetching images from URLs provided in JSON data"
+    "reasoning": "Required for fetching images from URLs provided in JSON data and making API calls to external data sources"
   },
   "permissions": ["currentuser"],
   "relaunchButtons": [
