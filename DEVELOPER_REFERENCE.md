@@ -18,12 +18,10 @@ This Figma plugin enables importing JSON data and mapping it to Figma layer prop
 json-data-mapper/
 ├── manifest.json          # Plugin configuration & permissions
 ├── main/
-│   ├── code.ts            # Main thread logic (TypeScript)
-│   └── code.js            # Compiled main thread code
+│   ├── code.ts            # Main thread logic (TypeScript source)
+│   └── code.js            # Compiled main thread code (loaded by Figma)
 ├── ui/
-│   ├── index.html         # 🔥 ACTUAL UI (embedded React)
-│   ├── ui.tsx            # Reference TypeScript (NOT USED)
-│   └── ui.js             # Compiled TypeScript (NOT USED)
+│   └── index.html         # 🔥 ACTUAL UI (embedded React)
 ├── assets/               # Test data files
 ├── package.json          # Dependencies & scripts
 ├── tsconfig.json         # TypeScript configuration
@@ -31,10 +29,10 @@ json-data-mapper/
 ```
 
 ### ⚠️ Critical Architecture Note
-**The plugin uses `ui/index.html` with embedded JavaScript, NOT the compiled TypeScript files.** 
-- The `.tsx` and compiled `.js` files in `/ui` are reference implementations
+**The plugin uses `ui/index.html` with embedded JavaScript.** 
 - All UI changes must be made directly in `ui/index.html` (lines 273-560)
 - The HTML file contains inline React code loaded via CDN
+- Main thread changes go in `main/code.ts` and get compiled to `main/code.js`
 
 ### Communication Flow
 ```
@@ -153,12 +151,12 @@ if (arrayMatch) {
 
 ### Making UI Changes
 ```bash
-# ⚠️ Edit ui/index.html directly, NOT .tsx files
+# ⚠️ Edit ui/index.html directly for all UI changes
 vim ui/index.html
 
 # TypeScript changes (main thread only)
 vim main/code.ts
-npm run build
+npm run build  # Compiles code.ts → code.js
 
 # Testing
 # Load plugin in Figma and test with assets/syntheticData-imaging-1.json

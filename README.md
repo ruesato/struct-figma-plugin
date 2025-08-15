@@ -146,10 +146,11 @@ The plugin intelligently handles various JSON formats:
 json-data-mapper/
 ├── manifest.json          # Plugin configuration
 ├── main/
-│   └── code.ts            # Main thread logic
+│   ├── code.ts            # Main thread logic (source)
+│   └── code.js            # Main thread logic (compiled)
 ├── ui/
-│   ├── index.html         # UI with embedded React
-│   └── ui.tsx             # React components (reference)
+│   └── index.html         # UI with embedded React
+├── assets/                # Test data files
 ├── package.json           # Dependencies
 ├── tsconfig.json          # TypeScript configuration
 └── README.md             # This file
@@ -181,7 +182,7 @@ json-data-mapper/
 
 - **Framework**: TypeScript, React (via CDN), Figma Plugin API
 - **Architecture**: 
-  - Main thread: `main/code.ts` - Handles Figma API operations
+  - Main thread: `main/code.ts` (source) → `main/code.js` (compiled) - Handles Figma API operations
   - UI thread: `ui/index.html` - Embedded React app for user interface
 - **Processing**: Client-side only, no external dependencies
 - **File Size**: Maximum 2MB JSON files
