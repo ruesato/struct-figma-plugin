@@ -42,18 +42,18 @@ interface StorageResponse {
 // Helper function to extract nested values from JSON objects
 function getNestedValue(obj: any, path: string): any {
   const parts = path.split('.');
-  
+
   return parts.reduce((current, part) => {
     if (current === null || current === undefined) return undefined;
-    
+
     // Handle array indexing like "encounters[0]" or "encounters[]"
     const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
     if (arrayMatch) {
       const [, arrayKey, index] = arrayMatch;
       const arrayValue = current[arrayKey];
-      
+
       if (!Array.isArray(arrayValue)) return undefined;
-      
+
       if (index === '') {
         // Return first item for "[]" notation
         return arrayValue[0];
@@ -62,7 +62,7 @@ function getNestedValue(obj: any, path: string): any {
         return arrayValue[parseInt(index)];
       }
     }
-    
+
     return current[part];
   }, obj);
 }
@@ -72,14 +72,14 @@ function findLayerByName(node: SceneNode, layerName: string): SceneNode | null {
   if (node.name === layerName) {
     return node;
   }
-  
+
   if ('children' in node) {
     for (const child of node.children) {
       const found = findLayerByName(child, layerName);
       if (found) return found;
     }
   }
-  
+
   return null;
 }
 
@@ -101,12 +101,12 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
     if (!response.ok) {
       return false;
     }
-    
+
     const arrayBuffer = await response.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
-    
+
     const image = figma.createImage(uint8Array);
-    
+
     if ('fills' in node) {
       const newFills: Paint[] = [{
         type: 'IMAGE',
@@ -116,7 +116,7 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
       node.fills = newFills;
       return true;
     }
-    
+
     return false;
   } catch (error) {
     console.error('Error fetching image:', error);
@@ -173,40 +173,40 @@ function sendLog(message: string, level: 'info' | 'warning' | 'error' = 'info'):
 // Main function to apply data to selected instances
 async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], valueBuilders: { [key: string]: ValueBuilder } = {}): Promise<void> {
   const selection = figma.currentPage.selection;
-  
+
   if (selection.length === 0) {
     sendLog('No layers selected. Please select one or more component instances or layers.', 'warning');
     return;
   }
-  
+
   let processedCount = 0;
   const maxItems = Math.min(selection.length, jsonData.length);
-  
+
   sendLog(`Starting to apply data to ${maxItems} selected instances...`, 'info');
-  
+
   for (let i = 0; i < maxItems; i++) {
     const selectedNode = selection[i];
     const dataItem = jsonData[i];
-    
+
     sendLog(`Processing instance ${i + 1}/${maxItems}: ${selectedNode.name}`, 'info');
-    
+
     // Process each mapping
     for (const mapping of mappings) {
       const value = getValueForMapping(mapping, dataItem, valueBuilders);
-      
+
       if (value === undefined || value === null) {
         sendLog(`Missing value for key "${mapping.jsonKey}" in data item ${i + 1}`, 'warning');
         continue;
       }
-      
+
       // Find the target layer
       const targetLayer = findLayerByName(selectedNode, mapping.layerName);
-      
+
       if (!targetLayer) {
         sendLog(`Layer "${mapping.layerName}" not found in ${selectedNode.name}`, 'warning');
         continue;
       }
-      
+
       // Apply data based on layer type and value type
       if (targetLayer.type === 'TEXT') {
         applyTextContent(targetLayer as TextNode, String(value));
@@ -223,14 +223,14 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
         // Try to apply as variant property
         const instanceNode = targetLayer as InstanceNode;
         const propertyNames = Object.keys(instanceNode.variantProperties || {});
-        
+
         if (propertyNames.length > 0) {
           // Try to match the mapping layer name to a variant property
-          const matchedProperty = propertyNames.find(prop => 
+          const matchedProperty = propertyNames.find(prop =>
             prop.toLowerCase() === mapping.layerName.toLowerCase() ||
             mapping.layerName.toLowerCase().includes(prop.toLowerCase())
           );
-          
+
           if (matchedProperty) {
             const success = applyVariantProperty(instanceNode, matchedProperty, value);
             if (success) {
@@ -244,22 +244,22 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
         }
       }
     }
-    
+
     processedCount++;
   }
-  
+
   if (jsonData.length > selection.length) {
     sendLog(`${jsonData.length - selection.length} JSON objects were ignored (more data than selected instances)`, 'warning');
   } else if (selection.length > jsonData.length) {
     sendLog(`${selection.length - jsonData.length} selected instances were left unchanged (more instances than data)`, 'info');
   }
-  
+
   sendLog(`✅ Completed! Processed ${processedCount} instances.`, 'info');
 }
 
 // Plugin initialization
 figma.showUI(__html__, {
-  width: 320,
+  width: 640,
   height: 600,
   themeColors: true
 });
@@ -270,12 +270,12 @@ async function saveConfiguration(config: any): Promise<void> {
     const existing = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
     const updated = existing.filter((c: any) => c.name !== config.name);
     updated.unshift(config);
-    
+
     // Keep only last 20 configs
     const limited = updated.slice(0, 20);
-    
+
     await figma.clientStorage.setAsync('figmaJsonMapperConfigs', limited);
-    
+
     figma.ui.postMessage({
       type: 'config-saved',
       data: limited,
@@ -308,9 +308,9 @@ async function deleteConfiguration(configName: string): Promise<void> {
   try {
     const existing = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
     const updated = existing.filter((c: any) => c.name !== configName);
-    
+
     await figma.clientStorage.setAsync('figmaJsonMapperConfigs', updated);
-    
+
     figma.ui.postMessage({
       type: 'config-deleted',
       data: updated,
@@ -327,7 +327,7 @@ async function deleteConfiguration(configName: string): Promise<void> {
 async function clearAllConfigurations(): Promise<void> {
   try {
     await figma.clientStorage.setAsync('figmaJsonMapperConfigs', []);
-    
+
     figma.ui.postMessage({
       type: 'configs-cleared',
       data: [],
@@ -348,27 +348,27 @@ figma.ui.onmessage = async (msg) => {
       const { jsonData, mappings, valueBuilders } = msg as ApplyDataMessage;
       await applyDataToInstances(jsonData, mappings, valueBuilders || {});
       break;
-      
+
     case 'save-config':
       await saveConfiguration(msg.data);
       break;
-      
+
     case 'load-configs':
       await loadConfigurations();
       break;
-      
+
     case 'delete-config':
       await deleteConfiguration(msg.configName!);
       break;
-      
+
     case 'clear-configs':
       await clearAllConfigurations();
       break;
-      
+
     case 'close':
       figma.closePlugin();
       break;
-      
+
     default:
       break;
   }
