@@ -389,7 +389,10 @@ async function buildUI() {
         if (currentMapping && valueBuilders[mappingKey]) {
           setCurrentBuilder(valueBuilders[mappingKey]);
         } else {
-          setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });
+          // Initialize with the selected mapping key pre-populated
+          setCurrentBuilder({ 
+            parts: [{ type: 'key', value: mappingKey }] 
+          });
         }
         setValueBuilderModal({ isOpen: true, mappingKey });
       }, [mappings, valueBuilders]);
