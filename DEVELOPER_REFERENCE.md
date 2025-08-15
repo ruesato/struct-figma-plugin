@@ -21,18 +21,27 @@ json-data-mapper/
 │   ├── code.ts            # Main thread logic (TypeScript source)
 │   └── code.js            # Compiled main thread code (loaded by Figma)
 ├── ui/
-│   └── index.html         # 🔥 ACTUAL UI (embedded React)
+│   ├── ui.tsx             # 🔥 React components (TypeScript source)
+│   ├── ui.css             # 🔥 Styles (CSS source)
+│   ├── index.template.html # HTML template for build process
+│   ├── ui.js              # Compiled React code (generated)
+│   └── index.html         # Final UI with inlined CSS/JS (generated)
+├── scripts/
+│   ├── build-ui.ts        # Build script source
+│   └── build-ui.js        # Compiled build script
 ├── assets/               # Test data files
 ├── package.json          # Dependencies & scripts
 ├── tsconfig.json         # TypeScript configuration
 └── build outputs...
 ```
 
-### ⚠️ Critical Architecture Note
-**The plugin uses `ui/index.html` with embedded JavaScript.** 
-- All UI changes must be made directly in `ui/index.html` (lines 273-560)
-- The HTML file contains inline React code loaded via CDN
-- Main thread changes go in `main/code.ts` and get compiled to `main/code.js`
+### ✨ New Improved Architecture
+**The plugin now uses proper separation of concerns with a build process:**
+- **UI changes**: Edit `ui/ui.tsx` for React components
+- **Style changes**: Edit `ui/ui.css` for styles
+- **Build process**: Compiles and inlines everything into `ui/index.html`
+- **Main thread changes**: Edit `main/code.ts` → compiles to `main/code.js`
+- **Better DX**: Full TypeScript support, proper IDE features, maintainable code
 
 ### Communication Flow
 ```
@@ -151,21 +160,43 @@ if (arrayMatch) {
 
 ### Making UI Changes
 ```bash
-# ⚠️ Edit ui/index.html directly for all UI changes
-vim ui/index.html
+# ✨ NEW: Edit separate TypeScript and CSS files
+vim ui/ui.tsx     # React components with full TypeScript support
+vim ui/ui.css     # Styles with proper CSS syntax highlighting
 
-# TypeScript changes (main thread only)
+# Build UI (compiles TypeScript and inlines everything)
+npm run build:ui  # Creates final ui/index.html
+
+# TypeScript changes (main thread)
 vim main/code.ts
-npm run build  # Compiles code.ts → code.js
+npm run build     # Full build: compiles main + UI
 
 # Testing
 # Load plugin in Figma and test with assets/syntheticData-imaging-1.json
 ```
 
-### Build Process
+### Build Process Details
+The build process (`scripts/build-ui.ts`) performs these steps:
+1. **Compile TypeScript**: `ui/ui.tsx` → `ui/ui.js`
+2. **Read source files**: CSS from `ui/ui.css`, compiled JS from `ui/ui.js`
+3. **Process JavaScript**: Remove imports/exports, adapt for CDN React
+4. **Inject content**: CSS and JS into `ui/index.template.html`
+5. **Generate final**: Creates `ui/index.html` with everything inlined
+
+### Benefits of New Architecture
+- **🎯 Better IDE support**: Full TypeScript intellisense and error checking
+- **🎨 Proper syntax highlighting**: CSS and TypeScript in separate files
+- **🔧 Easier maintenance**: Logical separation of concerns
+- **📦 Optimized output**: Single HTML file for Figma plugin requirements
+- **🚀 Faster development**: Hot reloading with `npm run dev`
+
+### Available Build Commands
 ```bash
-npm run build    # Compiles main/code.ts → main/code.js
-npm run dev      # Watch mode for development  
+npm run build       # Full build: compiles main + UI, creates final plugin
+npm run build:ui    # UI only: compiles ui/ui.tsx and creates ui/index.html
+npm run build:main  # Main only: compiles main/code.ts → main/code.js
+npm run dev         # Watch mode for development (main thread only)
+npm run typecheck   # Type checking without compilation
 ```
 
 ### Testing Strategy

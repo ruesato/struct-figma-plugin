@@ -1,761 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>JSON Data Mapper</title>
-  <style>
-    * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #333;
-  background: #fff;
-  overflow-x: hidden;
-}
-
-.container {
-  padding: 16px;
-  max-width: 100%;
-}
-
-header {
-  margin-bottom: 20px;
-  border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 12px;
-}
-
-h1 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-p {
-  font-size: 11px;
-  color: #666;
-}
-
-.data-source-section {
-  margin-bottom: 20px;
-}
-
-.data-source-tabs {
-  display: flex;
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 16px;
-}
-
-.data-source-tab {
-  padding: 8px 16px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  transition: all 0.2s ease;
-}
-
-.data-source-tab.active {
-  color: #0066cc;
-  border-bottom-color: #0066cc;
-}
-
-.data-source-tab:hover {
-  color: #0066cc;
-}
-
-.data-source-content {
-  min-height: 120px;
-}
-
-.upload-section {
-  margin-bottom: 20px;
-}
-
-.api-section {
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 12px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  margin-bottom: 4px;
-  color: #333;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  font-size: 11px;
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #0066cc;
-}
-
-.form-row {
-  display: flex;
-  gap: 8px;
-}
-
-.form-row .form-group {
-  flex: 1;
-}
-
-.fetch-button {
-  background: #0066cc;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.fetch-button:hover:not(:disabled) {
-  background: #0052a3;
-}
-
-.fetch-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.loading {
-  opacity: 0.7;
-}
-
-/* Value Builder Styles */
-.build-value-btn {
-  background: #18a0fb;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 10px;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.build-value-btn:hover {
-  background: #0073e6;
-}
-
-.build-value-btn.active {
-  background: #0066cc;
-}
-
-.clear-builder-btn {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 10px;
-  cursor: pointer;
-  margin-left: 4px;
-}
-
-.clear-builder-btn:hover {
-  background: #c0392b;
-}
-
-/* Configuration Save/Load Styles */
-.config-section {
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  background: #f8f9fa;
-}
-
-.config-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.config-btn {
-  background: #0066cc;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.config-btn:hover:not(:disabled) {
-  background: #0052a3;
-}
-
-.config-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.config-btn.danger {
-  background: #e74c3c;
-}
-
-.config-btn.danger:hover:not(:disabled) {
-  background: #c0392b;
-}
-
-.config-list {
-  max-height: 100px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  background: white;
-}
-
-.config-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 8px;
-  border-bottom: 1px solid #e5e5e5;
-  font-size: 11px;
-}
-
-.config-item:last-child {
-  border-bottom: none;
-}
-
-.config-item:hover {
-  background: #f0f8ff;
-}
-
-.config-name {
-  flex: 1;
-  font-weight: 500;
-}
-
-.config-meta {
-  font-size: 10px;
-  color: #666;
-  margin-right: 8px;
-}
-
-.config-actions {
-  display: flex;
-  gap: 4px;
-}
-
-.config-action-btn {
-  background: none;
-  border: none;
-  padding: 2px 4px;
-  border-radius: 2px;
-  font-size: 10px;
-  cursor: pointer;
-  color: #666;
-}
-
-.config-action-btn:hover {
-  background: #e9ecef;
-  color: #333;
-}
-
-.config-save-input {
-  width: 100%;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  font-size: 11px;
-  margin-bottom: 8px;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.modal-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: #666;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-close:hover {
-  color: #333;
-}
-
-.builder-part {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding: 8px;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  background: #f8f9fa;
-  cursor: move;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.builder-part:hover {
-  background: #e9ecef;
-  border-color: #0066cc;
-}
-
-.builder-part.dragging {
-  opacity: 0.5;
-  transform: rotate(2deg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.builder-part.drag-over {
-  border-color: #18a0fb;
-  background: #f0f8ff;
-  transform: translateY(-2px);
-}
-
-.builder-part select,
-.builder-part input {
-  flex: 1;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  font-size: 11px;
-}
-
-.remove-part-btn {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 4px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  cursor: pointer;
-  min-width: 20px;
-}
-
-.remove-part-btn:hover {
-  background: #c0392b;
-}
-
-.reorder-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-right: 8px;
-}
-
-.reorder-btn {
-  background: #0066cc;
-  color: white;
-  border: none;
-  padding: 2px 4px;
-  border-radius: 2px;
-  font-size: 10px;
-  cursor: pointer;
-  width: 20px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.reorder-btn:hover:not(:disabled) {
-  background: #0052a3;
-}
-
-.reorder-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.drag-handle {
-  color: #999;
-  font-size: 12px;
-  margin-right: 4px;
-  cursor: move;
-  padding: 2px;
-}
-
-.drag-handle:hover {
-  color: #666;
-}
-
-.add-part-buttons {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.add-part-btn {
-  background: #0066cc;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.add-part-btn:hover {
-  background: #0052a3;
-}
-
-.preview-section {
-  margin: 16px 0;
-  padding: 12px;
-  background: #f0f8ff;
-  border-radius: 4px;
-  border: 1px solid #0066cc;
-}
-
-.preview-label {
-  font-size: 11px;
-  font-weight: 500;
-  margin-bottom: 4px;
-  color: #333;
-}
-
-.preview-value {
-  font-size: 12px;
-  font-family: monospace;
-  background: white;
-  padding: 6px 8px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  word-break: break-all;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e5e5;
-}
-
-.modal-btn {
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-}
-
-.modal-btn.primary {
-  background: #18a0fb;
-  color: white;
-}
-
-.modal-btn.primary:hover {
-  background: #0073e6;
-}
-
-.modal-btn.secondary {
-  background: #f8f9fa;
-  color: #333;
-  border: 1px solid #ccc;
-}
-
-.modal-btn.secondary:hover {
-  background: #e9ecef;
-}
-
-.drop-zone {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.drop-zone:hover,
-.drop-zone.dragging {
-  border-color: #0066cc;
-  background-color: #f0f8ff;
-}
-
-.file-button {
-  display: inline-block;
-  background: #0066cc;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 8px 0;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.file-button:hover {
-  background: #0052a3;
-}
-
-.file-limit {
-  font-size: 10px;
-  color: #999;
-}
-
-.json-preview {
-  margin-bottom: 20px;
-}
-
-.table-container {
-  max-height: 200px;
-  overflow: auto;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 10px;
-}
-
-th, td {
-  border: 1px solid #e5e5e5;
-  padding: 4px 6px;
-  text-align: left;
-  min-width: 60px;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-th {
-  background: #f8f9fa;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-}
-
-.mapping-section {
-  margin-bottom: 20px;
-}
-
-.mapping-table {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-}
-
-.mapping-row {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #e5e5e5;
-  gap: 8px;
-}
-
-.mapping-row:last-child {
-  border-bottom: none;
-}
-
-.mapping-row label {
-  flex: 1;
-  font-size: 11px;
-  font-weight: 500;
-  min-width: 80px;
-  word-break: break-word;
-}
-
-.mapping-row input {
-  flex: 1;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  font-size: 11px;
-  min-width: 100px;
-}
-
-.mapping-row input:focus {
-  outline: none;
-  border-color: #0066cc;
-}
-
-.action-section {
-  margin-bottom: 20px;
-}
-
-.apply-button {
-  width: 100%;
-  background: #18a0fb;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.apply-button:hover:not(:disabled) {
-  background: #0073e6;
-}
-
-.apply-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.logs-section {
-  border-top: 1px solid #e5e5e5;
-  padding-top: 16px;
-}
-
-.logs-container {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  background: #f8f9fa;
-}
-
-.log-entry {
-  padding: 6px 8px;
-  border-bottom: 1px solid #e5e5e5;
-  font-size: 10px;
-  display: flex;
-  gap: 8px;
-}
-
-.log-entry:last-child {
-  border-bottom: none;
-}
-
-.log-entry.info {
-  color: #333;
-}
-
-.log-entry.warning {
-  color: #f39c12;
-  background: #fef9e7;
-}
-
-.log-entry.error {
-  color: #e74c3c;
-  background: #fdf2f2;
-}
-
-.timestamp {
-  color: #666;
-  font-size: 9px;
-  min-width: 60px;
-}
-
-.message {
-  flex: 1;
-  word-break: break-word;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-  </style>
-</head>
-<body>
-  <div id="react-page"></div>
-
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <script type="text/babel">
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+/**
+ * Build script that compiles the UI components and creates the final index.html
+ * This script:
+ * 1. Reads the compiled JavaScript from ui/ui.js
+ * 2. Reads the CSS from ui/ui.css
+ * 3. Reads the HTML template from ui/index.template.html
+ * 4. Injects CSS and JS into the template
+ * 5. Outputs the final ui/index.html for the Figma plugin
+ */
+async function buildUI() {
+    console.log('🔨 Building UI...');
+    const uiDir = path.join(__dirname, '..', 'ui');
+    try {
+        // Complete JavaScript implementation with all features restored
+        const jsContent = `
     // Helper functions
     function extractJsonKeys(data, maxDepth = 3) {
       const keys = new Set();
@@ -767,7 +61,7 @@ th {
         
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
-            const fullKey = prefix ? `${prefix}.${key}` : key;
+            const fullKey = prefix ? \`\${prefix}.\${key}\` : key;
             keys.add(fullKey);
             
             if (typeof obj[key] === 'object' && obj[key] !== null) {
@@ -775,8 +69,8 @@ th {
                 const arrayItems = obj[key].slice(0, 3);
                 arrayItems.forEach((item, index) => {
                   if (typeof item === 'object' && item !== null) {
-                    extractKeysRecursive(item, `${fullKey}[${index}]`, depth + 1);
-                    extractKeysRecursive(item, `${fullKey}[]`, depth + 1);
+                    extractKeysRecursive(item, \`\${fullKey}[\${index}]\`, depth + 1);
+                    extractKeysRecursive(item, \`\${fullKey}[]\`, depth + 1);
                   }
                 });
               } else {
@@ -810,7 +104,7 @@ th {
       return parts.reduce((current, part) => {
         if (current === null || current === undefined) return undefined;
         
-        const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
+        const arrayMatch = part.match(/^(.+)\\[(\\d*)\\]$/);
         if (arrayMatch) {
           const [, arrayKey, index] = arrayMatch;
           const arrayValue = current[arrayKey];
@@ -932,18 +226,18 @@ th {
         try {
           let dataArray;
           
-          addLog(`Parsed JSON type: ${Array.isArray(parsed) ? 'array' : typeof parsed}`, 'info');
+          addLog(\`Parsed JSON type: \${Array.isArray(parsed) ? 'array' : typeof parsed}\`, 'info');
           
           if (Array.isArray(parsed)) {
             dataArray = parsed;
             addLog('Using direct array', 'info');
           } else if (typeof parsed === 'object' && parsed !== null) {
             const keys = Object.keys(parsed);
-            addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');
+            addLog(\`Object has \${keys.length} keys: \${keys.join(', ')}\`, 'info');
             
             if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
               dataArray = parsed[keys[0]];
-              addLog(`Found array data in property "${keys[0]}" with ${dataArray.length} items`, 'info');
+              addLog(\`Found array data in property "\${keys[0]}" with \${dataArray.length} items\`, 'info');
             } else {
               const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
               if (arrayProperty) {
@@ -961,7 +255,7 @@ th {
                   ...item
                 }));
                 
-                addLog(`Merged ${Object.keys(metadata).length} metadata keys with ${arrayData.length} array items from "${arrayProperty}"`, 'info');
+                addLog(\`Merged \${Object.keys(metadata).length} metadata keys with \${arrayData.length} array items from "\${arrayProperty}"\`, 'info');
               } else {
                 dataArray = [parsed];
                 addLog('No arrays found, wrapping object in array', 'info');
@@ -982,10 +276,10 @@ th {
             valueBuilder: null
           })));
           
-          addLog(`Loaded JSON from ${source} with ${dataArray.length} objects and ${keys.length} unique keys`, 'info');
+          addLog(\`Loaded JSON from \${source} with \${dataArray.length} objects and \${keys.length} unique keys\`, 'info');
           return true;
         } catch (error) {
-          addLog(`Invalid JSON data from ${source}`, 'error');
+          addLog(\`Invalid JSON data from \${source}\`, 'error');
           console.error('JSON parsing error:', error);
           return false;
         }
@@ -999,13 +293,13 @@ th {
         }
 
         setIsLoadingData(true);
-        addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
+        addLog(\`Fetching data from API: \${apiConfig.url}\`, 'info');
 
         try {
           const headers = { ...apiConfig.headers };
           
           if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {
-            headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
+            headers['Authorization'] = \`Bearer \${apiConfig.apiKey}\`;
           } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {
             headers['X-API-Key'] = apiConfig.apiKey;
           }
@@ -1016,14 +310,14 @@ th {
           });
 
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
           }
 
           const data = await response.json();
           processJsonData(data, 'API');
           addLog('API data loaded successfully', 'info');
         } catch (error) {
-          addLog(`API request failed: ${error.message}`, 'error');
+          addLog(\`API request failed: \${error.message}\`, 'error');
         } finally {
           setIsLoadingData(false);
         }
@@ -1069,7 +363,7 @@ th {
         setApiConfig(config.apiConfig);
         setMappings(config.mappings || []);
         setValueBuilders(config.valueBuilders || {});
-        addLog(`Configuration "${config.name}" loaded`, 'info');
+        addLog(\`Configuration "\${config.name}" loaded\`, 'info');
         setShowConfigList(false);
       }, [addLog]);
 
@@ -1144,7 +438,7 @@ th {
           [valueBuilderModal.mappingKey]: { ...currentBuilder }
         }));
         
-        addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');
+        addLog(\`Value builder saved for \${valueBuilderModal.mappingKey}\`, 'info');
         closeValueBuilder();
       }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
 
@@ -1154,7 +448,7 @@ th {
           delete newBuilders[mappingKey];
           return newBuilders;
         });
-        addLog(`Value builder cleared for ${mappingKey}`, 'info');
+        addLog(\`Value builder cleared for \${mappingKey}\`, 'info');
       }, [addLog]);
 
       const addBuilderPart = useCallback((type) => {
@@ -1243,7 +537,7 @@ th {
             setSavedConfigs([]);
             addLog('All configurations cleared', 'info');
           } else if (type === 'storage-error') {
-            addLog(`Storage error: ${message}`, 'error');
+            addLog(\`Storage error: \${message}\`, 'error');
           }
         };
 
@@ -1268,7 +562,7 @@ th {
           React.createElement('div', {
             style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }
           },
-            React.createElement('p', null, `Selected: ${selectionCount} layer(s)`),
+            React.createElement('p', null, \`Selected: \${selectionCount} layer(s)\`),
             jsonData && React.createElement('button', {
               onClick: handleClearData,
               style: {
@@ -1346,15 +640,15 @@ th {
           React.createElement('h3', null, 'Data Source'),
           React.createElement('div', { className: 'data-source-tabs' },
             React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'file' ? 'active' : ''}`,
+              className: \`data-source-tab \${dataSource === 'file' ? 'active' : ''}\`,
               onClick: () => setDataSource('file')
             }, 'File'),
             React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'api' ? 'active' : ''}`,
+              className: \`data-source-tab \${dataSource === 'api' ? 'active' : ''}\`,
               onClick: () => setDataSource('api')
             }, 'API'),
             React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'manual' ? 'active' : ''}`,
+              className: \`data-source-tab \${dataSource === 'manual' ? 'active' : ''}\`,
               onClick: () => setDataSource('manual')
             }, 'Manual')
           ),
@@ -1446,7 +740,7 @@ th {
 
         // JSON Preview
         jsonData && React.createElement('section', { className: 'json-preview' },
-          React.createElement('h3', null, `JSON Preview (${jsonData.length} items)`),
+          React.createElement('h3', null, \`JSON Preview (\${jsonData.length} items)\`),
           React.createElement('div', { className: 'table-container' },
             React.createElement('table', null,
               React.createElement('thead', null,
@@ -1484,7 +778,7 @@ th {
                   onChange: (e) => updateMapping(mapping.jsonKey, e.target.value)
                 }),
                 React.createElement('button', {
-                  className: `build-value-btn ${valueBuilders[mapping.jsonKey] ? 'active' : ''}`,
+                  className: \`build-value-btn \${valueBuilders[mapping.jsonKey] ? 'active' : ''}\`,
                   onClick: () => openValueBuilder(mapping.jsonKey),
                   title: 'Build custom value'
                 }, '🔧'),
@@ -1510,7 +804,7 @@ th {
         valueBuilderModal.isOpen && React.createElement('div', { className: 'modal-overlay' },
           React.createElement('div', { className: 'modal' },
             React.createElement('div', { className: 'modal-header' },
-              React.createElement('h3', { className: 'modal-title' }, `Value Builder: ${valueBuilderModal.mappingKey}`),
+              React.createElement('h3', { className: 'modal-title' }, \`Value Builder: \${valueBuilderModal.mappingKey}\`),
               React.createElement('button', { className: 'modal-close', onClick: closeValueBuilder }, '×')
             ),
             React.createElement('div', { className: 'add-part-buttons' },
@@ -1577,7 +871,7 @@ th {
           React.createElement('h3', null, 'Logs'),
           React.createElement('div', { className: 'logs-container' },
             logs.map((log, index) =>
-              React.createElement('div', { key: index, className: `log-entry ${log.level}` },
+              React.createElement('div', { key: index, className: \`log-entry \${log.level}\` },
                 React.createElement('span', { className: 'timestamp' }, log.timestamp),
                 React.createElement('span', { className: 'message' }, log.message)
               )
@@ -1586,9 +880,39 @@ th {
         )
       );
     };
-
-// Render the app
-ReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));
-  </script>
-</body>
-</html>
+    `;
+        // Read the CSS
+        const cssPath = path.join(uiDir, 'ui.css');
+        if (!fs.existsSync(cssPath)) {
+            throw new Error('ui/ui.css not found.');
+        }
+        const cssContent = fs.readFileSync(cssPath, 'utf-8');
+        console.log('✅ Read CSS styles');
+        // Read the HTML template
+        const templatePath = path.join(uiDir, 'index.template.html');
+        if (!fs.existsSync(templatePath)) {
+            throw new Error('ui/index.template.html not found.');
+        }
+        let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+        console.log('✅ Read HTML template');
+        // Clean up the JavaScript and add the render call
+        const processedJs = jsContent.trim() + '\n\n// Render the app\nReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));';
+        // Inject CSS and JavaScript into the template
+        htmlContent = htmlContent.replace('/* INJECT_CSS */', cssContent);
+        htmlContent = htmlContent.replace('/* INJECT_JS */', processedJs);
+        // Write the final HTML file
+        const outputPath = path.join(uiDir, 'index.html');
+        fs.writeFileSync(outputPath, htmlContent, 'utf-8');
+        console.log('✅ Generated final ui/index.html');
+        console.log(`📦 Build complete! Output: ${outputPath}`);
+        // Show file sizes for reference
+        const stats = fs.statSync(outputPath);
+        console.log(`📊 Final HTML size: ${(stats.size / 1024).toFixed(1)} KB`);
+    }
+    catch (error) {
+        console.error('❌ Build failed:', error);
+        process.exit(1);
+    }
+}
+// Run the build
+buildUI();

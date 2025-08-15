@@ -149,7 +149,14 @@ json-data-mapper/
 │   ├── code.ts            # Main thread logic (source)
 │   └── code.js            # Main thread logic (compiled)
 ├── ui/
-│   └── index.html         # UI with embedded React
+│   ├── ui.tsx             # React components (source)
+│   ├── ui.css             # Styles (source)
+│   ├── index.template.html # HTML template
+│   ├── ui.js              # Compiled React (generated)
+│   └── index.html         # Final UI (generated)
+├── scripts/
+│   ├── build-ui.ts        # Build script (source)
+│   └── build-ui.js        # Build script (compiled)
 ├── assets/                # Test data files
 ├── package.json           # Dependencies
 ├── tsconfig.json          # TypeScript configuration
@@ -173,10 +180,28 @@ json-data-mapper/
    npm run dev
    ```
 
-4. **Type Check**:
+4. **Build UI Only**:
+   ```bash
+   npm run build:ui
+   ```
+
+5. **Type Check**:
    ```bash
    npm run typecheck
    ```
+
+### Development Workflow
+
+**For UI changes:**
+- Edit `ui/ui.tsx` for React components
+- Edit `ui/ui.css` for styles  
+- Run `npm run build:ui` to generate final `ui/index.html`
+
+**For main thread changes:**
+- Edit `main/code.ts`
+- Run `npm run build` to compile
+
+**Note:** The final `ui/index.html` is generated during build and contains inlined CSS and JavaScript for optimal plugin performance.
 
 ## Technical Details
 
