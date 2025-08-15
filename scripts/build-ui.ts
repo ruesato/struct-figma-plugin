@@ -1,5 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 /**
  * Build script that compiles the UI components and creates the final index.html
@@ -528,59 +532,49 @@ async function buildUI() {
         }
       }, [handleFileUpload]);
 
-      return React.createElement('div', { className: 'container' },
-        React.createElement('header', null,
-          React.createElement('h1', null, 'JSON Data Mapper'),
-          React.createElement('div', {
-            style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }
-          },
-            React.createElement('p', null, \`Selected: \${selectionCount} layer(s)\`),
+      return React.createElement('div', { className: 'p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg' },
+        React.createElement('header', { className: 'mb-5 border-b border-figma-border pb-3' },
+          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'JSON Data Mapper'),
+          React.createElement('div', { className: 'flex justify-between items-center' },
+            React.createElement('p', { className: 'text-sm text-figma-textSecondary' }, \`Selected: \${selectionCount} layer(s)\`),
             jsonData && React.createElement('button', {
               onClick: handleClearData,
-              style: {
-                background: '#e74c3c',
-                color: 'white',
-                border: 'none',
-                padding: '4px 8px',
-                borderRadius: '3px',
-                fontSize: '10px',
-                cursor: 'pointer'
-              }
+              className: 'btn-danger'
             }, '🗑️ Clear')
           )
         ),
 
         // Configuration section
         React.createElement('section', { className: 'config-section' },
-          React.createElement('h3', null, 'Configuration'),
+          React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Configuration'),
           React.createElement('div', { className: 'config-controls' },
             React.createElement('button', { 
-              className: 'config-btn', 
+              className: 'btn-primary text-xs', 
               onClick: () => setShowConfigSave(true) 
             }, 'Save Config'),
             React.createElement('button', { 
-              className: 'config-btn', 
+              className: 'btn-primary text-xs', 
               onClick: () => {
                 loadConfigurations();
                 setShowConfigList(true);
               }
             }, 'Load Config'),
             savedConfigs.length > 0 && React.createElement('button', { 
-              className: 'config-btn danger', 
+              className: 'btn-danger', 
               onClick: clearAllConfigurations
             }, 'Clear All')
           ),
           showConfigSave && React.createElement('div', null,
             React.createElement('input', {
               type: 'text',
-              className: 'config-save-input',
+              className: 'form-input mb-2',
               placeholder: 'Configuration name',
               value: configName,
               onChange: (e) => setConfigName(e.target.value)
             }),
             React.createElement('div', { className: 'config-controls' },
-              React.createElement('button', { className: 'config-btn', onClick: saveConfiguration }, 'Save'),
-              React.createElement('button', { className: 'config-btn', onClick: () => setShowConfigSave(false) }, 'Cancel')
+              React.createElement('button', { className: 'btn-primary text-xs', onClick: saveConfiguration }, 'Save'),
+              React.createElement('button', { className: 'btn-secondary text-xs', onClick: () => setShowConfigSave(false) }, 'Cancel')
             )
           ),
           showConfigList && savedConfigs.length > 0 && React.createElement('div', { className: 'config-list' },
@@ -643,11 +637,12 @@ async function buildUI() {
                 React.createElement('p', { className: 'file-limit' }, 'Max 2MB')
               )
             ),
-            dataSource === 'api' && React.createElement('div', { className: 'api-section' },
+            dataSource === 'api' && React.createElement('div', { className: 'mb-5' },
               React.createElement('div', { className: 'form-group' },
-                React.createElement('label', null, 'API URL'),
+                React.createElement('label', { className: 'form-label' }, 'API URL'),
                 React.createElement('input', {
                   type: 'text',
+                  className: 'form-input',
                   value: apiConfig.url,
                   onChange: (e) => setApiConfig(prev => ({ ...prev, url: e.target.value })),
                   placeholder: 'https://api.example.com/data'
@@ -655,8 +650,9 @@ async function buildUI() {
               ),
               React.createElement('div', { className: 'form-row' },
                 React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', null, 'Method'),
+                  React.createElement('label', { className: 'form-label' }, 'Method'),
                   React.createElement('select', {
+                    className: 'form-select',
                     value: apiConfig.method,
                     onChange: (e) => setApiConfig(prev => ({ ...prev, method: e.target.value }))
                   },
@@ -665,8 +661,9 @@ async function buildUI() {
                   )
                 ),
                 React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', null, 'Auth Type'),
+                  React.createElement('label', { className: 'form-label' }, 'Auth Type'),
                   React.createElement('select', {
+                    className: 'form-select',
                     value: apiConfig.authType,
                     onChange: (e) => setApiConfig(prev => ({ ...prev, authType: e.target.value }))
                   },
@@ -677,9 +674,10 @@ async function buildUI() {
                 )
               ),
               (apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && React.createElement('div', { className: 'form-group' },
-                React.createElement('label', null, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'),
+                React.createElement('label', { className: 'form-label' }, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'),
                 React.createElement('input', {
                   type: 'password',
+                  className: 'form-input',
                   value: apiConfig.apiKey,
                   onChange: (e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value })),
                   placeholder: 'Enter your token/key'
@@ -854,13 +852,20 @@ async function buildUI() {
     };
     `;
 
-    // Read the CSS
-    const cssPath = path.join(uiDir, 'ui.css');
-    if (!fs.existsSync(cssPath)) {
-      throw new Error('ui/ui.css not found.');
+    // Process CSS with PostCSS and Tailwind
+    console.log('🎨 Processing CSS with Tailwind...');
+    const inputCssPath = path.join(uiDir, 'styles.css');
+    const outputCssPath = path.join(uiDir, 'styles.processed.css');
+    
+    if (!fs.existsSync(inputCssPath)) {
+      throw new Error('ui/styles.css not found.');
     }
-    const cssContent = fs.readFileSync(cssPath, 'utf-8');
-    console.log('✅ Read CSS styles');
+    
+    // Run PostCSS to process Tailwind CSS
+    await execAsync(`npx postcss ${inputCssPath} -o ${outputCssPath}`);
+    
+    const cssContent = fs.readFileSync(outputCssPath, 'utf-8');
+    console.log('✅ Processed CSS with Tailwind');
 
     // Read the HTML template
     const templatePath = path.join(uiDir, 'index.template.html');
@@ -887,6 +892,11 @@ async function buildUI() {
     // Show file sizes for reference
     const stats = fs.statSync(outputPath);
     console.log(`📊 Final HTML size: ${(stats.size / 1024).toFixed(1)} KB`);
+    
+    // Clean up temporary processed CSS file
+    if (fs.existsSync(outputCssPath)) {
+      fs.unlinkSync(outputCssPath);
+    }
 
   } catch (error) {
     console.error('❌ Build failed:', error);

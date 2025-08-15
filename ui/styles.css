@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles using Tailwind patterns */
+@layer components {
+  /* Button variants */
+  .btn-primary {
+    @apply bg-figma-primary hover:bg-figma-primaryHover text-white border-none px-4 py-2 rounded font-medium text-sm cursor-pointer transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-figma-text border border-figma-border px-4 py-2 rounded font-medium text-sm cursor-pointer transition-colors duration-200;
+  }
+  
+  .btn-danger {
+    @apply bg-figma-danger hover:bg-figma-dangerHover text-white border-none px-2 py-1 rounded text-xs cursor-pointer transition-colors duration-200;
+  }
+  
+  .btn-success {
+    @apply bg-figma-success hover:bg-figma-successHover text-white border-none px-4 py-3 rounded-md text-base font-semibold cursor-pointer transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed;
+  }
+  
+  /* Form elements */
+  .form-input {
+    @apply w-full px-2 py-1.5 border border-gray-300 rounded text-sm box-border focus:outline-none focus:border-figma-primary;
+  }
+  
+  .form-select {
+    @apply w-full px-2 py-1.5 border border-gray-300 rounded text-sm box-border focus:outline-none focus:border-figma-primary;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium mb-1 text-figma-text;
+  }
+  
+  .form-group {
+    @apply mb-3;
+  }
+  
+  .form-row {
+    @apply flex gap-2;
+  }
+  
+  .form-row .form-group {
+    @apply flex-1;
+  }
+  
+  .file-button {
+    @apply inline-block bg-figma-primary hover:bg-figma-primaryHover text-white px-4 py-2 rounded cursor-pointer my-2 text-sm font-medium;
+  }
+  
+  .fetch-button {
+    @apply bg-figma-primary hover:bg-figma-primaryHover disabled:bg-gray-300 disabled:cursor-not-allowed text-white border-none px-4 py-2 rounded text-sm font-medium cursor-pointer transition-colors duration-200;
+  }
+  
+  /* Custom component patterns for complex elements */
+  .data-source-tab {
+    @apply px-4 py-2 bg-transparent border-none border-b-2 border-transparent cursor-pointer text-sm font-medium text-figma-textSecondary transition-all duration-200 hover:text-figma-primary;
+  }
+  
+  .data-source-tab.active {
+    @apply text-figma-primary border-figma-primary;
+  }
+  
+  .drop-zone {
+    @apply border-2 border-dashed border-gray-300 rounded-lg p-5 text-center transition-all duration-200 cursor-pointer hover:border-figma-primary hover:bg-blue-50;
+  }
+  
+  .drop-zone.dragging {
+    @apply border-figma-primary bg-blue-50;
+  }
+  
+  /* Modal styles */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+  
+  .modal {
+    @apply bg-white rounded-lg p-5 w-11/12 max-w-lg max-h-screen overflow-y-auto shadow-xl;
+  }
+  
+  .modal-header {
+    @apply flex justify-between items-center mb-4 pb-3 border-b border-figma-border;
+  }
+  
+  .modal-close {
+    @apply bg-transparent border-none text-lg cursor-pointer text-figma-textSecondary p-0 w-6 h-6 flex items-center justify-center hover:text-figma-text;
+  }
+  
+  /* Value builder specific styles */
+  .builder-part {
+    @apply flex items-center gap-2 mb-3 p-2 border border-figma-border rounded bg-gray-50 cursor-move transition-all duration-200 relative hover:bg-gray-100 hover:border-figma-primary;
+  }
+  
+  .builder-part.dragging {
+    @apply opacity-50 rotate-1 shadow-lg;
+  }
+  
+  .builder-part.drag-over {
+    @apply border-figma-success bg-blue-50 -translate-y-0.5;
+  }
+  
+  /* Mapping table styles */
+  .mapping-row {
+    @apply flex items-center p-2 border-b border-figma-border gap-2 last:border-b-0;
+  }
+  
+  .mapping-row label {
+    @apply flex-1 text-sm font-medium min-w-20 break-words;
+  }
+  
+  .mapping-row input {
+    @apply flex-1 px-1.5 py-1 border border-gray-300 rounded text-sm min-w-24 focus:outline-none focus:border-figma-primary;
+  }
+  
+  /* Preview table styles */
+  .table-container {
+    @apply max-h-48 overflow-auto border border-figma-border rounded;
+  }
+  
+  .preview-table {
+    @apply w-full border-collapse text-xs;
+  }
+  
+  .preview-table th,
+  .preview-table td {
+    @apply border border-figma-border px-1.5 py-1 text-left min-w-16 max-w-32 overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+  
+  .preview-table th {
+    @apply bg-gray-50 font-semibold sticky top-0;
+  }
+  
+  /* Log entries */
+  .log-entry {
+    @apply px-2 py-1.5 border-b border-figma-border text-xs flex gap-2 last:border-b-0;
+  }
+  
+  .log-entry.info {
+    @apply text-figma-text;
+  }
+  
+  .log-entry.warning {
+    @apply text-figma-warning bg-figma-warningBg;
+  }
+  
+  .log-entry.error {
+    @apply text-figma-danger bg-figma-errorBg;
+  }
+  
+  .log-timestamp {
+    @apply text-figma-textSecondary text-xs min-w-16;
+  }
+  
+  .log-message {
+    @apply flex-1 break-words;
+  }
+  
+  /* Config section styles */
+  .config-section {
+    @apply mb-5 p-3 border border-figma-border rounded bg-gray-50;
+  }
+  
+  .config-controls {
+    @apply flex gap-2 mb-3;
+  }
+  
+  .config-list {
+    @apply max-h-24 overflow-y-auto border border-gray-300 rounded bg-white;
+  }
+  
+  .config-item {
+    @apply flex justify-between items-center p-1.5 border-b border-figma-border text-sm last:border-b-0 hover:bg-blue-50;
+  }
+  
+  .config-name {
+    @apply flex-1 font-medium;
+  }
+  
+  .config-meta {
+    @apply text-xs text-figma-textSecondary mr-2;
+  }
+  
+  .config-actions {
+    @apply flex gap-1;
+  }
+  
+  .config-action-btn {
+    @apply bg-transparent border-none px-1 py-0.5 rounded text-xs cursor-pointer text-figma-textSecondary hover:bg-gray-200 hover:text-figma-text;
+  }
+  
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded hover:bg-gray-400;
+  }
+}
