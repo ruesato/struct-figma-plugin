@@ -5,6 +5,10 @@
 This Figma plugin enables importing JSON data and mapping it to Figma layer properties. It handles complex nested data structures, arrays, and automatically provides intelligent layer name suggestions.
 
 ### Current State (as of latest update)
+- ✅ JSX Component Architecture (modular UI development)
+- ✅ Tailwind CSS v3 styling system with Figma design tokens
+- ✅ Configuration persistence with Figma's clientStorage API
+- ✅ Value Builder system for custom field combinations
 - ✅ Nested object support with array handling
 - ✅ Smart JSON parsing (auto-detects wrapped arrays)
 - ✅ Auto-populated mapping defaults
@@ -16,32 +20,63 @@ This Figma plugin enables importing JSON data and mapping it to Figma layer prop
 ### File Structure
 ```
 json-data-mapper/
-├── manifest.json          # Plugin configuration & permissions
+├── manifest.json              # Plugin configuration & permissions
 ├── main/
-│   ├── code.ts            # Main thread logic (TypeScript source)
-│   └── code.js            # Compiled main thread code (loaded by Figma)
+│   ├── code.ts                # Main thread logic (TypeScript source)
+│   └── code.js                # Compiled main thread code (loaded by Figma)
 ├── ui/
-│   ├── ui.tsx             # 🔥 React components (TypeScript source)
-│   ├── ui.css             # 🔥 Styles (CSS source)
-│   ├── index.template.html # HTML template for build process
-│   ├── ui.js              # Compiled React code (generated)
-│   └── index.html         # Final UI with inlined CSS/JS (generated)
+│   ├── components/            # 🚀 JSX React components (modular architecture)
+│   │   ├── App.jsx           # Main application component with state management
+│   │   ├── Header.jsx        # Plugin header and title
+│   │   ├── ConfigSection.jsx # Configuration save/load management
+│   │   ├── DataSourceTabs.jsx# File/API/Manual data input tabs
+│   │   ├── JsonPreview.jsx   # JSON data preview table
+│   │   ├── KeyMapping.jsx    # JSON key to layer name mapping interface
+│   │   ├── ValueBuilderModal.jsx # Custom value builder modal
+│   │   ├── ActionSection.jsx # Apply data button
+│   │   └── LogsSection.jsx   # Activity logs display
+│   ├── styles.css            # 🎨 Tailwind CSS with Figma design tokens
+│   ├── index.template.html   # HTML template for build process
+│   └── index.html            # Final UI with inlined CSS/JS (generated)
 ├── scripts/
-│   ├── build-ui.ts        # Build script source
-│   └── build-ui.js        # Compiled build script
-├── assets/               # Test data files
-├── package.json          # Dependencies & scripts
-├── tsconfig.json         # TypeScript configuration
+│   ├── build-ui-jsx.ts       # 🔥 JSX build script (active)
+│   ├── build-ui.ts           # Legacy build script
+│   └── *.js                  # Compiled build scripts
+├── assets/                   # Test data files
+├── .babelrc                  # Babel configuration for JSX compilation
+├── tailwind.config.js        # Tailwind CSS configuration with custom tokens
+├── postcss.config.js         # PostCSS configuration
+├── package.json              # Dependencies & scripts
+├── tsconfig.json             # TypeScript configuration
 └── build outputs...
 ```
 
-### ✨ New Improved Architecture
-**The plugin now uses proper separation of concerns with a build process:**
-- **UI changes**: Edit `ui/ui.tsx` for React components
-- **Style changes**: Edit `ui/ui.css` for styles
-- **Build process**: Compiles and inlines everything into `ui/index.html`
-- **Main thread changes**: Edit `main/code.ts` → compiles to `main/code.js`
-- **Better DX**: Full TypeScript support, proper IDE features, maintainable code
+### ✨ JSX Component Architecture
+**The plugin now uses a modern JSX component architecture with advanced build tooling:**
+
+#### Component-Based Development
+- **Modular JSX Components**: 8 focused components in `ui/components/`
+- **Easy Markup Editing**: Natural HTML-like JSX syntax instead of `React.createElement` calls
+- **Logical Separation**: Each component handles a specific UI concern
+- **Maintainable Code**: Clear component boundaries and props interface
+
+#### Advanced Build System  
+- **JSX Compilation**: Babel transforms JSX → React.createElement calls
+- **CSS Processing**: PostCSS processes Tailwind CSS with custom Figma design tokens
+- **Automated Pipeline**: Single command builds entire UI from source components
+- **Development Optimization**: Fast iteration with modular component editing
+
+#### Modern Styling
+- **Tailwind CSS v3**: Utility-first CSS framework with custom design system
+- **Figma Design Tokens**: Colors, spacing, and typography matching Figma's UI
+- **Component Classes**: Reusable Tailwind component classes (e.g., `.btn-primary`)
+- **Consistent Theming**: Unified visual language across all UI components
+
+#### Enhanced Developer Experience
+- **Better IDE Support**: Full JSX/TypeScript intellisense and error checking
+- **Syntax Highlighting**: Proper syntax highlighting for JSX and CSS
+- **Hot Development**: Easy component editing with instant build feedback
+- **Type Safety**: TypeScript types for component props and state
 
 ### Communication Flow
 ```
@@ -50,7 +85,42 @@ Figma Canvas Selection → Main Thread (code.ts) → UI Thread (index.html) → 
 
 ## Core Components
 
-### 1. JSON Parsing Logic (`ui/index.html` lines 365-393)
+### 1. JSX Component Architecture (`ui/components/`)
+
+**Component Overview:**
+```jsx
+// App.jsx - Main component orchestrating everything
+const App = () => {
+  // All state management and callback functions
+  const [jsonData, setJsonData] = useState(null);
+  // ... other state
+  
+  return (
+    <div className="p-4 max-w-full font-sans">
+      <Header selectionCount={selectionCount} jsonData={jsonData} />
+      <ConfigSection savedConfigs={savedConfigs} />
+      <DataSourceTabs dataSource={dataSource} />
+      {jsonData && (
+        <>
+          <JsonPreview jsonData={jsonData} />
+          <KeyMapping mappings={mappings} />
+          <ActionSection handleApplyData={handleApplyData} />
+        </>
+      )}
+      <ValueBuilderModal />
+      <LogsSection logs={logs} />
+    </div>
+  );
+};
+```
+
+**Key Benefits:**
+- **Maintainable**: Each component has a single responsibility
+- **Reusable**: Components accept props and can be easily modified
+- **Readable**: JSX syntax is much cleaner than React.createElement calls
+- **IDE-Friendly**: Full IntelliSense support for JSX and props
+
+### 2. JSON Parsing Logic (App.jsx functions injection)
 
 **Smart Array Detection:**
 ```javascript
@@ -159,44 +229,72 @@ if (arrayMatch) {
 ## Development Workflow
 
 ### Making UI Changes
+
+#### JSX Component Development
 ```bash
-# ✨ NEW: Edit separate TypeScript and CSS files
-vim ui/ui.tsx     # React components with full TypeScript support
-vim ui/ui.css     # Styles with proper CSS syntax highlighting
+# 🚀 Edit individual JSX components for specific features
+vim ui/components/Header.jsx          # Plugin header and title
+vim ui/components/ConfigSection.jsx   # Configuration save/load
+vim ui/components/DataSourceTabs.jsx  # File/API/Manual input tabs
+vim ui/components/JsonPreview.jsx     # Data preview table
+vim ui/components/KeyMapping.jsx      # Key-to-layer mapping
+vim ui/components/ValueBuilderModal.jsx # Custom value builder
+vim ui/components/ActionSection.jsx   # Apply data button
+vim ui/components/LogsSection.jsx     # Activity logs
+vim ui/components/App.jsx             # Main orchestrating component
 
-# Build UI (compiles TypeScript and inlines everything)
-npm run build:ui  # Creates final ui/index.html
+# 🎨 Edit Tailwind CSS styling
+vim ui/styles.css                     # Custom component classes and styles
 
-# TypeScript changes (main thread)
+# 🔨 Build UI (compiles JSX with Babel, processes CSS with PostCSS)
+npm run build:ui                      # Creates final ui/index.html
+
+# 🔧 TypeScript changes (main thread)
 vim main/code.ts
-npm run build     # Full build: compiles main + UI
-
-# Testing
-# Load plugin in Figma and test with assets/syntheticData-imaging-1.json
+npm run build                         # Full build: compiles main + UI
 ```
 
-### Build Process Details
-The build process (`scripts/build-ui.ts`) performs these steps:
-1. **Compile TypeScript**: `ui/ui.tsx` → `ui/ui.js`
-2. **Read source files**: CSS from `ui/ui.css`, compiled JS from `ui/ui.js`
-3. **Process JavaScript**: Remove imports/exports, adapt for CDN React
-4. **Inject content**: CSS and JS into `ui/index.template.html`
-5. **Generate final**: Creates `ui/index.html` with everything inlined
+#### JSX Build Process Details
+The JSX build process (`scripts/build-ui-jsx.ts`) performs these steps:
+1. **Compile JSX**: Babel transforms `ui/components/*.jsx` → React.createElement calls
+2. **Combine Components**: Merge all compiled component files 
+3. **Function Injection**: Insert callback functions into App component via placeholder
+4. **Process CSS**: PostCSS processes Tailwind CSS with custom Figma design tokens
+5. **Template Integration**: Inject CSS and JS into `ui/index.template.html`
+6. **Generate Final**: Creates `ui/index.html` with everything inlined and optimized
 
-### Benefits of New Architecture
-- **🎯 Better IDE support**: Full TypeScript intellisense and error checking
-- **🎨 Proper syntax highlighting**: CSS and TypeScript in separate files
-- **🔧 Easier maintenance**: Logical separation of concerns
-- **📦 Optimized output**: Single HTML file for Figma plugin requirements
-- **🚀 Faster development**: Hot reloading with `npm run dev`
+#### Architecture Benefits
+- **🎯 Component-Based Development**: Edit individual JSX files instead of one massive file
+- **🎨 Modern CSS**: Tailwind utility classes with custom Figma design system
+- **🔧 Easy Maintenance**: Each component has clear boundaries and responsibilities  
+- **📦 Optimized Output**: Single HTML file for Figma plugin requirements
+- **🚀 Fast Development**: Quick component iteration with focused editing
+- **🛠️ Advanced Tooling**: Babel JSX compilation + PostCSS processing pipeline
 
-### Available Build Commands
+#### Available Build Commands
 ```bash
-npm run build       # Full build: compiles main + UI, creates final plugin
-npm run build:ui    # UI only: compiles ui/ui.tsx and creates ui/index.html
+npm run build       # Full build: compiles main + UI with JSX system
+npm run build:ui    # UI only: compiles JSX components and creates ui/index.html
 npm run build:main  # Main only: compiles main/code.ts → main/code.js
 npm run dev         # Watch mode for development (main thread only)
 npm run typecheck   # Type checking without compilation
+```
+
+#### JSX Component Editing Examples
+```jsx
+// Before: Hard to edit React.createElement calls
+React.createElement('button', {
+  className: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded',
+  onClick: handleClick
+}, 'Apply Data')
+
+// After: Easy-to-edit JSX syntax
+<button 
+  className="btn-primary" 
+  onClick={handleClick}
+>
+  Apply Data
+</button>
 ```
 
 ### Testing Strategy
@@ -279,6 +377,31 @@ npm run typecheck   # Type checking without compilation
 - `encounters[].encounter_id` → `encounter_id`
 - `encounters[].diagnosis` → `diagnosis`
 
+## Recent Major Improvements
+
+### ✅ JSX Component Architecture (Completed)
+- **Modular Components**: Split monolithic UI into 8 focused JSX components
+- **Developer Experience**: Easy HTML-like syntax instead of complex React.createElement calls  
+- **Build System**: Automated Babel compilation with JSX → JavaScript transformation
+- **Maintainability**: Clear separation of concerns with component-based architecture
+
+### ✅ Tailwind CSS Integration (Completed)  
+- **Modern Styling**: Migrated from 748 lines of custom CSS to Tailwind utility classes
+- **Design System**: Custom Figma design tokens for consistent theming
+- **PostCSS Pipeline**: Automated CSS processing with Tailwind compilation
+- **Component Classes**: Reusable `.btn-primary`, `.form-input` style components
+
+### ✅ Configuration Persistence (Completed)
+- **Figma Storage**: Save/load configurations using Figma's clientStorage API
+- **State Management**: Configurations persist across plugin sessions
+- **UI Integration**: Save/Load/Delete configuration interface in ConfigSection component
+
+### ✅ Value Builder System (Completed)
+- **Custom Fields**: Build complex values combining JSON keys, text, and separators
+- **Modal Interface**: Full-featured value builder with drag-and-drop reordering
+- **Live Preview**: Real-time preview of built values using actual data
+- **Flexible Mapping**: Override simple key mappings with custom-built values
+
 ## Future Enhancement Ideas
 
 ### High Priority
@@ -286,6 +409,7 @@ npm run typecheck   # Type checking without compilation
 - [ ] Custom array index selection in UI
 - [ ] Bulk layer name detection from selection
 - [ ] Undo/redo for data application
+- [ ] API data source with authentication
 
 ### Medium Priority  
 - [ ] CSV import support

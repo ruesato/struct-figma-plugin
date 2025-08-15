@@ -606,6 +606,33 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(192 57 43 / var(--tw-bg-opacity, 1));
 }
+.btn-success {
+  cursor: pointer;
+  border-radius: 0.375rem;
+  border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 160 251 / var(--tw-bg-opacity, 1));
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+.btn-success:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 115 230 / var(--tw-bg-opacity, 1));
+}
+.btn-success:disabled {
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
+}
 /* Form elements */
 .form-input {
   box-sizing: border-box;
@@ -906,6 +933,34 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(229 229 229 / var(--tw-border-opacity, 1));
 }
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.preview-table th,
+  .preview-table td {
+  min-width: 4rem;
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(229 229 229 / var(--tw-border-opacity, 1));
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: left;
+}
+.preview-table th {
+  position: sticky;
+  top: 0px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+  font-weight: 600;
+}
 /* Log entries */
 .log-entry {
   display: flex;
@@ -937,6 +992,16 @@ video {
   background-color: rgb(253 242 242 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
   color: rgb(231 76 60 / var(--tw-text-opacity, 1));
+}
+.log-timestamp {
+  min-width: 4rem;
+  font-size: 10px;
+  --tw-text-opacity: 1;
+  color: rgb(102 102 102 / var(--tw-text-opacity, 1));
+}
+.log-message {
+  flex: 1 1 0%;
+  overflow-wrap: break-word;
 }
 /* Config section styles */
 .config-section {
@@ -1015,6 +1080,23 @@ video {
   color: rgb(51 51 51 / var(--tw-text-opacity, 1));
 }
 /* Scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 0.375rem;
+  width: 0.375rem;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
+}
 .visible {
   visibility: visible;
 }
@@ -1039,6 +1121,9 @@ video {
 .mb-5 {
   margin-bottom: 16px;
 }
+.mt-2 {
+  margin-top: 6px;
+}
 .block {
   display: block;
 }
@@ -1053,6 +1138,12 @@ video {
 }
 .hidden {
   display: none;
+}
+.max-h-48 {
+  max-height: 12rem;
+}
+.w-full {
+  width: 100%;
 }
 .max-w-full {
   max-width: 100%;
@@ -1072,6 +1163,12 @@ video {
 .justify-between {
   justify-content: space-between;
 }
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.rounded {
+  border-radius: 0.25rem;
+}
 .border {
   border-width: 1px;
 }
@@ -1082,15 +1179,29 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(229 229 229 / var(--tw-border-opacity, 1));
 }
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+}
 .bg-figma-bg {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+.p-2 {
+  padding: 6px;
 }
 .p-4 {
   padding: 12px;
 }
 .pb-3 {
   padding-bottom: 8px;
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 .font-sans {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -1150,6 +1261,426 @@ video {
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <script type="text/babel">
+    const Header = ({
+  selectionCount,
+  jsonData,
+  handleClearData
+}) => /*#__PURE__*/React.createElement("header", {
+  className: "mb-5 border-b border-figma-border pb-3"
+}, /*#__PURE__*/React.createElement("h1", {
+  className: "text-xl font-semibold mb-1"
+}, "JSON Data Mapper"), /*#__PURE__*/React.createElement("div", {
+  className: "flex justify-between items-center"
+}, /*#__PURE__*/React.createElement("p", {
+  className: "text-sm text-figma-textSecondary"
+}, "Selected: ", selectionCount, " layer(s)"), jsonData && /*#__PURE__*/React.createElement("button", {
+  onClick: handleClearData,
+  className: "btn-danger"
+}, "\uD83D\uDDD1\uFE0F Clear")));
+
+const ConfigSection = ({
+  showConfigSave,
+  setShowConfigSave,
+  showConfigList,
+  setShowConfigList,
+  savedConfigs,
+  configName,
+  setConfigName,
+  saveConfiguration,
+  loadConfigurations,
+  clearAllConfigurations,
+  loadConfiguration,
+  deleteConfiguration
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "config-section"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "text-lg font-semibold mb-2"
+}, "Configuration"), /*#__PURE__*/React.createElement("div", {
+  className: "config-controls"
+}, /*#__PURE__*/React.createElement("button", {
+  className: "btn-primary text-xs",
+  onClick: () => setShowConfigSave(true)
+}, "Save Config"), /*#__PURE__*/React.createElement("button", {
+  className: "btn-primary text-xs",
+  onClick: () => {
+    loadConfigurations();
+    setShowConfigList(true);
+  }
+}, "Load Config"), savedConfigs.length > 0 && /*#__PURE__*/React.createElement("button", {
+  className: "btn-danger",
+  onClick: clearAllConfigurations
+}, "Clear All")), showConfigSave && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+  type: "text",
+  className: "form-input mb-2",
+  placeholder: "Configuration name",
+  value: configName,
+  onChange: e => setConfigName(e.target.value)
+}), /*#__PURE__*/React.createElement("div", {
+  className: "config-controls"
+}, /*#__PURE__*/React.createElement("button", {
+  className: "btn-primary text-xs",
+  onClick: saveConfiguration
+}, "Save"), /*#__PURE__*/React.createElement("button", {
+  className: "btn-secondary text-xs",
+  onClick: () => setShowConfigSave(false)
+}, "Cancel"))), showConfigList && savedConfigs.length > 0 && /*#__PURE__*/React.createElement("div", {
+  className: "config-list"
+}, savedConfigs.map(config => /*#__PURE__*/React.createElement("div", {
+  key: config.name,
+  className: "config-item"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "config-name"
+}, config.name), /*#__PURE__*/React.createElement("div", {
+  className: "config-meta"
+}, new Date(config.savedAt).toLocaleDateString()), /*#__PURE__*/React.createElement("div", {
+  className: "config-actions"
+}, /*#__PURE__*/React.createElement("button", {
+  className: "config-action-btn",
+  onClick: () => loadConfiguration(config)
+}, "Load"), /*#__PURE__*/React.createElement("button", {
+  className: "config-action-btn",
+  onClick: () => deleteConfiguration(config.name)
+}, "Delete"))))), showConfigList && /*#__PURE__*/React.createElement("button", {
+  className: "btn-secondary text-xs",
+  onClick: () => setShowConfigList(false)
+}, "Close"));
+
+const DataSourceTabs = ({
+  dataSource,
+  setDataSource,
+  apiConfig,
+  setApiConfig,
+  isLoadingData,
+  fetchApiData,
+  processJsonData,
+  dropZoneRef,
+  handleFileInputChange
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "data-source-section"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "text-lg font-semibold mb-2"
+}, "Data Source"), /*#__PURE__*/React.createElement("div", {
+  className: "data-source-tabs"
+}, /*#__PURE__*/React.createElement("button", {
+  className: `data-source-tab ${dataSource === 'file' ? 'active' : ''}`,
+  onClick: () => setDataSource('file')
+}, "File"), /*#__PURE__*/React.createElement("button", {
+  className: `data-source-tab ${dataSource === 'api' ? 'active' : ''}`,
+  onClick: () => setDataSource('api')
+}, "API"), /*#__PURE__*/React.createElement("button", {
+  className: `data-source-tab ${dataSource === 'manual' ? 'active' : ''}`,
+  onClick: () => setDataSource('manual')
+}, "Manual")), /*#__PURE__*/React.createElement("div", {
+  className: "data-source-content"
+}, dataSource === 'file' && /*#__PURE__*/React.createElement("div", {
+  className: "upload-section"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "drop-zone",
+  ref: dropZoneRef
+}, /*#__PURE__*/React.createElement("p", null, "Drop JSON file here or"), /*#__PURE__*/React.createElement("label", {
+  className: "file-button"
+}, "Choose File", /*#__PURE__*/React.createElement("input", {
+  type: "file",
+  accept: ".json,application/json",
+  onChange: handleFileInputChange,
+  style: {
+    display: 'none'
+  }
+})), /*#__PURE__*/React.createElement("p", {
+  className: "file-limit"
+}, "Max 2MB"))), dataSource === 'api' && /*#__PURE__*/React.createElement("div", {
+  className: "mb-5"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "form-group"
+}, /*#__PURE__*/React.createElement("label", {
+  className: "form-label"
+}, "API URL"), /*#__PURE__*/React.createElement("input", {
+  type: "text",
+  className: "form-input",
+  value: apiConfig.url,
+  onChange: e => setApiConfig(prev => ({
+    ...prev,
+    url: e.target.value
+  })),
+  placeholder: "https://api.example.com/data"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "form-row"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "form-group"
+}, /*#__PURE__*/React.createElement("label", {
+  className: "form-label"
+}, "Method"), /*#__PURE__*/React.createElement("select", {
+  className: "form-select",
+  value: apiConfig.method,
+  onChange: e => setApiConfig(prev => ({
+    ...prev,
+    method: e.target.value
+  }))
+}, /*#__PURE__*/React.createElement("option", {
+  value: "GET"
+}, "GET"), /*#__PURE__*/React.createElement("option", {
+  value: "POST"
+}, "POST"))), /*#__PURE__*/React.createElement("div", {
+  className: "form-group"
+}, /*#__PURE__*/React.createElement("label", {
+  className: "form-label"
+}, "Auth Type"), /*#__PURE__*/React.createElement("select", {
+  className: "form-select",
+  value: apiConfig.authType,
+  onChange: e => setApiConfig(prev => ({
+    ...prev,
+    authType: e.target.value
+  }))
+}, /*#__PURE__*/React.createElement("option", {
+  value: "none"
+}, "None"), /*#__PURE__*/React.createElement("option", {
+  value: "bearer"
+}, "Bearer Token"), /*#__PURE__*/React.createElement("option", {
+  value: "apikey"
+}, "API Key")))), (apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && /*#__PURE__*/React.createElement("div", {
+  className: "form-group"
+}, /*#__PURE__*/React.createElement("label", {
+  className: "form-label"
+}, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'), /*#__PURE__*/React.createElement("input", {
+  type: "password",
+  className: "form-input",
+  value: apiConfig.apiKey,
+  onChange: e => setApiConfig(prev => ({
+    ...prev,
+    apiKey: e.target.value
+  })),
+  placeholder: "Enter your token/key"
+})), /*#__PURE__*/React.createElement("button", {
+  className: "fetch-button",
+  onClick: fetchApiData,
+  disabled: isLoadingData || !apiConfig.url.trim()
+}, isLoadingData ? 'Loading...' : 'Fetch Data')), dataSource === 'manual' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Paste your JSON data:"), /*#__PURE__*/React.createElement("textarea", {
+  rows: 8,
+  className: "w-full mt-2 p-2 font-mono text-sm border border-gray-300 rounded",
+  placeholder: "Paste JSON data here...",
+  onChange: e => {
+    try {
+      const parsed = JSON.parse(e.target.value);
+      processJsonData(parsed, 'manual');
+    } catch (error) {
+      // Invalid JSON, ignore
+    }
+  }
+}))));
+
+const JsonPreview = ({
+  jsonData,
+  jsonKeys,
+  getNestedValue
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "json-preview"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "text-lg font-semibold mb-2"
+}, "JSON Preview (", jsonData.length, " items)"), /*#__PURE__*/React.createElement("div", {
+  className: "table-container"
+}, /*#__PURE__*/React.createElement("table", {
+  className: "preview-table"
+}, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, jsonKeys.slice(0, 10).map(key => /*#__PURE__*/React.createElement("th", {
+  key: key
+}, key)))), /*#__PURE__*/React.createElement("tbody", null, jsonData.slice(0, 10).map((item, index) => /*#__PURE__*/React.createElement("tr", {
+  key: index
+}, jsonKeys.slice(0, 10).map(key => /*#__PURE__*/React.createElement("td", {
+  key: key
+}, String(getNestedValue(item, key) || '').slice(0, 50)))))))));
+
+const KeyMapping = ({
+  mappings,
+  updateMapping,
+  valueBuilders,
+  openValueBuilder,
+  clearValueBuilder
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "mapping-section"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "text-lg font-semibold mb-2"
+}, "Key Mapping"), /*#__PURE__*/React.createElement("div", {
+  className: "mapping-table"
+}, mappings.map(mapping => /*#__PURE__*/React.createElement("div", {
+  key: mapping.jsonKey,
+  className: "mapping-row"
+}, /*#__PURE__*/React.createElement("label", null, mapping.jsonKey), /*#__PURE__*/React.createElement("input", {
+  type: "text",
+  placeholder: "Figma layer name",
+  value: mapping.layerName,
+  onChange: e => updateMapping(mapping.jsonKey, e.target.value)
+}), /*#__PURE__*/React.createElement("button", {
+  className: `build-value-btn ${valueBuilders[mapping.jsonKey] ? 'active' : ''}`,
+  onClick: () => openValueBuilder(mapping.jsonKey),
+  title: "Build custom value"
+}, "\uD83D\uDD27"), valueBuilders[mapping.jsonKey] && /*#__PURE__*/React.createElement("button", {
+  className: "clear-builder-btn",
+  onClick: () => clearValueBuilder(mapping.jsonKey),
+  title: "Clear value builder"
+}, "\u2717")))));
+
+const ValueBuilderModal = ({
+  valueBuilderModal,
+  currentBuilder,
+  jsonKeys,
+  jsonData,
+  addBuilderPart,
+  updateBuilderPart,
+  removeBuilderPart,
+  moveBuilderPart,
+  evaluateValueBuilder,
+  closeValueBuilder,
+  saveValueBuilder
+}) => {
+  if (!valueBuilderModal.isOpen) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "modal-overlay"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal-header"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "modal-title"
+  }, "Value Builder: ", valueBuilderModal.mappingKey), /*#__PURE__*/React.createElement("button", {
+    className: "modal-close",
+    onClick: closeValueBuilder
+  }, "\xD7")), /*#__PURE__*/React.createElement("div", {
+    className: "add-part-buttons"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "add-part-btn",
+    onClick: () => addBuilderPart('key')
+  }, "Add Key"), /*#__PURE__*/React.createElement("button", {
+    className: "add-part-btn",
+    onClick: () => addBuilderPart('text')
+  }, "Add Text"), /*#__PURE__*/React.createElement("button", {
+    className: "add-part-btn",
+    onClick: () => addBuilderPart('separator')
+  }, "Add Separator")), currentBuilder.parts.map((part, index) => /*#__PURE__*/React.createElement("div", {
+    key: index,
+    className: "builder-part"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "reorder-controls"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "reorder-btn",
+    onClick: () => moveBuilderPart(index, Math.max(0, index - 1)),
+    disabled: index === 0
+  }, "\u2191"), /*#__PURE__*/React.createElement("button", {
+    className: "reorder-btn",
+    onClick: () => moveBuilderPart(index, Math.min(currentBuilder.parts.length - 1, index + 1)),
+    disabled: index === currentBuilder.parts.length - 1
+  }, "\u2193")), /*#__PURE__*/React.createElement("select", {
+    value: part.type,
+    onChange: e => updateBuilderPart(index, 'type', e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "key"
+  }, "JSON Key"), /*#__PURE__*/React.createElement("option", {
+    value: "text"
+  }, "Static Text"), /*#__PURE__*/React.createElement("option", {
+    value: "separator"
+  }, "Separator")), part.type === 'key' ? /*#__PURE__*/React.createElement("select", {
+    value: part.value,
+    onChange: e => updateBuilderPart(index, 'value', e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Select key..."), jsonKeys.map(key => /*#__PURE__*/React.createElement("option", {
+    key: key,
+    value: key
+  }, key))) : /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: part.value,
+    onChange: e => updateBuilderPart(index, 'value', e.target.value),
+    placeholder: part.type === 'text' ? 'Enter text' : 'e.g., " - "'
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "remove-part-btn",
+    onClick: () => removeBuilderPart(index)
+  }, "\xD7"))), jsonData && jsonData.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "preview-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-label"
+  }, "Preview:"), /*#__PURE__*/React.createElement("div", {
+    className: "preview-value"
+  }, evaluateValueBuilder(currentBuilder, jsonData[0]))), /*#__PURE__*/React.createElement("div", {
+    className: "modal-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "modal-btn secondary",
+    onClick: closeValueBuilder
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    className: "modal-btn primary",
+    onClick: saveValueBuilder
+  }, "Save"))));
+};
+
+const ActionSection = ({
+  handleApplyData,
+  selectionCount
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "action-section"
+}, /*#__PURE__*/React.createElement("button", {
+  className: "btn-success w-full",
+  onClick: handleApplyData,
+  disabled: selectionCount === 0
+}, "Apply Data to Selection"));
+
+const LogsSection = ({
+  logs
+}) => /*#__PURE__*/React.createElement("section", {
+  className: "logs-section"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "text-lg font-semibold mb-2"
+}, "Logs"), /*#__PURE__*/React.createElement("div", {
+  className: "logs-container custom-scrollbar max-h-48 overflow-y-auto border border-figma-border rounded bg-gray-50"
+}, logs.map((log, index) => /*#__PURE__*/React.createElement("div", {
+  key: index,
+  className: `log-entry ${log.level}`
+}, /*#__PURE__*/React.createElement("span", {
+  className: "log-timestamp"
+}, log.timestamp), /*#__PURE__*/React.createElement("span", {
+  className: "log-message"
+}, log.message)))));
+
+const App = () => {
+  const {
+    useState,
+    useCallback,
+    useEffect,
+    useRef
+  } = React;
+
+  // All state declarations here...
+  const [jsonData, setJsonData] = useState(null);
+  const [jsonKeys, setJsonKeys] = useState([]);
+  const [mappings, setMappings] = useState([]);
+  const [selectionCount, setSelectionCount] = useState(0);
+  const [logs, setLogs] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dataSource, setDataSource] = useState('file');
+  const [apiConfig, setApiConfig] = useState({
+    url: '',
+    method: 'GET',
+    headers: {},
+    apiKey: '',
+    authType: 'none'
+  });
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [savedConfigs, setSavedConfigs] = useState([]);
+  const [showConfigSave, setShowConfigSave] = useState(false);
+  const [configName, setConfigName] = useState('');
+  const [showConfigList, setShowConfigList] = useState(false);
+  const [valueBuilderModal, setValueBuilderModal] = useState({
+    isOpen: false,
+    mappingKey: null
+  });
+  const [currentBuilder, setCurrentBuilder] = useState({
+    parts: [{
+      type: 'key',
+      value: ''
+    }]
+  });
+  const [valueBuilders, setValueBuilders] = useState({});
+  const dropZoneRef = useRef(null);
+
+  // All the callback functions will be inserted here during build...
+  // This is a placeholder that gets replaced during the build process
+  
     // Helper functions
     function extractJsonKeys(data, maxDepth = 3) {
       const keys = new Set();
@@ -1204,7 +1735,7 @@ video {
       return parts.reduce((current, part) => {
         if (current === null || current === undefined) return undefined;
         
-        const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
+        const arrayMatch = part.match(/^(.+)\\[(\\d*)\\]$/);
         if (arrayMatch) {
           const [, arrayKey, index] = arrayMatch;
           const arrayValue = current[arrayKey];
@@ -1222,7 +1753,6 @@ video {
       }, obj);
     }
 
-    // Value builder utility functions
     function evaluateValueBuilder(builder, data) {
       if (!builder || !builder.parts || builder.parts.length === 0) return '';
       
@@ -1241,8 +1771,9 @@ video {
       }).join('');
     }
 
-    // Drag and drop utilities
     function setupDragAndDrop(dropZone, onFileDrop) {
+      if (!dropZone) return;
+      
       const handleDrag = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -1277,709 +1808,411 @@ video {
       dropZone.addEventListener('drop', handleDrop);
     }
 
-    // Main component
-    const JsonDataMapper = () => {
-      const { useState, useCallback, useEffect, useRef } = React;
-      
-      const [jsonData, setJsonData] = useState(null);
-      const [jsonKeys, setJsonKeys] = useState([]);
-      const [mappings, setMappings] = useState([]);
-      const [selectionCount, setSelectionCount] = useState(0);
-      const [logs, setLogs] = useState([]);
-      const [isDragging, setIsDragging] = useState(false);
-      
-      const [dataSource, setDataSource] = useState('file');
-      const [apiConfig, setApiConfig] = useState({
-        url: '',
-        method: 'GET',
-        headers: {},
-        apiKey: '',
-        authType: 'none'
-      });
-      const [isLoadingData, setIsLoadingData] = useState(false);
-      
-      const [savedConfigs, setSavedConfigs] = useState([]);
-      const [showConfigSave, setShowConfigSave] = useState(false);
-      const [configName, setConfigName] = useState('');
-      const [showConfigList, setShowConfigList] = useState(false);
-      
-      const [valueBuilderModal, setValueBuilderModal] = useState({ 
-        isOpen: false, 
-        mappingKey: null 
-      });
-      const [currentBuilder, setCurrentBuilder] = useState({
-        parts: [{ type: 'key', value: '' }]
-      });
-      const [valueBuilders, setValueBuilders] = useState({});
-      
-      const dropZoneRef = useRef(null);
+    // Main app functions
+    const addLog = useCallback((message, level = 'info') => {
+      setLogs(prev => [...prev, {
+        message,
+        level,
+        timestamp: new Date().toLocaleTimeString()
+      }]);
+    }, []);
 
-      const addLog = useCallback((message, level = 'info') => {
-        setLogs(prev => [...prev, {
-          message,
-          level,
-          timestamp: new Date().toLocaleTimeString()
-        }]);
-      }, []);
-
-      const processJsonData = useCallback((parsed, source = 'unknown') => {
-        try {
-          let dataArray;
+    const processJsonData = useCallback((parsed, source = 'unknown') => {
+      try {
+        let dataArray;
+        
+        addLog(`Parsed JSON type: ${Array.isArray(parsed) ? 'array' : typeof parsed}`, 'info');
+        
+        if (Array.isArray(parsed)) {
+          dataArray = parsed;
+          addLog('Using direct array', 'info');
+        } else if (typeof parsed === 'object' && parsed !== null) {
+          const keys = Object.keys(parsed);
+          addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');
           
-          addLog(`Parsed JSON type: ${Array.isArray(parsed) ? 'array' : typeof parsed}`, 'info');
-          
-          if (Array.isArray(parsed)) {
-            dataArray = parsed;
-            addLog('Using direct array', 'info');
-          } else if (typeof parsed === 'object' && parsed !== null) {
-            const keys = Object.keys(parsed);
-            addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');
-            
-            if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
-              dataArray = parsed[keys[0]];
-              addLog(`Found array data in property "${keys[0]}" with ${dataArray.length} items`, 'info');
-            } else {
-              const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
-              if (arrayProperty) {
-                const arrayData = parsed[arrayProperty];
-                const metadata = {};
-                
-                keys.forEach(key => {
-                  if (key !== arrayProperty) {
-                    metadata[key] = parsed[key];
-                  }
-                });
-                
-                dataArray = arrayData.map(item => ({
-                  ...metadata,
-                  ...item
-                }));
-                
-                addLog(`Merged ${Object.keys(metadata).length} metadata keys with ${arrayData.length} array items from "${arrayProperty}"`, 'info');
-              } else {
-                dataArray = [parsed];
-                addLog('No arrays found, wrapping object in array', 'info');
-              }
-            }
+          if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
+            dataArray = parsed[keys[0]];
+            addLog(`Found array data in property "${keys[0]}" with ${dataArray.length} items`, 'info');
           } else {
-            dataArray = [parsed];
-            addLog('Wrapping primitive value in array', 'info');
-          }
-          
-          setJsonData(dataArray);
-          const keys = extractJsonKeys(dataArray);
-          setJsonKeys(keys);
-          
-          setMappings(keys.map(key => ({ 
-            jsonKey: key, 
-            layerName: getDefaultLayerName(key),
-            valueBuilder: null
-          })));
-          
-          addLog(`Loaded JSON from ${source} with ${dataArray.length} objects and ${keys.length} unique keys`, 'info');
-          return true;
-        } catch (error) {
-          addLog(`Invalid JSON data from ${source}`, 'error');
-          console.error('JSON parsing error:', error);
-          return false;
-        }
-      }, [addLog]);
-
-      // API data fetching
-      const fetchApiData = useCallback(async () => {
-        if (!apiConfig.url.trim()) {
-          addLog('API URL is required', 'error');
-          return;
-        }
-
-        setIsLoadingData(true);
-        addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
-
-        try {
-          const headers = { ...apiConfig.headers };
-          
-          if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {
-            headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
-          } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {
-            headers['X-API-Key'] = apiConfig.apiKey;
-          }
-
-          const response = await fetch(apiConfig.url, {
-            method: apiConfig.method,
-            headers: headers
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          const data = await response.json();
-          processJsonData(data, 'API');
-          addLog('API data loaded successfully', 'info');
-        } catch (error) {
-          addLog(`API request failed: ${error.message}`, 'error');
-        } finally {
-          setIsLoadingData(false);
-        }
-      }, [apiConfig, processJsonData, addLog]);
-
-      // Configuration management
-      const saveConfiguration = useCallback(() => {
-        if (!configName.trim()) {
-          addLog('Configuration name is required', 'error');
-          return;
-        }
-
-        const config = {
-          name: configName,
-          dataSource,
-          apiConfig,
-          mappings,
-          valueBuilders,
-          savedAt: new Date().toISOString()
-        };
-
-        parent.postMessage({
-          pluginMessage: {
-            type: 'save-config',
-            data: config
-          }
-        }, '*');
-
-        setConfigName('');
-        setShowConfigSave(false);
-      }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);
-
-      const loadConfigurations = useCallback(() => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'load-configs'
-          }
-        }, '*');
-      }, []);
-
-      const loadConfiguration = useCallback((config) => {
-        setDataSource(config.dataSource);
-        setApiConfig(config.apiConfig);
-        setMappings(config.mappings || []);
-        setValueBuilders(config.valueBuilders || {});
-        addLog(`Configuration "${config.name}" loaded`, 'info');
-        setShowConfigList(false);
-      }, [addLog]);
-
-      const deleteConfiguration = useCallback((configName) => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'delete-config',
-            configName
-          }
-        }, '*');
-      }, [addLog]);
-
-      const clearAllConfigurations = useCallback(() => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'clear-configs'
-          }
-        }, '*');
-      }, []);
-
-      const handleFileUpload = useCallback((file) => {
-        if (file.size > 2 * 1024 * 1024) {
-          addLog('File size exceeds 2MB limit', 'error');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const content = e.target?.result;
-          const parsed = JSON.parse(content);
-          processJsonData(parsed, 'file');
-        };
-        reader.readAsText(file);
-      }, [processJsonData]);
-
-      const handleFileInputChange = useCallback((e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          handleFileUpload(file);
-        }
-      }, [handleFileUpload]);
-
-      const updateMapping = useCallback((jsonKey, layerName) => {
-        setMappings(prev => prev.map(mapping => 
-          mapping.jsonKey === jsonKey 
-            ? { ...mapping, layerName }
-            : mapping
-        ));
-      }, []);
-
-      // Value builder functions
-      const openValueBuilder = useCallback((mappingKey) => {
-        const currentMapping = mappings.find(m => m.jsonKey === mappingKey);
-        if (currentMapping && valueBuilders[mappingKey]) {
-          setCurrentBuilder(valueBuilders[mappingKey]);
-        } else {
-          // Initialize with the selected mapping key pre-populated
-          setCurrentBuilder({ 
-            parts: [{ type: 'key', value: mappingKey }] 
-          });
-        }
-        setValueBuilderModal({ isOpen: true, mappingKey });
-      }, [mappings, valueBuilders]);
-
-      const closeValueBuilder = useCallback(() => {
-        setValueBuilderModal({ isOpen: false, mappingKey: null });
-        setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });
-      }, []);
-
-      const saveValueBuilder = useCallback(() => {
-        if (!valueBuilderModal.mappingKey) return;
-        
-        setValueBuilders(prev => ({
-          ...prev,
-          [valueBuilderModal.mappingKey]: { ...currentBuilder }
-        }));
-        
-        addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');
-        closeValueBuilder();
-      }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
-
-      const clearValueBuilder = useCallback((mappingKey) => {
-        setValueBuilders(prev => {
-          const newBuilders = { ...prev };
-          delete newBuilders[mappingKey];
-          return newBuilders;
-        });
-        addLog(`Value builder cleared for ${mappingKey}`, 'info');
-      }, [addLog]);
-
-      const addBuilderPart = useCallback((type) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: [...prev.parts, { type, value: '' }]
-        }));
-      }, []);
-
-      const updateBuilderPart = useCallback((index, field, value) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: prev.parts.map((part, i) => 
-            i === index ? { ...part, [field]: value } : part
-          )
-        }));
-      }, []);
-
-      const removeBuilderPart = useCallback((index) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: prev.parts.filter((_, i) => i !== index)
-        }));
-      }, []);
-
-      const moveBuilderPart = useCallback((fromIndex, toIndex) => {
-        setCurrentBuilder(prev => {
-          const newParts = [...prev.parts];
-          const [movedPart] = newParts.splice(fromIndex, 1);
-          newParts.splice(toIndex, 0, movedPart);
-          return { ...prev, parts: newParts };
-        });
-      }, []);
-
-      const handleApplyData = useCallback(() => {
-        if (!jsonData || jsonData.length === 0) {
-          addLog('No JSON data loaded', 'error');
-          return;
-        }
-
-        const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
-        if (activeMappings.length === 0) {
-          addLog('No layer mappings configured', 'error');
-          return;
-        }
-
-        if (selectionCount === 0) {
-          addLog('No layers selected in Figma', 'error');
-          return;
-        }
-
-        parent.postMessage({
-          pluginMessage: {
-            type: 'apply-data',
-            jsonData,
-            mappings: activeMappings,
-            valueBuilders
-          }
-        }, '*');
-      }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);
-
-      const handleClearData = useCallback(() => {
-        setJsonData(null);
-        setJsonKeys([]);
-        setMappings([]);
-        addLog('Data cleared', 'info');
-      }, [addLog]);
-
-      useEffect(() => {
-        const handleMessage = (event) => {
-          const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
-          
-          if (type === 'log') {
-            addLog(message, level);
-          } else if (type === 'selection-changed') {
-            setSelectionCount(count);
-          } else if (type === 'configs-loaded') {
-            setSavedConfigs(data || []);
-          } else if (type === 'config-saved') {
-            addLog('Configuration saved successfully', 'info');
-            loadConfigurations(); // Reload configs to get updated list
-          } else if (type === 'config-deleted') {
-            addLog('Configuration deleted successfully', 'info');
-            loadConfigurations(); // Reload configs to get updated list
-          } else if (type === 'configs-cleared') {
-            setSavedConfigs([]);
-            addLog('All configurations cleared', 'info');
-          } else if (type === 'storage-error') {
-            addLog(`Storage error: ${message}`, 'error');
-          }
-        };
-
-        window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
-      }, [addLog, loadConfigurations]);
-
-      // Load configurations on component mount
-      useEffect(() => {
-        loadConfigurations();
-      }, [loadConfigurations]);
-
-      useEffect(() => {
-        if (dropZoneRef.current) {
-          setupDragAndDrop(dropZoneRef.current, handleFileUpload);
-        }
-      }, [handleFileUpload]);
-
-      return React.createElement('div', { className: 'p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg' },
-        React.createElement('header', { className: 'mb-5 border-b border-figma-border pb-3' },
-          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'JSON Data Mapper'),
-          React.createElement('div', { className: 'flex justify-between items-center' },
-            React.createElement('p', { className: 'text-sm text-figma-textSecondary' }, `Selected: ${selectionCount} layer(s)`),
-            jsonData && React.createElement('button', {
-              onClick: handleClearData,
-              className: 'btn-danger'
-            }, '🗑️ Clear')
-          )
-        ),
-
-        // Configuration section
-        React.createElement('section', { className: 'config-section' },
-          React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Configuration'),
-          React.createElement('div', { className: 'config-controls' },
-            React.createElement('button', { 
-              className: 'btn-primary text-xs', 
-              onClick: () => setShowConfigSave(true) 
-            }, 'Save Config'),
-            React.createElement('button', { 
-              className: 'btn-primary text-xs', 
-              onClick: () => {
-                loadConfigurations();
-                setShowConfigList(true);
-              }
-            }, 'Load Config'),
-            savedConfigs.length > 0 && React.createElement('button', { 
-              className: 'btn-danger', 
-              onClick: clearAllConfigurations
-            }, 'Clear All')
-          ),
-          showConfigSave && React.createElement('div', null,
-            React.createElement('input', {
-              type: 'text',
-              className: 'form-input mb-2',
-              placeholder: 'Configuration name',
-              value: configName,
-              onChange: (e) => setConfigName(e.target.value)
-            }),
-            React.createElement('div', { className: 'config-controls' },
-              React.createElement('button', { className: 'btn-primary text-xs', onClick: saveConfiguration }, 'Save'),
-              React.createElement('button', { className: 'btn-secondary text-xs', onClick: () => setShowConfigSave(false) }, 'Cancel')
-            )
-          ),
-          showConfigList && savedConfigs.length > 0 && React.createElement('div', { className: 'config-list' },
-            savedConfigs.map(config =>
-              React.createElement('div', { key: config.name, className: 'config-item' },
-                React.createElement('div', { className: 'config-name' }, config.name),
-                React.createElement('div', { className: 'config-meta' }, new Date(config.savedAt).toLocaleDateString()),
-                React.createElement('div', { className: 'config-actions' },
-                  React.createElement('button', { 
-                    className: 'config-action-btn', 
-                    onClick: () => loadConfiguration(config) 
-                  }, 'Load'),
-                  React.createElement('button', { 
-                    className: 'config-action-btn', 
-                    onClick: () => deleteConfiguration(config.name) 
-                  }, 'Delete')
-                )
-              )
-            )
-          ),
-          showConfigList && React.createElement('button', {
-            className: 'config-btn',
-            onClick: () => setShowConfigList(false)
-          }, 'Close')
-        ),
-
-        // Data source section  
-        React.createElement('section', { className: 'data-source-section' },
-          React.createElement('h3', null, 'Data Source'),
-          React.createElement('div', { className: 'data-source-tabs' },
-            React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'file' ? 'active' : ''}`,
-              onClick: () => setDataSource('file')
-            }, 'File'),
-            React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'api' ? 'active' : ''}`,
-              onClick: () => setDataSource('api')
-            }, 'API'),
-            React.createElement('button', {
-              className: `data-source-tab ${dataSource === 'manual' ? 'active' : ''}`,
-              onClick: () => setDataSource('manual')
-            }, 'Manual')
-          ),
-          React.createElement('div', { className: 'data-source-content' },
-            dataSource === 'file' && React.createElement('div', { className: 'upload-section' },
-              React.createElement('div', { 
-                className: 'drop-zone',
-                ref: dropZoneRef
-              },
-                React.createElement('p', null, 'Drop JSON file here or'),
-                React.createElement('label', { className: 'file-button' },
-                  'Choose File',
-                  React.createElement('input', {
-                    type: 'file',
-                    accept: '.json,application/json',
-                    onChange: handleFileInputChange,
-                    style: { display: 'none' }
-                  })
-                ),
-                React.createElement('p', { className: 'file-limit' }, 'Max 2MB')
-              )
-            ),
-            dataSource === 'api' && React.createElement('div', { className: 'mb-5' },
-              React.createElement('div', { className: 'form-group' },
-                React.createElement('label', { className: 'form-label' }, 'API URL'),
-                React.createElement('input', {
-                  type: 'text',
-                  className: 'form-input',
-                  value: apiConfig.url,
-                  onChange: (e) => setApiConfig(prev => ({ ...prev, url: e.target.value })),
-                  placeholder: 'https://api.example.com/data'
-                })
-              ),
-              React.createElement('div', { className: 'form-row' },
-                React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', { className: 'form-label' }, 'Method'),
-                  React.createElement('select', {
-                    className: 'form-select',
-                    value: apiConfig.method,
-                    onChange: (e) => setApiConfig(prev => ({ ...prev, method: e.target.value }))
-                  },
-                    React.createElement('option', { value: 'GET' }, 'GET'),
-                    React.createElement('option', { value: 'POST' }, 'POST')
-                  )
-                ),
-                React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', { className: 'form-label' }, 'Auth Type'),
-                  React.createElement('select', {
-                    className: 'form-select',
-                    value: apiConfig.authType,
-                    onChange: (e) => setApiConfig(prev => ({ ...prev, authType: e.target.value }))
-                  },
-                    React.createElement('option', { value: 'none' }, 'None'),
-                    React.createElement('option', { value: 'bearer' }, 'Bearer Token'),
-                    React.createElement('option', { value: 'apikey' }, 'API Key')
-                  )
-                )
-              ),
-              (apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && React.createElement('div', { className: 'form-group' },
-                React.createElement('label', { className: 'form-label' }, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'),
-                React.createElement('input', {
-                  type: 'password',
-                  className: 'form-input',
-                  value: apiConfig.apiKey,
-                  onChange: (e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value })),
-                  placeholder: 'Enter your token/key'
-                })
-              ),
-              React.createElement('button', {
-                className: 'fetch-button',
-                onClick: fetchApiData,
-                disabled: isLoadingData || !apiConfig.url.trim()
-              }, isLoadingData ? 'Loading...' : 'Fetch Data')
-            ),
-            dataSource === 'manual' && React.createElement('div', null,
-              React.createElement('p', null, 'Paste your JSON data:'),
-              React.createElement('textarea', {
-                rows: 8,
-                style: { width: '100%', marginTop: '8px', padding: '8px', fontFamily: 'monospace', fontSize: '11px' },
-                placeholder: 'Paste JSON data here...',
-                onChange: (e) => {
-                  try {
-                    const parsed = JSON.parse(e.target.value);
-                    processJsonData(parsed, 'manual');
-                  } catch (error) {
-                    // Invalid JSON, ignore
-                  }
+            const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
+            if (arrayProperty) {
+              const arrayData = parsed[arrayProperty];
+              const metadata = {};
+              
+              keys.forEach(key => {
+                if (key !== arrayProperty) {
+                  metadata[key] = parsed[key];
                 }
-              })
-            )
-          )
-        ),
+              });
+              
+              dataArray = arrayData.map(item => ({
+                ...metadata,
+                ...item
+              }));
+              
+              addLog(`Merged ${Object.keys(metadata).length} metadata keys with ${arrayData.length} array items from "${arrayProperty}"`, 'info');
+            } else {
+              dataArray = [parsed];
+              addLog('No arrays found, wrapping object in array', 'info');
+            }
+          }
+        } else {
+          dataArray = [parsed];
+          addLog('Wrapping primitive value in array', 'info');
+        }
+        
+        setJsonData(dataArray);
+        const keys = extractJsonKeys(dataArray);
+        setJsonKeys(keys);
+        
+        setMappings(keys.map(key => ({ 
+          jsonKey: key, 
+          layerName: getDefaultLayerName(key),
+          valueBuilder: null
+        })));
+        
+        addLog(`Loaded JSON from ${source} with ${dataArray.length} objects and ${keys.length} unique keys`, 'info');
+        return true;
+      } catch (error) {
+        addLog(`Invalid JSON data from ${source}`, 'error');
+        console.error('JSON parsing error:', error);
+        return false;
+      }
+    }, [addLog]);
 
-        // JSON Preview
-        jsonData && React.createElement('section', { className: 'json-preview' },
-          React.createElement('h3', null, `JSON Preview (${jsonData.length} items)`),
-          React.createElement('div', { className: 'table-container' },
-            React.createElement('table', null,
-              React.createElement('thead', null,
-                React.createElement('tr', null,
-                  jsonKeys.slice(0, 10).map(key =>
-                    React.createElement('th', { key }, key)
-                  )
-                )
-              ),
-              React.createElement('tbody', null,
-                jsonData.slice(0, 10).map((item, index) =>
-                  React.createElement('tr', { key: index },
-                    jsonKeys.slice(0, 10).map(key =>
-                      React.createElement('td', { key }, 
-                        String(getNestedValue(item, key) || '').slice(0, 50)
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        ),
+    // API data fetching
+    const fetchApiData = useCallback(async () => {
+      if (!apiConfig.url.trim()) {
+        addLog('API URL is required', 'error');
+        return;
+      }
 
-        jsonData && React.createElement('section', { className: 'mapping-section' },
-          React.createElement('h3', null, 'Key Mapping'),
-          React.createElement('div', { className: 'mapping-table' },
-            mappings.map(mapping =>
-              React.createElement('div', { key: mapping.jsonKey, className: 'mapping-row' },
-                React.createElement('label', null, mapping.jsonKey),
-                React.createElement('input', {
-                  type: 'text',
-                  placeholder: 'Figma layer name',
-                  value: mapping.layerName,
-                  onChange: (e) => updateMapping(mapping.jsonKey, e.target.value)
-                }),
-                React.createElement('button', {
-                  className: `build-value-btn ${valueBuilders[mapping.jsonKey] ? 'active' : ''}`,
-                  onClick: () => openValueBuilder(mapping.jsonKey),
-                  title: 'Build custom value'
-                }, '🔧'),
-                valueBuilders[mapping.jsonKey] && React.createElement('button', {
-                  className: 'clear-builder-btn',
-                  onClick: () => clearValueBuilder(mapping.jsonKey),
-                  title: 'Clear value builder'
-                }, '✗')
-              )
-            )
-          )
-        ),
+      setIsLoadingData(true);
+      addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
 
-        jsonData && React.createElement('section', { className: 'action-section' },
-          React.createElement('button', {
-            className: 'apply-button',
-            onClick: handleApplyData,
-            disabled: selectionCount === 0
-          }, 'Apply Data to Selection')
-        ),
+      try {
+        const headers = { ...apiConfig.headers };
+        
+        if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {
+          headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
+        } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {
+          headers['X-API-Key'] = apiConfig.apiKey;
+        }
 
-        // Value Builder Modal
-        valueBuilderModal.isOpen && React.createElement('div', { className: 'modal-overlay' },
-          React.createElement('div', { className: 'modal' },
-            React.createElement('div', { className: 'modal-header' },
-              React.createElement('h3', { className: 'modal-title' }, `Value Builder: ${valueBuilderModal.mappingKey}`),
-              React.createElement('button', { className: 'modal-close', onClick: closeValueBuilder }, '×')
-            ),
-            React.createElement('div', { className: 'add-part-buttons' },
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('key') }, 'Add Key'),
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('text') }, 'Add Text'),
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('separator') }, 'Add Separator')
-            ),
-            currentBuilder.parts.map((part, index) =>
-              React.createElement('div', { key: index, className: 'builder-part' },
-                React.createElement('div', { className: 'reorder-controls' },
-                  React.createElement('button', {
-                    className: 'reorder-btn',
-                    onClick: () => moveBuilderPart(index, Math.max(0, index - 1)),
-                    disabled: index === 0
-                  }, '↑'),
-                  React.createElement('button', {
-                    className: 'reorder-btn',
-                    onClick: () => moveBuilderPart(index, Math.min(currentBuilder.parts.length - 1, index + 1)),
-                    disabled: index === currentBuilder.parts.length - 1
-                  }, '↓')
-                ),
-                React.createElement('select', {
-                  value: part.type,
-                  onChange: (e) => updateBuilderPart(index, 'type', e.target.value)
-                },
-                  React.createElement('option', { value: 'key' }, 'JSON Key'),
-                  React.createElement('option', { value: 'text' }, 'Static Text'),
-                  React.createElement('option', { value: 'separator' }, 'Separator')
-                ),
-                part.type === 'key' ? React.createElement('select', {
-                  value: part.value,
-                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value)
-                },
-                  React.createElement('option', { value: '' }, 'Select key...'),
-                  jsonKeys.map(key =>
-                    React.createElement('option', { key, value: key }, key)
-                  )
-                ) : React.createElement('input', {
-                  type: 'text',
-                  value: part.value,
-                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value),
-                  placeholder: part.type === 'text' ? 'Enter text' : 'e.g., " - "'
-                }),
-                React.createElement('button', {
-                  className: 'remove-part-btn',
-                  onClick: () => removeBuilderPart(index)
-                }, '×')
-              )
-            ),
-            jsonData && jsonData.length > 0 && React.createElement('div', { className: 'preview-section' },
-              React.createElement('div', { className: 'preview-label' }, 'Preview:'),
-              React.createElement('div', { className: 'preview-value' }, 
-                evaluateValueBuilder(currentBuilder, jsonData[0])
-              )
-            ),
-            React.createElement('div', { className: 'modal-actions' },
-              React.createElement('button', { className: 'modal-btn secondary', onClick: closeValueBuilder }, 'Cancel'),
-              React.createElement('button', { className: 'modal-btn primary', onClick: saveValueBuilder }, 'Save')
-            )
-          )
-        ),
+        const response = await fetch(apiConfig.url, {
+          method: apiConfig.method,
+          headers: headers
+        });
 
-        React.createElement('section', { className: 'logs-section' },
-          React.createElement('h3', null, 'Logs'),
-          React.createElement('div', { className: 'logs-container' },
-            logs.map((log, index) =>
-              React.createElement('div', { key: index, className: `log-entry ${log.level}` },
-                React.createElement('span', { className: 'timestamp' }, log.timestamp),
-                React.createElement('span', { className: 'message' }, log.message)
-              )
-            )
-          )
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        processJsonData(data, 'API');
+        addLog('API data loaded successfully', 'info');
+      } catch (error) {
+        addLog(`API request failed: ${error.message}`, 'error');
+      } finally {
+        setIsLoadingData(false);
+      }
+    }, [apiConfig, processJsonData, addLog]);
+
+    // Configuration management
+    const saveConfiguration = useCallback(() => {
+      if (!configName.trim()) {
+        addLog('Configuration name is required', 'error');
+        return;
+      }
+
+      const config = {
+        name: configName,
+        dataSource,
+        apiConfig,
+        mappings,
+        valueBuilders,
+        savedAt: new Date().toISOString()
+      };
+
+      parent.postMessage({
+        pluginMessage: {
+          type: 'save-config',
+          data: config
+        }
+      }, '*');
+
+      setConfigName('');
+      setShowConfigSave(false);
+    }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);
+
+    const loadConfigurations = useCallback(() => {
+      parent.postMessage({
+        pluginMessage: {
+          type: 'load-configs'
+        }
+      }, '*');
+    }, []);
+
+    const loadConfiguration = useCallback((config) => {
+      setDataSource(config.dataSource);
+      setApiConfig(config.apiConfig);
+      setMappings(config.mappings || []);
+      setValueBuilders(config.valueBuilders || {});
+      addLog(`Configuration "${config.name}" loaded`, 'info');
+      setShowConfigList(false);
+    }, [addLog]);
+
+    const deleteConfiguration = useCallback((configName) => {
+      parent.postMessage({
+        pluginMessage: {
+          type: 'delete-config',
+          configName
+        }
+      }, '*');
+    }, [addLog]);
+
+    const clearAllConfigurations = useCallback(() => {
+      parent.postMessage({
+        pluginMessage: {
+          type: 'clear-configs'
+        }
+      }, '*');
+    }, []);
+
+    const handleFileUpload = useCallback((file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        addLog('File size exceeds 2MB limit', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result;
+        const parsed = JSON.parse(content);
+        processJsonData(parsed, 'file');
+      };
+      reader.readAsText(file);
+    }, [processJsonData]);
+
+    const handleFileInputChange = useCallback((e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        handleFileUpload(file);
+      }
+    }, [handleFileUpload]);
+
+    const updateMapping = useCallback((jsonKey, layerName) => {
+      setMappings(prev => prev.map(mapping => 
+        mapping.jsonKey === jsonKey 
+          ? { ...mapping, layerName }
+          : mapping
+      ));
+    }, []);
+
+    // Value builder functions
+    const openValueBuilder = useCallback((mappingKey) => {
+      const currentMapping = mappings.find(m => m.jsonKey === mappingKey);
+      if (currentMapping && valueBuilders[mappingKey]) {
+        setCurrentBuilder(valueBuilders[mappingKey]);
+      } else {
+        setCurrentBuilder({ 
+          parts: [{ type: 'key', value: mappingKey }] 
+        });
+      }
+      setValueBuilderModal({ isOpen: true, mappingKey });
+    }, [mappings, valueBuilders]);
+
+    const closeValueBuilder = useCallback(() => {
+      setValueBuilderModal({ isOpen: false, mappingKey: null });
+      setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });
+    }, []);
+
+    const saveValueBuilder = useCallback(() => {
+      if (!valueBuilderModal.mappingKey) return;
+      
+      setValueBuilders(prev => ({
+        ...prev,
+        [valueBuilderModal.mappingKey]: { ...currentBuilder }
+      }));
+      
+      addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');
+      closeValueBuilder();
+    }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
+
+    const clearValueBuilder = useCallback((mappingKey) => {
+      setValueBuilders(prev => {
+        const newBuilders = { ...prev };
+        delete newBuilders[mappingKey];
+        return newBuilders;
+      });
+      addLog(`Value builder cleared for ${mappingKey}`, 'info');
+    }, [addLog]);
+
+    const addBuilderPart = useCallback((type) => {
+      setCurrentBuilder(prev => ({
+        ...prev,
+        parts: [...prev.parts, { type, value: '' }]
+      }));
+    }, []);
+
+    const updateBuilderPart = useCallback((index, field, value) => {
+      setCurrentBuilder(prev => ({
+        ...prev,
+        parts: prev.parts.map((part, i) => 
+          i === index ? { ...part, [field]: value } : part
         )
-      );
-    };
+      }));
+    }, []);
+
+    const removeBuilderPart = useCallback((index) => {
+      setCurrentBuilder(prev => ({
+        ...prev,
+        parts: prev.parts.filter((_, i) => i !== index)
+      }));
+    }, []);
+
+    const moveBuilderPart = useCallback((fromIndex, toIndex) => {
+      setCurrentBuilder(prev => {
+        const newParts = [...prev.parts];
+        const [movedPart] = newParts.splice(fromIndex, 1);
+        newParts.splice(toIndex, 0, movedPart);
+        return { ...prev, parts: newParts };
+      });
+    }, []);
+
+    const handleApplyData = useCallback(() => {
+      if (!jsonData || jsonData.length === 0) {
+        addLog('No JSON data loaded', 'error');
+        return;
+      }
+
+      const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
+      if (activeMappings.length === 0) {
+        addLog('No layer mappings configured', 'error');
+        return;
+      }
+
+      if (selectionCount === 0) {
+        addLog('No layers selected in Figma', 'error');
+        return;
+      }
+
+      parent.postMessage({
+        pluginMessage: {
+          type: 'apply-data',
+          jsonData,
+          mappings: activeMappings,
+          valueBuilders
+        }
+      }, '*');
+    }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);
+
+    const handleClearData = useCallback(() => {
+      setJsonData(null);
+      setJsonKeys([]);
+      setMappings([]);
+      addLog('Data cleared', 'info');
+    }, [addLog]);
+
+    useEffect(() => {
+      const handleMessage = (event) => {
+        const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
+        
+        if (type === 'log') {
+          addLog(message, level);
+        } else if (type === 'selection-changed') {
+          setSelectionCount(count);
+        } else if (type === 'configs-loaded') {
+          setSavedConfigs(data || []);
+        } else if (type === 'config-saved') {
+          addLog('Configuration saved successfully', 'info');
+          loadConfigurations();
+        } else if (type === 'config-deleted') {
+          addLog('Configuration deleted successfully', 'info');
+          loadConfigurations();
+        } else if (type === 'configs-cleared') {
+          setSavedConfigs([]);
+          addLog('All configurations cleared', 'info');
+        } else if (type === 'storage-error') {
+          addLog(`Storage error: ${message}`, 'error');
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+      return () => window.removeEventListener('message', handleMessage);
+    }, [addLog, loadConfigurations]);
+
+    useEffect(() => {
+      loadConfigurations();
+    }, [loadConfigurations]);
+
+    useEffect(() => {
+      if (dropZoneRef.current) {
+        setupDragAndDrop(dropZoneRef.current, handleFileUpload);
+      }
+    }, [handleFileUpload]);
+    ;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg"
+  }, /*#__PURE__*/React.createElement(Header, {
+    selectionCount: selectionCount,
+    jsonData: jsonData,
+    handleClearData: handleClearData
+  }), /*#__PURE__*/React.createElement(ConfigSection, {
+    showConfigSave: showConfigSave,
+    setShowConfigSave: setShowConfigSave,
+    showConfigList: showConfigList,
+    setShowConfigList: setShowConfigList,
+    savedConfigs: savedConfigs,
+    configName: configName,
+    setConfigName: setConfigName,
+    saveConfiguration: saveConfiguration,
+    loadConfigurations: loadConfigurations,
+    clearAllConfigurations: clearAllConfigurations,
+    loadConfiguration: loadConfiguration,
+    deleteConfiguration: deleteConfiguration
+  }), /*#__PURE__*/React.createElement(DataSourceTabs, {
+    dataSource: dataSource,
+    setDataSource: setDataSource,
+    apiConfig: apiConfig,
+    setApiConfig: setApiConfig,
+    isLoadingData: isLoadingData,
+    fetchApiData: fetchApiData,
+    processJsonData: processJsonData,
+    dropZoneRef: dropZoneRef,
+    handleFileInputChange: handleFileInputChange
+  }), jsonData && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(JsonPreview, {
+    jsonData: jsonData,
+    jsonKeys: jsonKeys,
+    getNestedValue: getNestedValue
+  }), /*#__PURE__*/React.createElement(KeyMapping, {
+    mappings: mappings,
+    updateMapping: updateMapping,
+    valueBuilders: valueBuilders,
+    openValueBuilder: openValueBuilder,
+    clearValueBuilder: clearValueBuilder
+  }), /*#__PURE__*/React.createElement(ActionSection, {
+    handleApplyData: handleApplyData,
+    selectionCount: selectionCount
+  })), /*#__PURE__*/React.createElement(ValueBuilderModal, {
+    valueBuilderModal: valueBuilderModal,
+    currentBuilder: currentBuilder,
+    jsonKeys: jsonKeys,
+    jsonData: jsonData,
+    addBuilderPart: addBuilderPart,
+    updateBuilderPart: updateBuilderPart,
+    removeBuilderPart: removeBuilderPart,
+    moveBuilderPart: moveBuilderPart,
+    evaluateValueBuilder: evaluateValueBuilder,
+    closeValueBuilder: closeValueBuilder,
+    saveValueBuilder: saveValueBuilder
+  }), /*#__PURE__*/React.createElement(LogsSection, {
+    logs: logs
+  }));
+};
 
 // Render the app
-ReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));
+ReactDOM.render(React.createElement(App), document.getElementById("react-page"));
   </script>
 </body>
 </html>

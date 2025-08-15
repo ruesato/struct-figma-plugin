@@ -39,20 +39,44 @@ const child_process_1 = require("child_process");
 const util_1 = require("util");
 const execAsync = (0, util_1.promisify)(child_process_1.exec);
 /**
- * Build script that compiles the UI components and creates the final index.html
+ * Build script that compiles JSX components and creates the final index.html
  * This script:
- * 1. Reads the compiled JavaScript from ui/ui.js
- * 2. Reads the CSS from ui/ui.css
- * 3. Reads the HTML template from ui/index.template.html
- * 4. Injects CSS and JS into the template
+ * 1. Compiles JSX components with Babel
+ * 2. Extracts and combines JavaScript functions
+ * 3. Processes CSS with Tailwind
+ * 4. Injects everything into HTML template
  * 5. Outputs the final ui/index.html for the Figma plugin
  */
 async function buildUI() {
-    console.log('🔨 Building UI...');
+    console.log('🔨 Building UI with JSX components...');
     const uiDir = path.join(__dirname, '..', 'ui');
+    const componentsDir = path.join(uiDir, 'components');
     try {
-        // Complete JavaScript implementation with all features restored
-        const jsContent = `
+        // Step 1: Compile JSX components with Babel
+        console.log('⚛️  Compiling JSX components...');
+        await execAsync(`npx babel ${componentsDir} --out-dir ${componentsDir}/compiled --presets=@babel/preset-react`);
+        // Step 2: Read and combine compiled components
+        const componentFiles = [
+            'Header.js',
+            'ConfigSection.js',
+            'DataSourceTabs.js',
+            'JsonPreview.js',
+            'KeyMapping.js',
+            'ValueBuilderModal.js',
+            'ActionSection.js',
+            'LogsSection.js',
+            'App.js'
+        ];
+        let componentsCode = '';
+        for (const file of componentFiles) {
+            const filePath = path.join(componentsDir, 'compiled', file);
+            if (fs.existsSync(filePath)) {
+                componentsCode += fs.readFileSync(filePath, 'utf-8') + '\n\n';
+            }
+        }
+        console.log('✅ Combined JSX components');
+        // Step 3: Create the JavaScript functions that will be injected into App.jsx
+        const functionsCode = `
     // Helper functions
     function extractJsonKeys(data, maxDepth = 3) {
       const keys = new Set();
@@ -900,7 +924,7 @@ async function buildUI() {
         let htmlContent = fs.readFileSync(templatePath, 'utf-8');
         console.log('✅ Read HTML template');
         // Clean up the JavaScript and add the render call
-        const processedJs = jsContent.trim() + '\n\n// Render the app\nReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));';
+        const processedJs = functionsCode.trim() + '\n\n// Render the app\nReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));';
         // Inject CSS and JavaScript into the template
         htmlContent = htmlContent.replace('/* INJECT_CSS */', cssContent);
         htmlContent = htmlContent.replace('/* INJECT_JS */', processedJs);

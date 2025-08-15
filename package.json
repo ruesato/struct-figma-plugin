@@ -4,13 +4,17 @@
   "description": "A Figma plugin for mapping JSON data to layer properties",
   "main": "main/code.js",
   "scripts": {
-    "build": "tsc && node scripts/build-ui.js && echo 'Plugin built successfully!'",
-    "build:ui": "tsc && node scripts/build-ui.js",
+    "build": "tsc && node scripts/build-ui-jsx.js && echo 'Plugin built successfully!'",
+    "build:ui": "tsc && node scripts/build-ui-jsx.js",
     "build:main": "tsc --project tsconfig.json",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@babel/cli": "^7.28.3",
+    "@babel/core": "^7.28.3",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
     "@figma/plugin-typings": "^1.75.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",

@@ -144,23 +144,35 @@ The plugin intelligently handles various JSON formats:
 
 ```
 json-data-mapper/
-├── manifest.json          # Plugin configuration
+├── manifest.json              # Plugin configuration
 ├── main/
-│   ├── code.ts            # Main thread logic (source)
-│   └── code.js            # Main thread logic (compiled)
+│   ├── code.ts                # Main thread logic (source)
+│   └── code.js                # Main thread logic (compiled)
 ├── ui/
-│   ├── ui.tsx             # React components (source)
-│   ├── ui.css             # Styles (source)
-│   ├── index.template.html # HTML template
-│   ├── ui.js              # Compiled React (generated)
-│   └── index.html         # Final UI (generated)
+│   ├── components/            # JSX React components
+│   │   ├── App.jsx           # Main application component
+│   │   ├── Header.jsx        # Plugin header
+│   │   ├── ConfigSection.jsx # Configuration management
+│   │   ├── DataSourceTabs.jsx# File/API/Manual data input
+│   │   ├── JsonPreview.jsx   # JSON data preview table
+│   │   ├── KeyMapping.jsx    # Key-to-layer mapping
+│   │   ├── ValueBuilderModal.jsx # Custom value builder
+│   │   ├── ActionSection.jsx # Apply data button
+│   │   └── LogsSection.jsx   # Activity logs
+│   ├── styles.css            # Tailwind CSS styles
+│   ├── index.template.html   # HTML template
+│   └── index.html            # Final UI (generated)
 ├── scripts/
-│   ├── build-ui.ts        # Build script (source)
-│   └── build-ui.js        # Build script (compiled)
-├── assets/                # Test data files
-├── package.json           # Dependencies
-├── tsconfig.json          # TypeScript configuration
-└── README.md             # This file
+│   ├── build-ui-jsx.ts       # JSX build script (active)
+│   ├── build-ui.ts           # Legacy build script  
+│   └── *.js                  # Compiled build scripts
+├── assets/                   # Test data files
+├── .babelrc                  # Babel configuration for JSX
+├── tailwind.config.js        # Tailwind CSS configuration
+├── postcss.config.js         # PostCSS configuration
+├── package.json              # Dependencies & scripts
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # This file
 ```
 
 ## Development
@@ -193,22 +205,41 @@ json-data-mapper/
 ### Development Workflow
 
 **For UI changes:**
-- Edit `ui/ui.tsx` for React components
-- Edit `ui/ui.css` for styles  
-- Run `npm run build:ui` to generate final `ui/index.html`
+- Edit JSX components in `ui/components/` directory:
+  - `App.jsx` - Main application logic and state
+  - `Header.jsx` - Plugin header and title
+  - `ConfigSection.jsx` - Save/load configuration functionality
+  - `DataSourceTabs.jsx` - File/API/Manual data input tabs
+  - `JsonPreview.jsx` - JSON data preview table
+  - `KeyMapping.jsx` - JSON key to layer mapping interface
+  - `ValueBuilderModal.jsx` - Custom value builder modal
+  - `ActionSection.jsx` - Apply data button
+  - `LogsSection.jsx` - Activity logs display
+- Edit `ui/styles.css` for Tailwind CSS styling
+- Run `npm run build:ui` to compile JSX and generate final `ui/index.html`
 
 **For main thread changes:**
 - Edit `main/code.ts`
 - Run `npm run build` to compile
 
+**Architecture Benefits:**
+- **JSX Components**: Easy-to-edit HTML-like syntax instead of `React.createElement` calls
+- **Modular Design**: Each UI section is a separate, focused component
+- **Tailwind CSS**: Utility-first styling with custom Figma design tokens
+- **Automated Build**: Babel compiles JSX → JavaScript, PostCSS processes Tailwind
+
 **Note:** The final `ui/index.html` is generated during build and contains inlined CSS and JavaScript for optimal plugin performance.
 
 ## Technical Details
 
-- **Framework**: TypeScript, React (via CDN), Figma Plugin API
+- **Framework**: TypeScript, React (via CDN), Tailwind CSS v3, Figma Plugin API
 - **Architecture**: 
   - Main thread: `main/code.ts` (source) → `main/code.js` (compiled) - Handles Figma API operations
-  - UI thread: `ui/index.html` - Embedded React app for user interface
+  - UI thread: JSX components → compiled to `ui/index.html` - Modular React app for user interface
+- **Build System**:
+  - **JSX Compilation**: Babel transforms JSX components to React.createElement calls
+  - **CSS Processing**: PostCSS processes Tailwind CSS with custom Figma design tokens
+  - **Component Architecture**: 8 modular JSX components for maintainable UI development
 - **Processing**: Client-side only, no external dependencies
 - **File Size**: Maximum 2MB JSON files
 - **JSON Parsing**: 
