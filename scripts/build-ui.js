@@ -80,17 +80,17 @@ async function buildUI() {
     // Helper functions
     function extractJsonKeys(data, maxDepth = 3) {
       const keys = new Set();
-      
+
       function extractKeysRecursive(obj, prefix = '', depth = 0) {
         if (depth >= maxDepth || obj === null || typeof obj !== 'object') {
           return;
         }
-        
+
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
             const fullKey = prefix ? \`\${prefix}.\${key}\` : key;
             keys.add(fullKey);
-            
+
             if (typeof obj[key] === 'object' && obj[key] !== null) {
               if (Array.isArray(obj[key])) {
                 const arrayItems = obj[key].slice(0, 3);
@@ -107,7 +107,7 @@ async function buildUI() {
           }
         }
       }
-      
+
       data.slice(0, 10).forEach(item => extractKeysRecursive(item));
       return Array.from(keys).sort();
     }
@@ -127,24 +127,24 @@ async function buildUI() {
 
     function getNestedValue(obj, path) {
       const parts = path.split('.');
-      
+
       return parts.reduce((current, part) => {
         if (current === null || current === undefined) return undefined;
-        
+
         const arrayMatch = part.match(/^(.+)\\[(\\d*)\\]$/);
         if (arrayMatch) {
           const [, arrayKey, index] = arrayMatch;
           const arrayValue = current[arrayKey];
-          
+
           if (!Array.isArray(arrayValue)) return undefined;
-          
+
           if (index === '') {
             return arrayValue[0];
           } else {
             return arrayValue[parseInt(index)];
           }
         }
-        
+
         return current[part];
       }, obj);
     }
@@ -152,7 +152,7 @@ async function buildUI() {
     // Value builder utility functions
     function evaluateValueBuilder(builder, data) {
       if (!builder || !builder.parts || builder.parts.length === 0) return '';
-      
+
       return builder.parts.map(part => {
         switch (part.type) {
           case 'text':
@@ -191,7 +191,7 @@ async function buildUI() {
         e.preventDefault();
         e.stopPropagation();
         dropZone.classList.remove('dragging');
-        
+
         const files = e.dataTransfer.files;
         if (files && files.length > 0) {
           onFileDrop(files[0]);
@@ -207,14 +207,14 @@ async function buildUI() {
     // Main component
     const JsonDataMapper = () => {
       const { useState, useCallback, useEffect, useRef } = React;
-      
+
       const [jsonData, setJsonData] = useState(null);
       const [jsonKeys, setJsonKeys] = useState([]);
       const [mappings, setMappings] = useState([]);
       const [selectionCount, setSelectionCount] = useState(0);
       const [logs, setLogs] = useState([]);
       const [isDragging, setIsDragging] = useState(false);
-      
+
       const [dataSource, setDataSource] = useState('file');
       const [apiConfig, setApiConfig] = useState({
         url: '',
@@ -224,21 +224,21 @@ async function buildUI() {
         authType: 'none'
       });
       const [isLoadingData, setIsLoadingData] = useState(false);
-      
+
       const [savedConfigs, setSavedConfigs] = useState([]);
       const [showConfigSave, setShowConfigSave] = useState(false);
       const [configName, setConfigName] = useState('');
       const [showConfigList, setShowConfigList] = useState(false);
-      
-      const [valueBuilderModal, setValueBuilderModal] = useState({ 
-        isOpen: false, 
-        mappingKey: null 
+
+      const [valueBuilderModal, setValueBuilderModal] = useState({
+        isOpen: false,
+        mappingKey: null
       });
       const [currentBuilder, setCurrentBuilder] = useState({
         parts: [{ type: 'key', value: '' }]
       });
       const [valueBuilders, setValueBuilders] = useState({});
-      
+
       const dropZoneRef = useRef(null);
 
       const addLog = useCallback((message, level = 'info') => {
@@ -252,16 +252,16 @@ async function buildUI() {
       const processJsonData = useCallback((parsed, source = 'unknown') => {
         try {
           let dataArray;
-          
+
           addLog(\`Parsed JSON type: \${Array.isArray(parsed) ? 'array' : typeof parsed}\`, 'info');
-          
+
           if (Array.isArray(parsed)) {
             dataArray = parsed;
             addLog('Using direct array', 'info');
           } else if (typeof parsed === 'object' && parsed !== null) {
             const keys = Object.keys(parsed);
             addLog(\`Object has \${keys.length} keys: \${keys.join(', ')}\`, 'info');
-            
+
             if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
               dataArray = parsed[keys[0]];
               addLog(\`Found array data in property "\${keys[0]}" with \${dataArray.length} items\`, 'info');
@@ -270,18 +270,18 @@ async function buildUI() {
               if (arrayProperty) {
                 const arrayData = parsed[arrayProperty];
                 const metadata = {};
-                
+
                 keys.forEach(key => {
                   if (key !== arrayProperty) {
                     metadata[key] = parsed[key];
                   }
                 });
-                
+
                 dataArray = arrayData.map(item => ({
                   ...metadata,
                   ...item
                 }));
-                
+
                 addLog(\`Merged \${Object.keys(metadata).length} metadata keys with \${arrayData.length} array items from "\${arrayProperty}"\`, 'info');
               } else {
                 dataArray = [parsed];
@@ -292,17 +292,17 @@ async function buildUI() {
             dataArray = [parsed];
             addLog('Wrapping primitive value in array', 'info');
           }
-          
+
           setJsonData(dataArray);
           const keys = extractJsonKeys(dataArray);
           setJsonKeys(keys);
-          
-          setMappings(keys.map(key => ({ 
-            jsonKey: key, 
+
+          setMappings(keys.map(key => ({
+            jsonKey: key,
             layerName: getDefaultLayerName(key),
             valueBuilder: null
           })));
-          
+
           addLog(\`Loaded JSON from \${source} with \${dataArray.length} objects and \${keys.length} unique keys\`, 'info');
           return true;
         } catch (error) {
@@ -324,7 +324,7 @@ async function buildUI() {
 
         try {
           const headers = { ...apiConfig.headers };
-          
+
           if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {
             headers['Authorization'] = \`Bearer \${apiConfig.apiKey}\`;
           } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {
@@ -434,8 +434,8 @@ async function buildUI() {
       }, [handleFileUpload]);
 
       const updateMapping = useCallback((jsonKey, layerName) => {
-        setMappings(prev => prev.map(mapping => 
-          mapping.jsonKey === jsonKey 
+        setMappings(prev => prev.map(mapping =>
+          mapping.jsonKey === jsonKey
             ? { ...mapping, layerName }
             : mapping
         ));
@@ -448,8 +448,8 @@ async function buildUI() {
           setCurrentBuilder(valueBuilders[mappingKey]);
         } else {
           // Initialize with the selected mapping key pre-populated
-          setCurrentBuilder({ 
-            parts: [{ type: 'key', value: mappingKey }] 
+          setCurrentBuilder({
+            parts: [{ type: 'key', value: mappingKey }]
           });
         }
         setValueBuilderModal({ isOpen: true, mappingKey });
@@ -462,12 +462,12 @@ async function buildUI() {
 
       const saveValueBuilder = useCallback(() => {
         if (!valueBuilderModal.mappingKey) return;
-        
+
         setValueBuilders(prev => ({
           ...prev,
           [valueBuilderModal.mappingKey]: { ...currentBuilder }
         }));
-        
+
         addLog(\`Value builder saved for \${valueBuilderModal.mappingKey}\`, 'info');
         closeValueBuilder();
       }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
@@ -491,7 +491,7 @@ async function buildUI() {
       const updateBuilderPart = useCallback((index, field, value) => {
         setCurrentBuilder(prev => ({
           ...prev,
-          parts: prev.parts.map((part, i) => 
+          parts: prev.parts.map((part, i) =>
             i === index ? { ...part, [field]: value } : part
           )
         }));
@@ -550,7 +550,7 @@ async function buildUI() {
       useEffect(() => {
         const handleMessage = (event) => {
           const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
-          
+
           if (type === 'log') {
             addLog(message, level);
           } else if (type === 'selection-changed') {
@@ -588,7 +588,7 @@ async function buildUI() {
 
       return React.createElement('div', { className: 'p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg' },
         React.createElement('header', { className: 'mb-5 border-b border-figma-border pb-3' },
-          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'JSON Data Mapper'),
+          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'Struct'),
           React.createElement('div', { className: 'flex justify-between items-center' },
             React.createElement('p', { className: 'text-sm text-figma-textSecondary' }, \`Selected: \${selectionCount} layer(s)\`),
             jsonData && React.createElement('button', {
@@ -602,19 +602,19 @@ async function buildUI() {
         React.createElement('section', { className: 'config-section' },
           React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Configuration'),
           React.createElement('div', { className: 'config-controls' },
-            React.createElement('button', { 
-              className: 'btn-primary text-xs', 
-              onClick: () => setShowConfigSave(true) 
+            React.createElement('button', {
+              className: 'btn-primary text-xs',
+              onClick: () => setShowConfigSave(true)
             }, 'Save Config'),
-            React.createElement('button', { 
-              className: 'btn-primary text-xs', 
+            React.createElement('button', {
+              className: 'btn-primary text-xs',
               onClick: () => {
                 loadConfigurations();
                 setShowConfigList(true);
               }
             }, 'Load Config'),
-            savedConfigs.length > 0 && React.createElement('button', { 
-              className: 'btn-danger', 
+            savedConfigs.length > 0 && React.createElement('button', {
+              className: 'btn-danger',
               onClick: clearAllConfigurations
             }, 'Clear All')
           ),
@@ -637,13 +637,13 @@ async function buildUI() {
                 React.createElement('div', { className: 'config-name' }, config.name),
                 React.createElement('div', { className: 'config-meta' }, new Date(config.savedAt).toLocaleDateString()),
                 React.createElement('div', { className: 'config-actions' },
-                  React.createElement('button', { 
-                    className: 'config-action-btn', 
-                    onClick: () => loadConfiguration(config) 
+                  React.createElement('button', {
+                    className: 'config-action-btn',
+                    onClick: () => loadConfiguration(config)
                   }, 'Load'),
-                  React.createElement('button', { 
-                    className: 'config-action-btn', 
-                    onClick: () => deleteConfiguration(config.name) 
+                  React.createElement('button', {
+                    className: 'config-action-btn',
+                    onClick: () => deleteConfiguration(config.name)
                   }, 'Delete')
                 )
               )
@@ -655,7 +655,7 @@ async function buildUI() {
           }, 'Close')
         ),
 
-        // Data source section  
+        // Data source section
         React.createElement('section', { className: 'data-source-section' },
           React.createElement('h3', null, 'Data Source'),
           React.createElement('div', { className: 'data-source-tabs' },
@@ -674,7 +674,7 @@ async function buildUI() {
           ),
           React.createElement('div', { className: 'data-source-content' },
             dataSource === 'file' && React.createElement('div', { className: 'upload-section' },
-              React.createElement('div', { 
+              React.createElement('div', {
                 className: 'drop-zone',
                 ref: dropZoneRef
               },
@@ -778,7 +778,7 @@ async function buildUI() {
                 jsonData.slice(0, 10).map((item, index) =>
                   React.createElement('tr', { key: index },
                     jsonKeys.slice(0, 10).map(key =>
-                      React.createElement('td', { key }, 
+                      React.createElement('td', { key },
                         String(getNestedValue(item, key) || '').slice(0, 50)
                       )
                     )
@@ -880,7 +880,7 @@ async function buildUI() {
             ),
             jsonData && jsonData.length > 0 && React.createElement('div', { className: 'preview-section' },
               React.createElement('div', { className: 'preview-label' }, 'Preview:'),
-              React.createElement('div', { className: 'preview-value' }, 
+              React.createElement('div', { className: 'preview-value' },
                 evaluateValueBuilder(currentBuilder, jsonData[0])
               )
             ),

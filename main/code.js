@@ -1,5 +1,5 @@
 "use strict";
-// Main thread code for JSON Data Mapper Figma plugin
+// Main thread code for Struct Figma plugin
 // Helper function to extract nested values from JSON objects
 function getNestedValue(obj, path) {
     const parts = path.split('.');

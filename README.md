@@ -1,4 +1,4 @@
-# JSON Data Mapper - Figma Plugin
+# Struct - Figma Plugin
 
 A powerful Figma plugin that allows you to import JSON data and map it to layer properties in your designs. Perfect for populating designs with real data, creating data-driven prototypes, and automating content updates with complex, nested data structures.
 
@@ -8,11 +8,11 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
   - Automatically detects and extracts arrays from wrapped objects (e.g., `{"patients": [...]}`)
   - Supports both direct arrays and nested object structures
 - **Advanced Data Preview**: View the first 10 rows of your JSON data in a table format with nested key support
-- **Intelligent Mapping**: 
+- **Intelligent Mapping**:
   - **Auto-populated defaults**: Key mappings automatically use smart layer names based on JSON keys
   - **Nested object support**: Handle complex data like `user.profile.name` or `encounters[].diagnosis`
   - **Array indexing**: Access specific array items with `encounters[0].encounter_id` or use `encounters[].encounter_id` for first item
-- **Multiple Data Types**: 
+- **Multiple Data Types**:
   - **Text layers**: Updates with string values from any nested level
   - **Image fills**: Fetches and applies images from URLs
   - **Component variants**: Updates variant properties with string values
@@ -24,14 +24,14 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
 
 1. **Install the Plugin**: Import the plugin into Figma using the manifest.json file
 2. **Select Layers**: Choose one or more component instances or layers in your canvas
-3. **Import JSON**: 
+3. **Import JSON**:
    - Drag and drop a JSON file into the plugin sidebar, or
    - Click "Choose File" to browse for a JSON file
 4. **Review Automatic Detection**: Check the logs to see how your JSON was parsed
    - The plugin automatically detects arrays in wrapped objects
    - Debug messages show the extraction process
 5. **Preview Data**: Review the first 10 rows of your JSON data with all nested keys visible
-6. **Review Smart Mappings**: 
+6. **Review Smart Mappings**:
    - Each JSON key appears with an **auto-populated layer name**
    - Default names are intelligently chosen (e.g., `encounters[].diagnosis` → `diagnosis`)
    - Edit any mapping if your layer names differ
@@ -55,7 +55,7 @@ The plugin intelligently handles various JSON formats:
     }
   },
   {
-    "name": "Jane Smith", 
+    "name": "Jane Smith",
     "email": "jane@example.com",
     "avatar": "https://example.com/avatar2.jpg",
     "profile": {
@@ -136,7 +136,7 @@ The plugin intelligently handles various JSON formats:
 
 ### Array Access Patterns
 - `encounters[0].provider_name` → Access first encounter's provider
-- `encounters[1].diagnosis` → Access second encounter's diagnosis  
+- `encounters[1].diagnosis` → Access second encounter's diagnosis
 - `encounters[].encounter_date` → Access first encounter's date (shorthand)
 - `work.projects[].status` → Access first project's status
 
@@ -164,7 +164,7 @@ json-data-mapper/
 │   └── index.html            # Final UI (generated)
 ├── scripts/
 │   ├── build-ui-jsx.ts       # JSX build script (active)
-│   ├── build-ui.ts           # Legacy build script  
+│   ├── build-ui.ts           # Legacy build script
 │   └── *.js                  # Compiled build scripts
 ├── assets/                   # Test data files
 ├── .babelrc                  # Babel configuration for JSX
@@ -233,7 +233,7 @@ json-data-mapper/
 ## Technical Details
 
 - **Framework**: TypeScript, React (via CDN), Tailwind CSS v3, Figma Plugin API
-- **Architecture**: 
+- **Architecture**:
   - Main thread: `main/code.ts` (source) → `main/code.js` (compiled) - Handles Figma API operations
   - UI thread: JSX components → compiled to `ui/index.html` - Modular React app for user interface
 - **Build System**:
@@ -242,13 +242,13 @@ json-data-mapper/
   - **Component Architecture**: 8 modular JSX components for maintainable UI development
 - **Processing**: Client-side only, no external dependencies
 - **File Size**: Maximum 2MB JSON files
-- **JSON Parsing**: 
+- **JSON Parsing**:
   - Smart array detection (handles wrapped arrays like `{"data": [...]}`)
   - Nested object traversal up to 3 levels deep
   - Array indexing with bracket notation (`array[0].property`)
 - **Data Mapping**: Auto-populated smart defaults based on JSON key structure
 - **Image Support**: Fetches images from HTTP/HTTPS URLs with error handling
-- **Key Path Support**: 
+- **Key Path Support**:
   - Dot notation: `user.profile.name`
   - Array notation: `encounters[0].diagnosis` or `encounters[].diagnosis`
   - Mixed notation: `patient.encounters[].provider_name`
@@ -258,7 +258,7 @@ json-data-mapper/
 The plugin includes comprehensive error handling for:
 - Invalid JSON files
 - Missing layer names
-- Failed image downloads  
+- Failed image downloads
 - Network errors
 - Invalid variant properties
 

@@ -1,4 +1,4 @@
-// Main thread code for JSON Data Mapper Figma plugin
+// Main thread code for Struct Figma plugin
 
 interface JsonMapping {
   jsonKey: string;

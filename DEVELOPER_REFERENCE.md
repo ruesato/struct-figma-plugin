@@ -1,4 +1,4 @@
-# JSON Data Mapper - Developer Reference
+# Struct - Developer Reference
 
 ## Quick Start Context
 
@@ -60,7 +60,7 @@ json-data-mapper/
 - **Logical Separation**: Each component handles a specific UI concern
 - **Maintainable Code**: Clear component boundaries and props interface
 
-#### Advanced Build System  
+#### Advanced Build System
 - **JSX Compilation**: Babel transforms JSX → React.createElement calls
 - **CSS Processing**: PostCSS processes Tailwind CSS with custom Figma design tokens
 - **Automated Pipeline**: Single command builds entire UI from source components
@@ -94,7 +94,7 @@ const App = () => {
   // All state management and callback functions
   const [jsonData, setJsonData] = useState(null);
   // ... other state
-  
+
   return (
     <div className="p-4 max-w-full font-sans">
       <Header selectionCount={selectionCount} jsonData={jsonData} />
@@ -149,7 +149,7 @@ if (Array.isArray(parsed)) {
 ```javascript
 // Extracts keys like:
 // - "name" (simple)
-// - "profile.role" (nested object)  
+// - "profile.role" (nested object)
 // - "encounters[0].diagnosis" (array with index)
 // - "encounters[].diagnosis" (array generic)
 
@@ -171,7 +171,7 @@ function extractKeysRecursive(obj, prefix = '', depth = 0) {
 ```javascript
 // Examples:
 // "encounters[0].encounter_id" → "encounter_id"
-// "encounters[]" → "encounters"  
+// "encounters[]" → "encounters"
 // "user.profile.name" → "name"
 // "status" → "status"
 
@@ -195,7 +195,7 @@ function getDefaultLayerName(jsonKey) {
 ```javascript
 // Handles paths like:
 // - "name" → obj.name
-// - "profile.role" → obj.profile.role  
+// - "profile.role" → obj.profile.role
 // - "encounters[0].diagnosis" → obj.encounters[0].diagnosis
 // - "encounters[].diagnosis" → obj.encounters[0].diagnosis
 
@@ -257,7 +257,7 @@ npm run build                         # Full build: compiles main + UI
 #### JSX Build Process Details
 The JSX build process (`scripts/build-ui-jsx.ts`) performs these steps:
 1. **Compile JSX**: Babel transforms `ui/components/*.jsx` → React.createElement calls
-2. **Combine Components**: Merge all compiled component files 
+2. **Combine Components**: Merge all compiled component files
 3. **Function Injection**: Insert callback functions into App component via placeholder
 4. **Process CSS**: PostCSS processes Tailwind CSS with custom Figma design tokens
 5. **Template Integration**: Inject CSS and JS into `ui/index.template.html`
@@ -266,7 +266,7 @@ The JSX build process (`scripts/build-ui-jsx.ts`) performs these steps:
 #### Architecture Benefits
 - **🎯 Component-Based Development**: Edit individual JSX files instead of one massive file
 - **🎨 Modern CSS**: Tailwind utility classes with custom Figma design system
-- **🔧 Easy Maintenance**: Each component has clear boundaries and responsibilities  
+- **🔧 Easy Maintenance**: Each component has clear boundaries and responsibilities
 - **📦 Optimized Output**: Single HTML file for Figma plugin requirements
 - **🚀 Fast Development**: Quick component iteration with focused editing
 - **🛠️ Advanced Tooling**: Babel JSX compilation + PostCSS processing pipeline
@@ -289,8 +289,8 @@ React.createElement('button', {
 }, 'Apply Data')
 
 // After: Easy-to-edit JSX syntax
-<button 
-  className="btn-primary" 
+<button
+  className="btn-primary"
   onClick={handleClick}
 >
   Apply Data
@@ -310,7 +310,7 @@ React.createElement('button', {
 ```javascript
 // Generated keys for array data:
 "encounters"           // Array itself
-"encounters[0]"        // First item  
+"encounters[0]"        // First item
 "encounters[1]"        // Second item
 "encounters[]"         // Generic first item access
 "encounters[0].diagnosis"  // Specific property
@@ -333,12 +333,12 @@ React.createElement('button', {
 
 ### Issue: Plugin shows old behavior after changes
 **Cause:** Browser/Figma caching compiled files
-**Solution:** 
+**Solution:**
 1. Close and reopen plugin
 2. Hard refresh Figma (Cmd+Shift+R)
 3. Clear browser cache if using web version
 
-### Issue: "Only seeing 1 object" with array data  
+### Issue: "Only seeing 1 object" with array data
 **Cause:** JSON has wrapper object (e.g., `{"patients": [...]}`)
 **Solution:** ✅ Now auto-detected and extracted
 
@@ -358,7 +358,7 @@ React.createElement('button', {
   "patients": [
     {
       "patient_id": "PAT-011",
-      "first_name": "Daniel", 
+      "first_name": "Daniel",
       "encounters": [
         {
           "encounter_id": "ENC-0064",
@@ -373,7 +373,7 @@ React.createElement('button', {
 
 **Generated keys:**
 - `patient_id` → `patient_id`
-- `first_name` → `first_name`  
+- `first_name` → `first_name`
 - `encounters[].encounter_id` → `encounter_id`
 - `encounters[].diagnosis` → `diagnosis`
 
@@ -381,11 +381,11 @@ React.createElement('button', {
 
 ### ✅ JSX Component Architecture (Completed)
 - **Modular Components**: Split monolithic UI into 8 focused JSX components
-- **Developer Experience**: Easy HTML-like syntax instead of complex React.createElement calls  
+- **Developer Experience**: Easy HTML-like syntax instead of complex React.createElement calls
 - **Build System**: Automated Babel compilation with JSX → JavaScript transformation
 - **Maintainability**: Clear separation of concerns with component-based architecture
 
-### ✅ Tailwind CSS Integration (Completed)  
+### ✅ Tailwind CSS Integration (Completed)
 - **Modern Styling**: Migrated from 748 lines of custom CSS to Tailwind utility classes
 - **Design System**: Custom Figma design tokens for consistent theming
 - **PostCSS Pipeline**: Automated CSS processing with Tailwind compilation
@@ -411,7 +411,7 @@ React.createElement('button', {
 - [ ] Undo/redo for data application
 - [ ] API data source with authentication
 
-### Medium Priority  
+### Medium Priority
 - [ ] CSV import support
 - [ ] Data validation rules
 - [ ] Custom transformation functions
