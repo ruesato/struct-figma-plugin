@@ -4,10 +4,12 @@
   "description": "A Figma plugin for mapping JSON data to layer properties",
   "main": "main/code.js",
   "scripts": {
-    "build": "tsc && node scripts/build-ui-jsx.js && echo 'Plugin built successfully!'",
-    "build:ui": "tsc && node scripts/build-ui-jsx.js",
+    "build": "tsc && node scripts/build-ui-modern.js && echo 'Plugin built successfully!'",
+    "build:ui": "tsc && node scripts/build-ui-modern.js",
+    "build:ui:legacy": "tsc && node scripts/build-ui-jsx.js",
     "build:main": "tsc --project tsconfig.json",
     "dev": "tsc --watch",
+    "dev:ui": "tsc && node scripts/build-ui-modern.js --watch",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -20,6 +22,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.9",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "tailwindcss": "^3.4.17",
