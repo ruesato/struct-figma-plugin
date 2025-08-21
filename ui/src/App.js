@@ -16,6 +16,7 @@ const LogsSection_1 = __importDefault(require("./components/LogsSection"));
 const ActivityLogModal_1 = __importDefault(require("./components/ActivityLogModal"));
 const ConfigurationModal_1 = __importDefault(require("./components/ConfigurationModal"));
 const SaveConfigurationModal_1 = __importDefault(require("./components/SaveConfigurationModal"));
+const ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
 // Import utilities
 const utils_1 = require("./utils");
 const App = () => {
@@ -50,11 +51,32 @@ const App = () => {
     const [isActivityModalOpen, setIsActivityModalOpen] = (0, react_1.useState)(false);
     const [isConfigModalOpen, setIsConfigModalOpen] = (0, react_1.useState)(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = (0, react_1.useState)(false);
+    const [toastErrors, setToastErrors] = (0, react_1.useState)([]);
     const dropZoneRef = (0, react_1.useRef)(null);
     // Helper functions
     const addLog = (0, react_1.useCallback)((message, level = 'info') => {
         const timestamp = new Date().toLocaleTimeString();
         setLogs(prev => [...prev, { message, level, timestamp }]);
+    }, []);
+    const addToastError = (0, react_1.useCallback)((title, message, severity = 'error', technicalDetails) => {
+        const timestamp = new Date().toLocaleTimeString();
+        const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        // Add to toast
+        const toastError = {
+            id,
+            severity,
+            title,
+            message,
+            timestamp
+        };
+        setToastErrors(prev => [...prev, toastError]);
+        // Also add to activity log with technical details if provided
+        const logMessage = technicalDetails ? `${title}: ${message} (${technicalDetails})` : `${title}: ${message}`;
+        const logLevel = severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'info';
+        addLog(logMessage, logLevel);
+    }, [addLog]);
+    const dismissToastError = (0, react_1.useCallback)((id) => {
+        setToastErrors(prev => prev.filter(error => error.id !== id));
     }, []);
     const processJsonData = (0, react_1.useCallback)((data, source) => {
         addLog(`Processing data from ${source}...`, 'info');
@@ -82,11 +104,11 @@ const App = () => {
             }
         }
         else {
-            addLog('Invalid data format', 'error');
+            addToastError('Invalid Data Format', 'The uploaded data is not in a valid format', 'error', 'Data is not an object or array');
             return;
         }
         if (dataArray.length === 0) {
-            addLog('No data found in file', 'error');
+            addToastError('No Data Found', 'The uploaded file contains no data items', 'validation', 'Data array is empty');
             return;
         }
         const keys = (0, utils_1.extractJsonKeys)(dataArray);
@@ -98,7 +120,7 @@ const App = () => {
         setJsonKeys(keys);
         setMappings(newMappings);
         addLog(`✅ Data processed: ${dataArray.length} items, ${keys.length} keys found`, 'info');
-    }, [addLog]);
+    }, [addLog, addToastError]);
     const fetchApiData = (0, react_1.useCallback)(async () => {
         setIsLoadingData(true);
         try {
@@ -120,7 +142,8 @@ const App = () => {
             processJsonData(data, 'API');
         }
         catch (error) {
-            addLog(`API fetch failed: ${error.message}`, 'error');
+            const errorMessage = error.message;
+            addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
         }
         finally {
             setIsLoadingData(false);
@@ -128,7 +151,7 @@ const App = () => {
     }, [apiConfig, processJsonData, addLog]);
     const saveConfiguration = (0, react_1.useCallback)(() => {
         if (!configName.trim()) {
-            addLog('Please enter a configuration name', 'error');
+            addToastError('Configuration Name Required', 'Please enter a name for your configuration', 'validation');
             return;
         }
         const config = {
@@ -147,7 +170,7 @@ const App = () => {
         }, '*');
         setConfigName('');
         setShowConfigSave(false);
-    }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);
+    }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);
     const loadConfigurations = (0, react_1.useCallback)(() => {
         parent.postMessage({
             pluginMessage: {
@@ -180,7 +203,7 @@ const App = () => {
     }, []);
     const handleFileUpload = (0, react_1.useCallback)((file) => {
         if (file.size > 2 * 1024 * 1024) {
-            addLog('File size exceeds 2MB limit', 'error');
+            addToastError('File Too Large', 'The selected file exceeds the 2MB size limit', 'validation', `File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
             return;
         }
         const reader = new FileReader();
@@ -191,11 +214,12 @@ const App = () => {
                 processJsonData(parsed, 'file');
             }
             catch (error) {
-                addLog(`Failed to parse JSON: ${error.message}`, 'error');
+                const errorMessage = error.message;
+                addToastError('Invalid JSON File', 'The selected file contains invalid JSON data', 'error', errorMessage);
             }
         };
         reader.readAsText(file);
-    }, [processJsonData, addLog]);
+    }, [processJsonData, addLog, addToastError]);
     const handleFileInputChange = (0, react_1.useCallback)((e) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -270,16 +294,16 @@ const App = () => {
     }, []);
     const handleApplyData = (0, react_1.useCallback)(() => {
         if (!jsonData || jsonData.length === 0) {
-            addLog('No JSON data loaded', 'error');
+            addToastError('No Data Loaded', 'Please load JSON data before applying to layers', 'validation');
             return;
         }
         const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
         if (activeMappings.length === 0) {
-            addLog('No layer mappings configured', 'error');
+            addToastError('No Mappings Configured', 'Please configure at least one field mapping', 'validation');
             return;
         }
         if (selectionCount === 0) {
-            addLog('No layers selected in Figma', 'error');
+            addToastError('No Layers Selected', 'Please select one or more layers in Figma', 'validation');
             return;
         }
         parent.postMessage({
@@ -290,7 +314,7 @@ const App = () => {
                 valueBuilders
             }
         }, '*');
-    }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);
+    }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
     const handleClearData = (0, react_1.useCallback)(() => {
         setJsonData(null);
         setJsonKeys([]);
@@ -322,7 +346,13 @@ const App = () => {
                 addLog('All configurations cleared', 'info');
             }
             else if (type === 'storage-error') {
-                addLog(`Storage error: ${message}`, 'error');
+                addToastError('Storage Error', 'Unable to access plugin storage', 'error', message);
+            }
+            else if (type === 'apply-data-error') {
+                addToastError('Data Application Failed', 'Failed to apply data to selected layers', 'error', message);
+            }
+            else if (type === 'plugin-error') {
+                addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
             }
         };
         window.addEventListener('message', handleMessage);
@@ -336,6 +366,6 @@ const App = () => {
             (0, utils_1.setupDragAndDrop)(dropZoneRef.current, handleFileUpload);
         }
     }, [handleFileUpload]);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg", children: [(0, jsx_runtime_1.jsx)(Header_1.default, { selectionCount: selectionCount, jsonData: jsonData, handleClearData: handleClearData, onOpenConfigModal: () => setIsConfigModalOpen(true), onOpenSaveModal: () => setIsSaveModalOpen(true), hasConfigurableData: !!jsonData && mappings.some(m => m.layerName.trim() !== '') }), (0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: setApiConfig, isLoadingData: isLoadingData, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount })] })), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(LogsSection_1.default, { logs: logs, onOpenModal: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "relative p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)(Header_1.default, { selectionCount: selectionCount, jsonData: jsonData, handleClearData: handleClearData, onOpenConfigModal: () => setIsConfigModalOpen(true), onOpenSaveModal: () => setIsSaveModalOpen(true), hasConfigurableData: !!jsonData && mappings.some(m => m.layerName.trim() !== '') }), (0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: setApiConfig, isLoadingData: isLoadingData, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount })] })), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(LogsSection_1.default, { logs: logs, onOpenModal: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData })] }));
 };
 exports.default = App;

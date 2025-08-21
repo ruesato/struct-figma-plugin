@@ -11,6 +11,7 @@ import LogsSection from './components/LogsSection';
 import ActivityLogModal from './components/ActivityLogModal';
 import ConfigurationModal from './components/ConfigurationModal';
 import SaveConfigurationModal from './components/SaveConfigurationModal';
+import ErrorToast, { ToastError } from './components/ErrorToast';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
@@ -50,6 +51,7 @@ const App = () => {
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [toastErrors, setToastErrors] = useState<ToastError[]>([]);
 
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
@@ -57,6 +59,30 @@ const App = () => {
   const addLog = useCallback((message: string, level: string = 'info') => {
     const timestamp = new Date().toLocaleTimeString();
     setLogs(prev => [...prev, { message, level, timestamp }]);
+  }, []);
+
+  const addToastError = useCallback((title: string, message: string, severity: ToastError['severity'] = 'error', technicalDetails?: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Add to toast
+    const toastError: ToastError = {
+      id,
+      severity,
+      title,
+      message,
+      timestamp
+    };
+    setToastErrors(prev => [...prev, toastError]);
+    
+    // Also add to activity log with technical details if provided
+    const logMessage = technicalDetails ? `${title}: ${message} (${technicalDetails})` : `${title}: ${message}`;
+    const logLevel = severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'info';
+    addLog(logMessage, logLevel);
+  }, [addLog]);
+
+  const dismissToastError = useCallback((id: string) => {
+    setToastErrors(prev => prev.filter(error => error.id !== id));
   }, []);
 
   const processJsonData = useCallback((data: any, source: string) => {
@@ -84,12 +110,12 @@ const App = () => {
         }
       }
     } else {
-      addLog('Invalid data format', 'error');
+      addToastError('Invalid Data Format', 'The uploaded data is not in a valid format', 'error', 'Data is not an object or array');
       return;
     }
 
     if (dataArray.length === 0) {
-      addLog('No data found in file', 'error');
+      addToastError('No Data Found', 'The uploaded file contains no data items', 'validation', 'Data array is empty');
       return;
     }
 
@@ -104,7 +130,7 @@ const App = () => {
     setMappings(newMappings);
 
     addLog(`✅ Data processed: ${dataArray.length} items, ${keys.length} keys found`, 'info');
-  }, [addLog]);
+  }, [addLog, addToastError]);
 
   const fetchApiData = useCallback(async () => {
     setIsLoadingData(true);
@@ -130,7 +156,8 @@ const App = () => {
       const data = await response.json();
       processJsonData(data, 'API');
     } catch (error) {
-      addLog(`API fetch failed: ${(error as Error).message}`, 'error');
+      const errorMessage = (error as Error).message;
+      addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
     } finally {
       setIsLoadingData(false);
     }
@@ -138,7 +165,7 @@ const App = () => {
 
   const saveConfiguration = useCallback(() => {
     if (!configName.trim()) {
-      addLog('Please enter a configuration name', 'error');
+      addToastError('Configuration Name Required', 'Please enter a name for your configuration', 'validation');
       return;
     }
 
@@ -160,7 +187,7 @@ const App = () => {
 
     setConfigName('');
     setShowConfigSave(false);
-  }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);
+  }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);
 
   const loadConfigurations = useCallback(() => {
     parent.postMessage({
@@ -198,7 +225,7 @@ const App = () => {
 
   const handleFileUpload = useCallback((file: File) => {
     if (file.size > 2 * 1024 * 1024) {
-      addLog('File size exceeds 2MB limit', 'error');
+      addToastError('File Too Large', 'The selected file exceeds the 2MB size limit', 'validation', `File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
       return;
     }
 
@@ -209,11 +236,12 @@ const App = () => {
         const parsed = JSON.parse(content);
         processJsonData(parsed, 'file');
       } catch (error) {
-        addLog(`Failed to parse JSON: ${(error as Error).message}`, 'error');
+        const errorMessage = (error as Error).message;
+        addToastError('Invalid JSON File', 'The selected file contains invalid JSON data', 'error', errorMessage);
       }
     };
     reader.readAsText(file);
-  }, [processJsonData, addLog]);
+  }, [processJsonData, addLog, addToastError]);
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -303,18 +331,18 @@ const App = () => {
 
   const handleApplyData = useCallback(() => {
     if (!jsonData || jsonData.length === 0) {
-      addLog('No JSON data loaded', 'error');
+      addToastError('No Data Loaded', 'Please load JSON data before applying to layers', 'validation');
       return;
     }
 
     const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
     if (activeMappings.length === 0) {
-      addLog('No layer mappings configured', 'error');
+      addToastError('No Mappings Configured', 'Please configure at least one field mapping', 'validation');
       return;
     }
 
     if (selectionCount === 0) {
-      addLog('No layers selected in Figma', 'error');
+      addToastError('No Layers Selected', 'Please select one or more layers in Figma', 'validation');
       return;
     }
 
@@ -326,7 +354,7 @@ const App = () => {
         valueBuilders
       }
     }, '*');
-  }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);
+  }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
 
   const handleClearData = useCallback(() => {
     setJsonData(null);
@@ -355,7 +383,11 @@ const App = () => {
         setSavedConfigs([]);
         addLog('All configurations cleared', 'info');
       } else if (type === 'storage-error') {
-        addLog(`Storage error: ${message}`, 'error');
+        addToastError('Storage Error', 'Unable to access plugin storage', 'error', message);
+      } else if (type === 'apply-data-error') {
+        addToastError('Data Application Failed', 'Failed to apply data to selected layers', 'error', message);
+      } else if (type === 'plugin-error') {
+        addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
       }
     };
 
@@ -374,7 +406,12 @@ const App = () => {
   }, [handleFileUpload]);
 
   return (
-    <div className="p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg">
+    <div className="relative p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg">
+      <ErrorToast
+        errors={toastErrors}
+        onDismiss={dismissToastError}
+        onOpenActivityLog={() => setIsActivityModalOpen(true)}
+      />
       <Header
         selectionCount={selectionCount}
         jsonData={jsonData}
