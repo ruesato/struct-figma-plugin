@@ -9,6 +9,7 @@ import KeyMapping from './components/KeyMapping';
 import ValueBuilderModal from './components/ValueBuilderModal';
 import ActionSection from './components/ActionSection';
 import LogsSection from './components/LogsSection';
+import ActivityLogModal from './components/ActivityLogModal';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
@@ -45,6 +46,7 @@ const App = () => {
     parts: [{ type: 'key', value: '' }]
   });
   const [valueBuilders, setValueBuilders] = useState<Record<string, any>>({});
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
 
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
@@ -440,7 +442,16 @@ const App = () => {
         saveValueBuilder={saveValueBuilder}
       />
 
-      <LogsSection logs={logs} />
+      <LogsSection 
+        logs={logs} 
+        onOpenModal={() => setIsActivityModalOpen(true)}
+      />
+
+      <ActivityLogModal
+        isOpen={isActivityModalOpen}
+        onClose={() => setIsActivityModalOpen(false)}
+        logs={logs}
+      />
     </div>
   );
 };
