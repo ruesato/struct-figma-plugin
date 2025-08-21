@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 // Import components
 import Header from './components/Header';
-import ConfigSection from './components/ConfigSection';
 import DataSourceTabs from './components/DataSourceTabs';
 import JsonPreview from './components/JsonPreview';
 import KeyMapping from './components/KeyMapping';
@@ -10,6 +9,8 @@ import ValueBuilderModal from './components/ValueBuilderModal';
 import ActionSection from './components/ActionSection';
 import LogsSection from './components/LogsSection';
 import ActivityLogModal from './components/ActivityLogModal';
+import ConfigurationModal from './components/ConfigurationModal';
+import SaveConfigurationModal from './components/SaveConfigurationModal';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
@@ -47,6 +48,8 @@ const App = () => {
   });
   const [valueBuilders, setValueBuilders] = useState<Record<string, any>>({});
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
@@ -376,22 +379,11 @@ const App = () => {
         selectionCount={selectionCount}
         jsonData={jsonData}
         handleClearData={handleClearData}
+        onOpenConfigModal={() => setIsConfigModalOpen(true)}
+        onOpenSaveModal={() => setIsSaveModalOpen(true)}
+        hasConfigurableData={!!jsonData && mappings.some(m => m.layerName.trim() !== '')}
       />
 
-      <ConfigSection
-        showConfigSave={showConfigSave}
-        setShowConfigSave={setShowConfigSave}
-        showConfigList={showConfigList}
-        setShowConfigList={setShowConfigList}
-        savedConfigs={savedConfigs}
-        configName={configName}
-        setConfigName={setConfigName}
-        saveConfiguration={saveConfiguration}
-        loadConfigurations={loadConfigurations}
-        clearAllConfigurations={clearAllConfigurations}
-        loadConfiguration={loadConfiguration}
-        deleteConfiguration={deleteConfiguration}
-      />
 
       <DataSourceTabs
         dataSource={dataSource}
@@ -451,6 +443,29 @@ const App = () => {
         isOpen={isActivityModalOpen}
         onClose={() => setIsActivityModalOpen(false)}
         logs={logs}
+      />
+
+      <ConfigurationModal
+        isOpen={isConfigModalOpen}
+        onClose={() => setIsConfigModalOpen(false)}
+        savedConfigs={savedConfigs}
+        loadConfiguration={loadConfiguration}
+        saveConfiguration={saveConfiguration}
+        deleteConfiguration={deleteConfiguration}
+        clearAllConfigurations={clearAllConfigurations}
+        configName={configName}
+        setConfigName={setConfigName}
+      />
+
+      <SaveConfigurationModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        saveConfiguration={saveConfiguration}
+        configName={configName}
+        setConfigName={setConfigName}
+        dataSource={dataSource}
+        mappings={mappings}
+        jsonData={jsonData}
       />
     </div>
   );
