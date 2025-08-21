@@ -21,7 +21,7 @@ const LogsSection: React.FC<LogsSectionProps> = ({ logs, onOpenModal }) => (
         </button>
       )}
     </div>
-    <div className="logs-container">
+    {/*<div className="logs-container">
       {logs.length === 0 ? (
         <p className="text-figma-textSecondary">No activity yet</p>
       ) : (
@@ -34,7 +34,7 @@ const LogsSection: React.FC<LogsSectionProps> = ({ logs, onOpenModal }) => (
           ))}
         </div>
       )}
-    </div>
+    </div>*/}
   </section>
 );
 

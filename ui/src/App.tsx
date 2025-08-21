@@ -38,8 +38,8 @@ const App = () => {
   const [configName, setConfigName] = useState('');
   const [showConfigList, setShowConfigList] = useState(false);
 
-  const [valueBuilderModal, setValueBuilderModal] = useState({ 
-    isOpen: false, 
+  const [valueBuilderModal, setValueBuilderModal] = useState({
+    isOpen: false,
     mappingKey: null as string | null
   });
   const [currentBuilder, setCurrentBuilder] = useState<{parts: Array<{type: 'key' | 'text' | 'separator', value: string}>}>({
@@ -58,15 +58,15 @@ const App = () => {
 
   const processJsonData = useCallback((data: any, source: string) => {
     addLog(`Processing data from ${source}...`, 'info');
-    
+
     let dataArray: any[] = [];
-    
+
     if (Array.isArray(data)) {
       dataArray = data;
       addLog(`Direct array detected: ${dataArray.length} items`, 'info');
     } else if (typeof data === 'object' && data !== null) {
       const keys = Object.keys(data);
-      
+
       if (keys.length === 1 && Array.isArray(data[keys[0]])) {
         dataArray = data[keys[0]];
         addLog(`Wrapped array detected in "${keys[0]}": ${dataArray.length} items`, 'info');
@@ -99,7 +99,7 @@ const App = () => {
     setJsonData(dataArray);
     setJsonKeys(keys);
     setMappings(newMappings);
-    
+
     addLog(`✅ Data processed: ${dataArray.length} items, ${keys.length} keys found`, 'info');
   }, [addLog]);
 
@@ -220,8 +220,8 @@ const App = () => {
   }, [handleFileUpload]);
 
   const updateMapping = useCallback((jsonKey: string, layerName: string) => {
-    setMappings(prev => prev.map(mapping => 
-      mapping.jsonKey === jsonKey 
+    setMappings(prev => prev.map(mapping =>
+      mapping.jsonKey === jsonKey
         ? { ...mapping, layerName }
         : mapping
     ));
@@ -233,8 +233,8 @@ const App = () => {
     if (currentMapping && valueBuilders[mappingKey]) {
       setCurrentBuilder(valueBuilders[mappingKey]);
     } else {
-      setCurrentBuilder({ 
-        parts: [{ type: 'key', value: mappingKey }] 
+      setCurrentBuilder({
+        parts: [{ type: 'key', value: mappingKey }]
       });
     }
     setValueBuilderModal({ isOpen: true, mappingKey });
@@ -247,12 +247,12 @@ const App = () => {
 
   const saveValueBuilder = useCallback(() => {
     if (!valueBuilderModal.mappingKey) return;
-    
+
     setValueBuilders(prev => ({
       ...prev,
       [valueBuilderModal.mappingKey!]: { ...currentBuilder }
     }));
-    
+
     addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');
     closeValueBuilder();
   }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
@@ -276,7 +276,7 @@ const App = () => {
   const updateBuilderPart = useCallback((index: number, field: string, value: string) => {
     setCurrentBuilder(prev => ({
       ...prev,
-      parts: prev.parts.map((part, i) => 
+      parts: prev.parts.map((part, i) =>
         i === index ? { ...part, [field]: value } : part
       )
     }));
@@ -335,7 +335,7 @@ const App = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
-      
+
       if (type === 'log') {
         addLog(message, level);
       } else if (type === 'selection-changed') {
@@ -372,7 +372,7 @@ const App = () => {
 
   return (
     <div className="p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg">
-      <Header 
+      <Header
         selectionCount={selectionCount}
         jsonData={jsonData}
         handleClearData={handleClearData}
@@ -442,8 +442,8 @@ const App = () => {
         saveValueBuilder={saveValueBuilder}
       />
 
-      <LogsSection 
-        logs={logs} 
+      <LogsSection
+        logs={logs}
         onOpenModal={() => setIsActivityModalOpen(true)}
       />
 
