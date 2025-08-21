@@ -4,6 +4,14 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
 
 ## Features
 
+### 🚀 **Enhanced User Experience**
+- **Modal-Based Interface**: Clean, focused workflows with dedicated modals for different tasks
+- **Smart Error Handling**: Immediate error notifications with user-friendly messages and technical details
+- **Activity Log Management**: Full activity history with modal view and quick access
+- **Configuration Management**: Save, load, and manage multiple plugin configurations
+- **Professional Animations**: Smooth transitions and interactions powered by Framer Motion
+
+### 📊 **Advanced Data Processing**
 - **Smart JSON Import**: Drag-and-drop or file picker support for JSON files (max 2MB)
   - Automatically detects and extracts arrays from wrapped objects (e.g., `{"patients": [...]}`)
   - Supports both direct arrays and nested object structures
@@ -12,31 +20,59 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
   - **Auto-populated defaults**: Key mappings automatically use smart layer names based on JSON keys
   - **Nested object support**: Handle complex data like `user.profile.name` or `encounters[].diagnosis`
   - **Array indexing**: Access specific array items with `encounters[0].encounter_id` or use `encounters[].encounter_id` for first item
+
+### 🎯 **Data Application**
 - **Multiple Data Types**:
   - **Text layers**: Updates with string values from any nested level
   - **Image fills**: Fetches and applies images from URLs
   - **Component variants**: Updates variant properties with string values
 - **Batch Processing**: Apply data to multiple selected instances at once
-- **Real-time Logs**: See detailed progress, warnings, and errors with debug information
-- **Client-side Only**: All processing happens locally, no backend required
+- **Value Builder System**: Create custom field combinations with drag-and-drop interface
+
+### 🛠️ **Professional Tools**
+- **Configuration Persistence**: Save and reuse plugin settings across sessions
+- **Error Toast System**: Immediate feedback for critical errors with severity levels
+- **Comprehensive Logging**: Detailed activity log with technical information
+- **Client-side Processing**: All operations happen locally, no backend required
 
 ## How to Use
 
+### 🚀 **Quick Start**
 1. **Install the Plugin**: Import the plugin into Figma using the manifest.json file
 2. **Select Layers**: Choose one or more component instances or layers in your canvas
 3. **Import JSON**:
    - Drag and drop a JSON file into the plugin sidebar, or
    - Click "Choose File" to browse for a JSON file
-4. **Review Automatic Detection**: Check the logs to see how your JSON was parsed
-   - The plugin automatically detects arrays in wrapped objects
-   - Debug messages show the extraction process
-5. **Preview Data**: Review the first 10 rows of your JSON data with all nested keys visible
-6. **Review Smart Mappings**:
-   - Each JSON key appears with an **auto-populated layer name**
-   - Default names are intelligently chosen (e.g., `encounters[].diagnosis` → `diagnosis`)
-   - Edit any mapping if your layer names differ
-   - Leave empty to skip mapping for that key
+4. **Review Automatic Detection**: The plugin automatically detects and processes your JSON structure
+5. **Preview Data**: Review your JSON data in the built-in table view
+6. **Configure Mappings**: Auto-populated smart mappings connect JSON keys to layer names
 7. **Apply Data**: Click "Apply Data to Selection" to update your layers
+
+### ⚙️ **Advanced Features**
+
+#### **Configuration Management**
+- **Save Current Settings**: Click the green "Save Config" button in the header to save your current configuration
+- **Load Configurations**: Click the settings gear icon to open the configuration modal
+  - Select any saved configuration and click "Apply Configuration"
+  - Delete individual configurations or clear all at once
+  - View configuration details (data source, mappings count, save date)
+
+#### **Activity Monitoring** 
+- **Activity Log**: All plugin activities are logged with timestamps and severity levels
+- **View All Activity**: Click "View All" button to open the full activity log modal
+- **Error Notifications**: Critical errors appear as toast messages with quick access to details
+
+#### **Error Handling**
+- **Smart Error Detection**: The plugin identifies and categorizes different types of issues
+- **Toast Notifications**: Critical errors display as dismissible toast messages at the top
+- **Severity Levels**: Color-coded notifications (red=error, yellow=warning, orange=validation)
+- **Technical Details**: Click "View technical details →" on any toast to open the activity log
+
+#### **Value Builder System**
+- **Custom Fields**: Build complex field values combining multiple JSON keys and custom text
+- **Drag and Drop**: Reorder value parts with intuitive drag-and-drop interface
+- **Live Preview**: See exactly how your custom values will appear using real data
+- **Flexible Mapping**: Override simple mappings with sophisticated custom-built values
 
 ## JSON Data Format
 
@@ -149,25 +185,29 @@ json-data-mapper/
 │   ├── code.ts                # Main thread logic (source)
 │   └── code.js                # Main thread logic (compiled)
 ├── ui/
-│   ├── components/            # JSX React components
-│   │   ├── App.jsx           # Main application component
-│   │   ├── Header.jsx        # Plugin header
-│   │   ├── ConfigSection.jsx # Configuration management
-│   │   ├── DataSourceTabs.jsx# File/API/Manual data input
-│   │   ├── JsonPreview.jsx   # JSON data preview table
-│   │   ├── KeyMapping.jsx    # Key-to-layer mapping
-│   │   ├── ValueBuilderModal.jsx # Custom value builder
-│   │   ├── ActionSection.jsx # Apply data button
-│   │   └── LogsSection.jsx   # Activity logs
+│   ├── components/            # Modern React components
+│   │   ├── App.tsx           # Main application component
+│   │   ├── Header.tsx        # Plugin header with config access
+│   │   ├── DataSourceTabs.tsx# File/API/Manual data input
+│   │   ├── JsonPreview.tsx   # JSON data preview table
+│   │   ├── KeyMapping.tsx    # Key-to-layer mapping
+│   │   ├── ValueBuilderModal.tsx # Custom value builder
+│   │   ├── ActionSection.tsx # Apply data button
+│   │   ├── LogsSection.tsx   # Activity logs with modal access
+│   │   ├── ActivityLogModal.tsx # Full activity log modal
+│   │   ├── ConfigurationModal.tsx # Configuration management modal
+│   │   ├── SaveConfigurationModal.tsx # Save configuration modal
+│   │   └── ErrorToast.tsx    # Error notification system
 │   ├── styles.css            # Tailwind CSS styles
 │   ├── index.template.html   # HTML template
 │   └── index.html            # Final UI (generated)
 ├── scripts/
-│   ├── build-ui-jsx.ts       # JSX build script (active)
+│   ├── build-ui-modern.js    # Modern build script with esbuild
+│   ├── build-ui-jsx.ts       # JSX build script 
 │   ├── build-ui.ts           # Legacy build script
 │   └── *.js                  # Compiled build scripts
 ├── assets/                   # Test data files
-├── .babelrc                  # Babel configuration for JSX
+├── .babelrc                  # Babel configuration
 ├── tailwind.config.js        # Tailwind CSS configuration
 ├── postcss.config.js         # PostCSS configuration
 ├── package.json              # Dependencies & scripts
@@ -205,41 +245,49 @@ json-data-mapper/
 ### Development Workflow
 
 **For UI changes:**
-- Edit JSX components in `ui/components/` directory:
-  - `App.jsx` - Main application logic and state
-  - `Header.jsx` - Plugin header and title
-  - `ConfigSection.jsx` - Save/load configuration functionality
-  - `DataSourceTabs.jsx` - File/API/Manual data input tabs
-  - `JsonPreview.jsx` - JSON data preview table
-  - `KeyMapping.jsx` - JSON key to layer mapping interface
-  - `ValueBuilderModal.jsx` - Custom value builder modal
-  - `ActionSection.jsx` - Apply data button
-  - `LogsSection.jsx` - Activity logs display
+- Edit TypeScript components in `ui/components/` directory:
+  - `App.tsx` - Main application logic and state management
+  - `Header.tsx` - Plugin header with configuration and save buttons
+  - `DataSourceTabs.tsx` - File/API/Manual data input tabs
+  - `JsonPreview.tsx` - JSON data preview table
+  - `KeyMapping.tsx` - JSON key to layer mapping interface
+  - `ValueBuilderModal.tsx` - Custom value builder with drag-and-drop
+  - `ActionSection.tsx` - Apply data button
+  - `LogsSection.tsx` - Activity logs with modal access
+  - `ActivityLogModal.tsx` - Full-featured activity log modal
+  - `ConfigurationModal.tsx` - Configuration management modal
+  - `SaveConfigurationModal.tsx` - Save configuration modal with preview
+  - `ErrorToast.tsx` - Error notification toast system
 - Edit `ui/styles.css` for Tailwind CSS styling
-- Run `npm run build:ui` to compile JSX and generate final `ui/index.html`
+- Run `npm run build` to compile components and generate final `ui/index.html`
 
 **For main thread changes:**
 - Edit `main/code.ts`
 - Run `npm run build` to compile
 
 **Architecture Benefits:**
-- **JSX Components**: Easy-to-edit HTML-like syntax instead of `React.createElement` calls
-- **Modular Design**: Each UI section is a separate, focused component
-- **Tailwind CSS**: Utility-first styling with custom Figma design tokens
-- **Automated Build**: Babel compiles JSX → JavaScript, PostCSS processes Tailwind
+- **Modern Components**: TypeScript React components with proper type safety
+- **Modular Design**: Each UI section is a separate, focused component with clear responsibilities
+- **Professional UX**: Modal-based interface with smooth animations and error handling
+- **Advanced Tooling**: Modern build system with esbuild for fast compilation
+- **Configuration System**: Persistent settings with save/load functionality
 
-**Note:** The final `ui/index.html` is generated during build and contains inlined CSS and JavaScript for optimal plugin performance.
+**Note:** The final `ui/index.html` is generated during build and contains inlined CSS and JavaScript for optimal plugin performance. The modern build system uses esbuild for fast compilation and includes all necessary dependencies like Framer Motion for animations.
 
 ## Technical Details
 
-- **Framework**: TypeScript, React (via CDN), Tailwind CSS v3, Figma Plugin API
+### 🏗️ **Modern Architecture**
+- **Framework**: TypeScript, React, Tailwind CSS v3, Framer Motion, Figma Plugin API
 - **Architecture**:
-  - Main thread: `main/code.ts` (source) → `main/code.js` (compiled) - Handles Figma API operations
-  - UI thread: JSX components → compiled to `ui/index.html` - Modular React app for user interface
+  - Main thread: `main/code.ts` → `main/code.js` - Handles Figma API operations
+  - UI thread: Modern React components with TypeScript - Professional UI with modal system
 - **Build System**:
-  - **JSX Compilation**: Babel transforms JSX components to React.createElement calls
-  - **CSS Processing**: PostCSS processes Tailwind CSS with custom Figma design tokens
-  - **Component Architecture**: 8 modular JSX components for maintainable UI development
+  - **Modern Bundling**: esbuild for fast compilation and bundling
+  - **CSS Processing**: Tailwind CSS with custom Figma design tokens
+  - **Component Architecture**: 11+ modular TypeScript components
+  - **Animation System**: Framer Motion for smooth transitions and interactions
+
+### 🎯 **Core Features**
 - **Processing**: Client-side only, no external dependencies
 - **File Size**: Maximum 2MB JSON files
 - **JSON Parsing**:
@@ -247,22 +295,61 @@ json-data-mapper/
   - Nested object traversal up to 3 levels deep
   - Array indexing with bracket notation (`array[0].property`)
 - **Data Mapping**: Auto-populated smart defaults based on JSON key structure
-- **Image Support**: Fetches images from HTTP/HTTPS URLs with error handling
+- **Image Support**: Fetches images from HTTP/HTTPS URLs with comprehensive error handling
 - **Key Path Support**:
   - Dot notation: `user.profile.name`
   - Array notation: `encounters[0].diagnosis` or `encounters[].diagnosis`
   - Mixed notation: `patient.encounters[].provider_name`
 
+### 🔧 **Advanced Systems**
+- **Configuration Management**: Persistent settings using Figma's clientStorage API
+- **Error Handling**: Multi-level error system with toast notifications and activity logging
+- **Value Builder**: Drag-and-drop interface for creating custom field combinations
+- **Modal Interface**: Dedicated modals for activity logs, configurations, and value building
+- **State Management**: Centralized React state with optimized re-rendering
+- **Animation Framework**: Smooth transitions and micro-interactions throughout the interface
+
 ## Error Handling
 
-The plugin includes comprehensive error handling for:
-- Invalid JSON files
-- Missing layer names
-- Failed image downloads
-- Network errors
-- Invalid variant properties
+### 🚨 **Advanced Error Management System**
 
-All errors and warnings are displayed in the logs section of the plugin sidebar.
+The plugin features a comprehensive error handling system with multiple notification levels:
+
+#### **Error Toast Notifications**
+- **Immediate Feedback**: Critical errors appear as toast messages at the top of the plugin
+- **Severity Levels**: 
+  - 🔴 **Error** (Red): Critical failures, network errors, plugin crashes
+  - 🟡 **Warning** (Yellow): Non-critical issues that may impact functionality
+  - 🟠 **Validation** (Orange): User input validation issues
+- **Manual Dismissal**: Click the X button to dismiss individual toasts
+- **Stacking Support**: Multiple errors stack vertically for visibility
+- **Quick Access**: "View technical details →" link opens full activity log
+
+#### **Comprehensive Error Coverage**
+- **File Upload Issues**:
+  - File too large (>2MB limit)
+  - Invalid JSON parsing
+  - Unsupported file formats
+- **API and Network Errors**:
+  - Network connectivity failures
+  - Invalid API responses
+  - Image download failures
+- **Validation Errors**:
+  - No data loaded
+  - No field mappings configured
+  - No Figma layers selected
+  - Missing configuration names
+- **Plugin and Storage Errors**:
+  - Figma storage access issues
+  - Data application failures
+  - Unexpected plugin errors
+
+#### **Activity Log System**
+- **Complete History**: All activities, errors, and operations logged with timestamps
+- **Technical Details**: Full error messages and stack traces for troubleshooting
+- **Modal Interface**: Dedicated modal for viewing full activity history
+- **User-Friendly Messages**: Toast notifications show simplified, actionable messages
+- **Dual System**: Toast messages for immediate attention, activity log for detailed analysis
 
 ## Browser Compatibility
 
