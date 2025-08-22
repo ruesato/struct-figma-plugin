@@ -8,7 +8,7 @@ interface ActionSectionProps {
 }
 
 const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectionCount, onOpenSaveModal }) => (
-  <div className="bg-background fixed bottom-0 left-0 flex flex-row gap-3 p-6 w-full">
+  <div className="bg-background flex flex-row gap-3 p-6 w-full">
     <Button
       variant="outline"
       className="h-11 px-8"
