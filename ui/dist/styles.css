@@ -1130,6 +1130,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
 }
+:root {
+ 		scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+	 	scrollbar-width: thin;
+  }
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1196,6 +1200,9 @@ video {
 .top-0 {
   top: 0px;
 }
+.top-6 {
+  top: 24px;
+}
 .top-\[50\%\] {
   top: 50%;
 }
@@ -1223,6 +1230,9 @@ video {
 .my-1 {
   margin-top: 4px;
   margin-bottom: 4px;
+}
+.mb-0 {
+  margin-bottom: 0px;
 }
 .mb-1 {
   margin-bottom: 4px;
@@ -2013,6 +2023,10 @@ video {
 .py-3 {
   padding-top: 12px;
   padding-bottom: 12px;
+}
+.py-4 {
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 .py-8 {
   padding-top: 2rem;

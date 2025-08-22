@@ -259,8 +259,8 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
 
 // Plugin initialization
 figma.showUI(__html__, {
-  width: 640,
-  height: 600,
+  width: 720,
+  height: 800,
   themeColors: true
 });
 

@@ -197,8 +197,8 @@ async function applyDataToInstances(jsonData, mappings, valueBuilders = {}) {
 }
 // Plugin initialization
 figma.showUI(__html__, {
-    width: 640,
-    height: 600,
+    width: 720,
+    height: 800,
     themeColors: true
 });
 // Storage functions using Figma's clientStorage
