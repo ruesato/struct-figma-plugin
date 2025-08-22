@@ -1185,6 +1185,9 @@ video {
 .inset-0 {
   inset: 0px;
 }
+.bottom-0 {
+  bottom: 0px;
+}
 .left-0 {
   left: 0px;
 }
@@ -1231,11 +1234,18 @@ video {
   margin-top: 4px;
   margin-bottom: 4px;
 }
+.my-6 {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
 .mb-0 {
   margin-bottom: 0px;
 }
 .mb-1 {
   margin-bottom: 4px;
+}
+.mb-12 {
+  margin-bottom: 3rem;
 }
 .mb-2 {
   margin-bottom: 8px;
@@ -1545,9 +1555,6 @@ video {
 }
 .grid-cols-\[140px_1fr\] {
   grid-template-columns: 140px 1fr;
-}
-.grid-cols-\[auto_1fr\] {
-  grid-template-columns: auto 1fr;
 }
 .flex-row {
   flex-direction: row;

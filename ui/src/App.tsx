@@ -406,7 +406,7 @@ const App = () => {
   }, [handleFileUpload]);
 
   return (
-    <div className="bg-background text-foreground min-h-screen p-6 pt-0 font-sans">
+    <div className="bg-background text-foreground min-h-screen p-6 pt-0 mb-12 font-sans">
       <ErrorToast
         errors={toastErrors}
         onDismiss={dismissToastError}
@@ -414,7 +414,7 @@ const App = () => {
       />
 
       {/* Header */}
-      <div className="bg-background mb-3 py-4 sticky top-0">
+      <div className="bg-background py-4 sticky top-0">
         <div className="flex items-center justify-between mb-0">
           <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wide">
             {selectionCount} Selected layers
@@ -486,10 +486,10 @@ const App = () => {
         saveValueBuilder={saveValueBuilder}
       />
 
-      <LogsSection
+      {/*<LogsSection
         logs={logs}
         onOpenModal={() => setIsActivityModalOpen(true)}
-      />
+      />*/}
 
       <ActivityLogModal
         isOpen={isActivityModalOpen}

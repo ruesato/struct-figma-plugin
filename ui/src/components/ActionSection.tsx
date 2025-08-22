@@ -8,15 +8,15 @@ interface ActionSectionProps {
 }
 
 const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectionCount, onOpenSaveModal }) => (
-  <div className="grid grid-cols-[auto_1fr] gap-3 mt-6">
-    <Button 
-      variant="outline" 
+  <div className="bg-background fixed bottom-0 left-0 flex flex-row gap-3 p-6 w-full">
+    <Button
+      variant="outline"
       className="h-11 px-8"
       onClick={onOpenSaveModal}
     >
       Save configuration
     </Button>
-    <Button 
+    <Button
       onClick={handleApplyData}
       disabled={selectionCount === 0}
       className="h-11 flex-1"
