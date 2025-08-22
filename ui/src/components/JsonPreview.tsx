@@ -1,4 +1,6 @@
 import React from 'react';
+import { Card, CardContent } from './ui/card';
+import { ChevronDown } from 'lucide-react';
 
 interface JsonPreviewProps {
   jsonData: any[] | null;
@@ -10,34 +12,49 @@ const JsonPreview: React.FC<JsonPreviewProps> = ({ jsonData, jsonKeys, getNested
   if (!jsonData) return null;
   
   return (
-    <section className="json-preview">
-      <h3 className="text-lg font-semibold mb-2">
-        JSON Preview ({jsonData.length} items)
-      </h3>
-    
-    <div className="table-container">
-      <table className="preview-table">
-        <thead>
-          <tr>
-            {jsonKeys.slice(0, 10).map(key => (
-              <th key={key}>{key}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {jsonData.slice(0, 10).map((item, index) => (
-            <tr key={index}>
-              {jsonKeys.slice(0, 10).map(key => (
-                <td key={key}>
-                  {String(getNestedValue(item, key) || '').slice(0, 50)}
-                </td>
+    <Card className="mb-6">
+      <CardContent className="p-3 space-y-3">
+        {/* Section Header */}
+        <div className="flex items-center justify-between">
+          <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wide">
+            Data preview ({Math.min(jsonData.length, 20)} items)
+          </div>
+          <ChevronDown className="h-5 w-5 text-muted-foreground rotate-180" />
+        </div>
+
+        {/* Data Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b-2 border-zinc-700">
+                {jsonKeys.slice(0, 7).map(key => (
+                  <th 
+                    key={key} 
+                    className="text-left p-2 font-semibold text-white text-xs tracking-wide min-w-[60px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
+                  >
+                    {key}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {jsonData.slice(0, 5).map((item, index) => (
+                <tr key={index} className="border-b border-zinc-700">
+                  {jsonKeys.slice(0, 7).map(key => (
+                    <td 
+                      key={key} 
+                      className="p-2 text-white text-xs min-w-[60px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
+                    >
+                      {String(getNestedValue(item, key) || '').slice(0, 50)}
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

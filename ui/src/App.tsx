@@ -406,21 +406,36 @@ const App = () => {
   }, [handleFileUpload]);
 
   return (
-    <div className="relative p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg">
+    <div className="bg-background text-foreground min-h-screen p-6 font-sans">
       <ErrorToast
         errors={toastErrors}
         onDismiss={dismissToastError}
         onOpenActivityLog={() => setIsActivityModalOpen(true)}
       />
-      <Header
-        selectionCount={selectionCount}
-        jsonData={jsonData}
-        handleClearData={handleClearData}
-        onOpenConfigModal={() => setIsConfigModalOpen(true)}
-        onOpenSaveModal={() => setIsSaveModalOpen(true)}
-        hasConfigurableData={!!jsonData && mappings.some(m => m.layerName.trim() !== '')}
-      />
-
+      
+      {/* Header */}
+      <div className="mb-6">
+        <div className="text-white text-sm font-medium mb-4">Struct</div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wide">
+            {selectionCount} Selected layers
+          </div>
+          <div className="flex gap-3">
+            <button 
+              onClick={() => setIsConfigModalOpen(true)}
+              className="text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors"
+            >
+              Saved configurations...
+            </button>
+            <button 
+              onClick={() => setIsActivityModalOpen(true)}
+              className="text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors"
+            >
+              Activity history
+            </button>
+          </div>
+        </div>
+      </div>
 
       <DataSourceTabs
         dataSource={dataSource}
@@ -453,6 +468,7 @@ const App = () => {
           <ActionSection
             handleApplyData={handleApplyData}
             selectionCount={selectionCount}
+            onOpenSaveModal={() => setIsSaveModalOpen(true)}
           />
         </>
       )}

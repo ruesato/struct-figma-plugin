@@ -1,4 +1,9 @@
 import React from 'react';
+import { Card, CardContent } from './ui/card';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { FileText, Plug } from 'lucide-react';
 
 interface ApiConfig {
   url: string;
@@ -30,138 +35,145 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
   processJsonData,
   dropZoneRef,
   handleFileInputChange
-}) => (
-  <section className="data-source-section">
-    <h3 className="text-lg font-semibold mb-2">Data Source</h3>
-    
-    <div className="data-source-tabs">
-      <button
-        className={`data-source-tab ${dataSource === 'file' ? 'active' : ''}`}
-        onClick={() => setDataSource('file')}
-      >
-        File
-      </button>
-      <button
-        className={`data-source-tab ${dataSource === 'api' ? 'active' : ''}`}
-        onClick={() => setDataSource('api')}
-      >
-        API
-      </button>
-      <button
-        className={`data-source-tab ${dataSource === 'manual' ? 'active' : ''}`}
-        onClick={() => setDataSource('manual')}
-      >
-        Manual
-      </button>
-    </div>
+}) => {
+  
+  return (
+    <div className="mb-6">
+      {/* Two-column card layout */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {/* JSON File Upload Card */}
+        <Card 
+          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring ${
+            dataSource === 'file' ? 'ring-2 ring-primary' : ''
+          }`}
+          onClick={() => setDataSource('file')}
+        >
+          <CardContent className="p-6 flex flex-col items-center justify-center text-center min-h-[120px]">
+            <FileText className="h-8 w-8 mb-4 text-muted-foreground" />
+            <p className="text-sm text-foreground">
+              Upload a <span className="font-bold">JSON file</span> with your data
+            </p>
+          </CardContent>
+        </Card>
 
-    <div className="data-source-content">
+        {/* API Connection Card */}
+        <Card 
+          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring ${
+            dataSource === 'api' ? 'bg-primary text-primary-foreground ring-2 ring-primary' : ''
+          }`}
+          onClick={() => setDataSource('api')}
+        >
+          <CardContent className="p-6 flex flex-col items-center justify-center text-center min-h-[120px]">
+            <Plug className={`h-8 w-8 mb-4 ${dataSource === 'api' ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
+            <p className={`text-sm ${dataSource === 'api' ? 'text-primary-foreground' : 'text-foreground'}`}>
+              Connect to data via an <span className="font-bold">API endpoint</span>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Data source content */}
       {dataSource === 'file' && (
-        <div className="upload-section">
-          <div 
-            className="drop-zone"
-            ref={dropZoneRef}
-          >
-            <p>Drop JSON file here or</p>
-            <label className="file-button">
+        <div 
+          ref={dropZoneRef}
+          className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-ring transition-colors cursor-pointer"
+        >
+          <FileText className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground mb-4">Drop JSON file here or</p>
+          <div className="inline-block">
+            <input
+              type="file"
+              accept=".json,application/json"
+              onChange={handleFileInputChange}
+              className="hidden"
+              id="file-upload"
+            />
+            <label 
+              htmlFor="file-upload"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer"
+            >
               Choose File
-              <input
-                type="file"
-                accept=".json,application/json"
-                onChange={handleFileInputChange}
-                style={{ display: 'none' }}
-              />
             </label>
-            <p className="file-limit">Max 2MB</p>
           </div>
+          <p className="text-xs text-muted-foreground mt-2">Max 2MB</p>
         </div>
       )}
 
       {dataSource === 'api' && (
-        <div className="mb-5">
-          <div className="form-group">
-            <label className="form-label">API URL</label>
-            <input
-              type="text"
-              className="form-input"
-              value={apiConfig.url}
-              onChange={(e) => setApiConfig(prev => ({ ...prev, url: e.target.value }))}
-              placeholder="https://api.example.com/data"
-            />
-          </div>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">Method</label>
-              <select
-                className="form-select"
-                value={apiConfig.method}
-                onChange={(e) => setApiConfig(prev => ({ ...prev, method: e.target.value }))}
-              >
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label className="form-label">Auth Type</label>
-              <select
-                className="form-select"
-                value={apiConfig.authType}
-                onChange={(e) => setApiConfig(prev => ({ ...prev, authType: e.target.value }))}
-              >
-                <option value="none">None</option>
-                <option value="bearer">Bearer Token</option>
-                <option value="apikey">API Key</option>
-              </select>
-            </div>
-          </div>
-
-          {(apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && (
-            <div className="form-group">
-              <label className="form-label">
-                {apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'}
-              </label>
-              <input
-                type="password"
-                className="form-input"
-                value={apiConfig.apiKey}
-                onChange={(e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value }))}
-                placeholder="Enter your token/key"
+        <Card>
+          <CardContent className="p-3 space-y-3">
+            {/* API URL */}
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">API URL</label>
+              <Input
+                placeholder="Enter API URL"
+                value={apiConfig.url}
+                onChange={(e) => setApiConfig(prev => ({ ...prev, url: e.target.value }))}
               />
             </div>
-          )}
 
-          <button
-            className="fetch-button"
-            onClick={fetchApiData}
-            disabled={isLoadingData || !apiConfig.url.trim()}
-          >
-            {isLoadingData ? 'Loading...' : 'Fetch Data'}
-          </button>
-        </div>
-      )}
+            {/* Method and Auth Type */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Method</label>
+                <Select 
+                  value={apiConfig.method} 
+                  onValueChange={(value) => setApiConfig(prev => ({ ...prev, method: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Banana" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="GET">GET</SelectItem>
+                    <SelectItem value="POST">POST</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-      {dataSource === 'manual' && (
-        <div>
-          <p>Paste your JSON data:</p>
-          <textarea
-            rows={8}
-            className="w-full mt-2 p-2 font-mono text-sm border border-gray-300 rounded"
-            placeholder="Paste JSON data here..."
-            onChange={(e) => {
-              try {
-                const parsed = JSON.parse(e.target.value);
-                processJsonData(parsed, 'manual');
-              } catch (error) {
-                // Invalid JSON, ignore
-              }
-            }}
-          />
-        </div>
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Auth type</label>
+                <Select 
+                  value={apiConfig.authType} 
+                  onValueChange={(value) => setApiConfig(prev => ({ ...prev, authType: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Bearer Token" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    <SelectItem value="bearer">Bearer Token</SelectItem>
+                    <SelectItem value="apikey">API Key</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Token field */}
+            {(apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && (
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Token</label>
+                <Input
+                  type="password"
+                  placeholder="Enter Bearer Token"
+                  value={apiConfig.apiKey}
+                  onChange={(e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value }))}
+                />
+              </div>
+            )}
+
+            {/* Fetch button */}
+            <Button 
+              className="w-full"
+              onClick={fetchApiData}
+              disabled={isLoadingData || !apiConfig.url.trim()}
+            >
+              {isLoadingData ? 'Loading...' : 'Fetch data'}
+            </Button>
+          </CardContent>
+        </Card>
       )}
     </div>
-  </section>
-);
+  );
+};
 
 export default DataSourceTabs;

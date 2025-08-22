@@ -40,17 +40,17 @@ const ConfigSection: React.FC<ConfigSectionProps> = ({
 }) => (
   <section className="config-section">
     <h3 className="text-lg font-semibold mb-2">Configuration</h3>
-    
+
     <div className="config-controls">
-      <button 
-        className="btn-primary text-xs" 
+      <button
+        className="btn-primary text-xs"
         onClick={() => setShowConfigSave(true)}
       >
         Save Config
       </button>
-      
-      <button 
-        className="btn-primary text-xs" 
+
+      <button
+        className="btn-primary text-xs"
         onClick={() => {
           loadConfigurations();
           setShowConfigList(true);
@@ -58,10 +58,10 @@ const ConfigSection: React.FC<ConfigSectionProps> = ({
       >
         Load Config
       </button>
-      
+
       {savedConfigs.length > 0 && (
-        <button 
-          className="btn-danger" 
+        <button
+          className="btn-danger"
           onClick={clearAllConfigurations}
         >
           Clear All
@@ -79,14 +79,14 @@ const ConfigSection: React.FC<ConfigSectionProps> = ({
           onChange={(e) => setConfigName(e.target.value)}
         />
         <div className="config-controls">
-          <button 
-            className="btn-primary text-xs" 
+          <button
+            className="btn-primary text-xs"
             onClick={saveConfiguration}
           >
             Save
           </button>
-          <button 
-            className="btn-secondary text-xs" 
+          <button
+            className="btn-secondary text-xs"
             onClick={() => setShowConfigSave(false)}
           >
             Cancel
@@ -104,14 +104,14 @@ const ConfigSection: React.FC<ConfigSectionProps> = ({
               {new Date(config.savedAt).toLocaleDateString()}
             </div>
             <div className="config-actions">
-              <button 
-                className="config-action-btn" 
+              <button
+                className="config-action-btn"
                 onClick={() => loadConfiguration(config)}
               >
                 Load
               </button>
-              <button 
-                className="config-action-btn" 
+              <button
+                className="config-action-btn"
                 onClick={() => deleteConfiguration(config.name)}
               >
                 Delete
