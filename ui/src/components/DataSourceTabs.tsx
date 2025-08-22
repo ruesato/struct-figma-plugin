@@ -36,36 +36,36 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
   dropZoneRef,
   handleFileInputChange
 }) => {
-  
+
   return (
     <div className="mb-6">
       {/* Two-column card layout */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         {/* JSON File Upload Card */}
-        <Card 
-          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring ${
-            dataSource === 'file' ? 'ring-2 ring-primary' : ''
+        <Card
+          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring text-foreground ${
+            dataSource === 'file' ? 'bg-primary ring-2 ring-primary' : ''
           }`}
           onClick={() => setDataSource('file')}
         >
           <CardContent className="p-6 flex flex-col items-center justify-center text-center min-h-[120px]">
-            <FileText className="h-8 w-8 mb-4 text-muted-foreground" />
-            <p className="text-sm text-foreground">
+            <FileText className="h-8 w-8 mb-4" />
+            <p className="text-sm">
               Upload a <span className="font-bold">JSON file</span> with your data
             </p>
           </CardContent>
         </Card>
 
         {/* API Connection Card */}
-        <Card 
-          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring ${
-            dataSource === 'api' ? 'bg-primary text-primary-foreground ring-2 ring-primary' : ''
+        <Card
+          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring text-foreground ${
+            dataSource === 'api' ? 'bg-primary ring-2 ring-primary' : ''
           }`}
           onClick={() => setDataSource('api')}
         >
           <CardContent className="p-6 flex flex-col items-center justify-center text-center min-h-[120px]">
-            <Plug className={`h-8 w-8 mb-4 ${dataSource === 'api' ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
-            <p className={`text-sm ${dataSource === 'api' ? 'text-primary-foreground' : 'text-foreground'}`}>
+            <Plug className="h-8 w-8 mb-4" />
+            <p className="text-sm">
               Connect to data via an <span className="font-bold">API endpoint</span>
             </p>
           </CardContent>
@@ -74,7 +74,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
       {/* Data source content */}
       {dataSource === 'file' && (
-        <div 
+        <div
           ref={dropZoneRef}
           className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-ring transition-colors cursor-pointer"
         >
@@ -88,7 +88,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
               className="hidden"
               id="file-upload"
             />
-            <label 
+            <label
               htmlFor="file-upload"
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer"
             >
@@ -116,8 +116,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-sm text-muted-foreground">Method</label>
-                <Select 
-                  value={apiConfig.method} 
+                <Select
+                  value={apiConfig.method}
                   onValueChange={(value) => setApiConfig(prev => ({ ...prev, method: value }))}
                 >
                   <SelectTrigger>
@@ -132,8 +132,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
               <div className="space-y-2">
                 <label className="text-sm text-muted-foreground">Auth type</label>
-                <Select 
-                  value={apiConfig.authType} 
+                <Select
+                  value={apiConfig.authType}
                   onValueChange={(value) => setApiConfig(prev => ({ ...prev, authType: value }))}
                 >
                   <SelectTrigger>
@@ -162,8 +162,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             )}
 
             {/* Fetch button */}
-            <Button 
-              className="w-full"
+            <Button
+              className="w-full text-white"
               onClick={fetchApiData}
               disabled={isLoadingData || !apiConfig.url.trim()}
             >

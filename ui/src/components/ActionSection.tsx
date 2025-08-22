@@ -19,7 +19,7 @@ const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectio
     <Button
       onClick={handleApplyData}
       disabled={selectionCount === 0}
-      className="h-11 flex-1"
+      className="h-11 flex-1 text-white"
     >
       Apply data to selection
     </Button>
