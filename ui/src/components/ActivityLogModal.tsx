@@ -1,5 +1,6 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Button } from './ui/button';
 
 interface ActivityLogModalProps {
   isOpen: boolean;
@@ -8,133 +9,62 @@ interface ActivityLogModalProps {
 }
 
 const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, logs }) => {
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case 'error':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'warn':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'info':
-      default:
-        return 'text-blue-600 bg-blue-50 border-blue-200';
-    }
-  };
-
-  const getLevelIcon = (level: string) => {
-    switch (level) {
-      case 'error':
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-        );
-      case 'warn':
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-        );
-      case 'info':
-      default:
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-          </svg>
-        );
+  const formatDate = (timestamp: string) => {
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleDateString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch {
+      return timestamp;
     }
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50"
-            onClick={onClose}
-          />
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-2xl p-0">
+        {/* Header */}
+        <DialogHeader className="p-6 pb-4">
+          <DialogTitle className="text-sm font-normal text-zinc-300 uppercase tracking-wide">
+            ACTIVITY HISTORY
+          </DialogTitle>
+        </DialogHeader>
 
-          {/* Modal Panel */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-2xl max-h-[80vh] bg-white rounded-xl shadow-2xl mx-4 overflow-hidden"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">Activity Log</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  {logs.length} {logs.length === 1 ? 'entry' : 'entries'}
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+        {/* Content */}
+        <div className="px-6 pb-6">
+          {logs.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-zinc-400">No activity logged yet.</p>
             </div>
-
-            {/* Content */}
-            <div className="p-6 overflow-y-auto max-h-96">
-              {logs.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+          ) : (
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {logs.map((log, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="text-xs text-zinc-400">
+                    {formatDate(log.timestamp)}
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No activity yet</h3>
-                  <p className="text-gray-500">Activity will appear here when you start using the plugin.</p>
+                  <div className="text-sm text-zinc-100 leading-relaxed">
+                    {log.message}
+                  </div>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {logs.map((log, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className={`p-3 rounded-lg border ${getLevelColor(log.level)}`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          {getLevelIcon(log.level)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium leading-relaxed">{log.message}</p>
-                          <p className="text-xs opacity-75 mt-1">{log.timestamp}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+              ))}
             </div>
+          )}
 
-            {/* Footer */}
-            <div className="flex items-center justify-between p-6 bg-gray-50 border-t border-gray-200">
-              <div className="text-sm text-gray-500">
-                Showing {Math.min(logs.length, 100)} most recent entries
-              </div>
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </motion.div>
+          {/* Close Button */}
+          <div className="flex justify-center pt-6 mt-6 border-t border-zinc-800">
+            <Button
+              onClick={onClose}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700 px-8"
+            >
+              Close
+            </Button>
+          </div>
         </div>
-      )}
-    </AnimatePresence>
+      </DialogContent>
+    </Dialog>
   );
 };
 

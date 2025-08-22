@@ -1,4 +1,9 @@
 import React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Grip, Trash2, Plus, X } from 'lucide-react';
 
 interface BuilderPart {
   type: 'key' | 'text' | 'separator';
@@ -41,125 +46,133 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
   closeValueBuilder,
   saveValueBuilder
 }) => {
-  if (!valueBuilderModal.isOpen) return null;
-
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-header">
-          <h3 className="modal-title">
-            Value Builder: {valueBuilderModal.mappingKey}
-          </h3>
-          <button 
-            className="modal-close" 
-            onClick={closeValueBuilder}
-          >
-            ×
-          </button>
-        </div>
+    <Dialog open={valueBuilderModal.isOpen} onOpenChange={closeValueBuilder}>
+      <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-2xl p-0">
+        {/* Header */}
+        <DialogHeader className="p-6 pb-4">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-sm font-normal text-zinc-300 uppercase tracking-wide">
+              VALUE BUILDER: {valueBuilderModal.mappingKey}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={closeValueBuilder}
+              className="h-6 w-6 p-0 text-zinc-400 hover:text-white hover:bg-zinc-800"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogHeader>
 
-        <div className="add-part-buttons">
-          <button 
-            className="add-part-btn" 
+        <div className="px-6 pb-6 space-y-4">
+          {/* Preview Section */}
+          {jsonData && jsonData.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm text-zinc-300">Preview</label>
+              <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-md text-sm text-zinc-100">
+                {evaluateValueBuilder(currentBuilder, jsonData[0])}
+              </div>
+            </div>
+          )}
+
+          {/* Builder Parts */}
+          <div className="space-y-2">
+            {currentBuilder.parts.map((part, index) => (
+              <div key={index} className="flex items-center gap-3 p-3 bg-zinc-900 border border-zinc-800 rounded-md">
+                {/* Drag Handle */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-zinc-400 hover:text-white cursor-grab"
+                >
+                  <Grip className="h-4 w-4" />
+                </Button>
+
+                {/* Type Selector */}
+                <Select
+                  value={part.type}
+                  onValueChange={(value) => updateBuilderPart(index, 'type', value)}
+                >
+                  <SelectTrigger className="w-32 h-8 bg-zinc-800 border-zinc-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="key">JSON Key</SelectItem>
+                    <SelectItem value="text">Text</SelectItem>
+                    <SelectItem value="separator">Separator</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Value Input/Selector */}
+                <div className="flex-1">
+                  {part.type === 'key' ? (
+                    <Select
+                      value={part.value}
+                      onValueChange={(value) => updateBuilderPart(index, 'value', value)}
+                    >
+                      <SelectTrigger className="h-8 bg-zinc-800 border-zinc-700 text-white">
+                        <SelectValue placeholder="Select key..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-800 border-zinc-700">
+                        {jsonKeys.map(key => (
+                          <SelectItem key={key} value={key}>{key}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={part.value}
+                      onChange={(e) => updateBuilderPart(index, 'value', e.target.value)}
+                      placeholder={part.type === 'text' ? 'Enter text' : 'e.g., " - "'}
+                      className="h-8 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                    />
+                  )}
+                </div>
+
+                {/* Delete Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeBuilderPart(index)}
+                  className="h-8 w-8 p-0 text-zinc-400 hover:text-red-400 hover:bg-zinc-800"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {/* Add Another Value Button */}
+          <Button
+            variant="ghost"
             onClick={() => addBuilderPart('key')}
+            className="w-full h-10 border border-dashed border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-900"
           >
-            Add Key
-          </button>
-          <button 
-            className="add-part-btn" 
-            onClick={() => addBuilderPart('text')}
-          >
-            Add Text
-          </button>
-          <button 
-            className="add-part-btn" 
-            onClick={() => addBuilderPart('separator')}
-          >
-            Add Separator
-          </button>
-        </div>
+            <Plus className="h-4 w-4 mr-2" />
+            Add another value
+          </Button>
 
-        {currentBuilder.parts.map((part, index) => (
-          <div key={index} className="builder-part">
-            <div className="reorder-controls">
-              <button
-                className="reorder-btn"
-                onClick={() => moveBuilderPart(index, Math.max(0, index - 1))}
-                disabled={index === 0}
-              >
-                ↑
-              </button>
-              <button
-                className="reorder-btn"
-                onClick={() => moveBuilderPart(index, Math.min(currentBuilder.parts.length - 1, index + 1))}
-                disabled={index === currentBuilder.parts.length - 1}
-              >
-                ↓
-              </button>
-            </div>
-
-            <select
-              value={part.type}
-              onChange={(e) => updateBuilderPart(index, 'type', e.target.value)}
+          {/* Action Buttons */}
+          <div className="flex gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={closeValueBuilder}
+              className="flex-1 bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
             >
-              <option value="key">JSON Key</option>
-              <option value="text">Static Text</option>
-              <option value="separator">Separator</option>
-            </select>
-
-            {part.type === 'key' ? (
-              <select
-                value={part.value}
-                onChange={(e) => updateBuilderPart(index, 'value', e.target.value)}
-              >
-                <option value="">Select key...</option>
-                {jsonKeys.map(key => (
-                  <option key={key} value={key}>{key}</option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type="text"
-                value={part.value}
-                onChange={(e) => updateBuilderPart(index, 'value', e.target.value)}
-                placeholder={part.type === 'text' ? 'Enter text' : 'e.g., " - "'}
-              />
-            )}
-
-            <button
-              className="remove-part-btn"
-              onClick={() => removeBuilderPart(index)}
+              Cancel
+            </Button>
+            <Button
+              onClick={saveValueBuilder}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              ×
-            </button>
+              Save
+            </Button>
           </div>
-        ))}
-
-        {jsonData && jsonData.length > 0 && (
-          <div className="preview-section">
-            <div className="preview-label">Preview:</div>
-            <div className="preview-value">
-              {evaluateValueBuilder(currentBuilder, jsonData[0])}
-            </div>
-          </div>
-        )}
-
-        <div className="modal-actions">
-          <button 
-            className="modal-btn secondary" 
-            onClick={closeValueBuilder}
-          >
-            Cancel
-          </button>
-          <button 
-            className="modal-btn primary" 
-            onClick={saveValueBuilder}
-          >
-            Save
-          </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
