@@ -64,7 +64,7 @@ const App = () => {
   const addToastError = useCallback((title: string, message: string, severity: ToastError['severity'] = 'error', technicalDetails?: string) => {
     const timestamp = new Date().toLocaleTimeString();
     const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Add to toast
     const toastError: ToastError = {
       id,
@@ -74,7 +74,7 @@ const App = () => {
       timestamp
     };
     setToastErrors(prev => [...prev, toastError]);
-    
+
     // Also add to activity log with technical details if provided
     const logMessage = technicalDetails ? `${title}: ${message} (${technicalDetails})` : `${title}: ${message}`;
     const logLevel = severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'info';
@@ -412,22 +412,21 @@ const App = () => {
         onDismiss={dismissToastError}
         onOpenActivityLog={() => setIsActivityModalOpen(true)}
       />
-      
+
       {/* Header */}
       <div className="mb-6">
-        <div className="text-white text-sm font-medium mb-4">Struct</div>
         <div className="flex items-center justify-between mb-6">
           <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wide">
             {selectionCount} Selected layers
           </div>
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={() => setIsConfigModalOpen(true)}
               className="text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors"
             >
               Saved configurations...
             </button>
-            <button 
+            <button
               onClick={() => setIsActivityModalOpen(true)}
               className="text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors"
             >

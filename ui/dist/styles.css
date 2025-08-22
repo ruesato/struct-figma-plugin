@@ -1248,9 +1248,6 @@ video {
 .mt-0 {
   margin-top: 0px;
 }
-.mt-0\.5 {
-  margin-top: 0.125rem;
-}
 .mt-1 {
   margin-top: 4px;
 }
@@ -1387,9 +1384,6 @@ video {
 }
 .max-h-96 {
   max-height: 24rem;
-}
-.max-h-\[80vh\] {
-  max-height: 80vh;
 }
 .min-h-\[120px\] {
   min-height: 120px;
@@ -2595,11 +2589,6 @@ video {
 .hover\:bg-gray-300:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:bg-gray-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:bg-green-700:hover {
