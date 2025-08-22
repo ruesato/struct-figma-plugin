@@ -5,26 +5,11 @@
 @layer base {
   :root {
     /* Dark theme variables matching Figma design */
-    /*--background: 222.2 84% 4.9%; /* zinc-900 #18181b */
     --background: 240, 6%, 10%;
     --foreground: 210 40% 98%; /* white text #fafafa */
-    --card: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
-    --card-foreground: 210 40% 98%; /* white text #fafafa */
-    --popover: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
-    --popover-foreground: 210 40% 98%; /* white text #fafafa */
-    --primary: 215.4 100% 46.9%; /* #1a56db - primary blue from design */
-    --primary-foreground: 222.2 84% 4.9%; /* dark text on primary #18181b */
-    --secondary: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
-    --secondary-foreground: 210 40% 98%; /* white text #fafafa */
     --muted: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
     --muted-foreground: 215 20.2% 65.1%; /* zinc-500 #a1a1aa */
-    --accent: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
-    --accent-foreground: 210 40% 98%; /* white text #fafafa */
-    --destructive: 0 84.2% 60.2%; /* red */
-    --destructive-foreground: 210 40% 98%; /* white text */
     --border: 215 27.9% 16.9%; /* zinc-700 #3f3f46 */
-    --input: 215 27.9% 16.9%; /* zinc-700 #3f3f46 */
-    --ring: 215.4 100% 46.9%; /* primary blue */
     --radius: 8px; /* lg radius from design */
   }
 }
@@ -46,9 +31,6 @@
     @apply bg-figma-primary hover:bg-figma-primaryHover text-white border-none px-4 py-2 rounded font-medium text-sm cursor-pointer transition-colors duration-200;
   }
 
-  .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-figma-text border border-figma-border px-4 py-2 rounded font-medium text-sm cursor-pointer transition-colors duration-200;
-  }
 
   .btn-danger {
     @apply bg-figma-danger hover:bg-figma-dangerHover text-white border-none px-2 py-1 rounded text-xs cursor-pointer transition-colors duration-200;
@@ -58,30 +40,6 @@
     @apply bg-figma-success hover:bg-figma-successHover text-white border-none px-4 py-3 rounded-md text-base font-semibold cursor-pointer transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Form elements */
-  .form-input {
-    @apply w-full px-2 py-1.5 border border-gray-300 rounded text-sm box-border focus:outline-none focus:border-figma-primary;
-  }
-
-  .form-select {
-    @apply w-full px-2 py-1.5 border border-gray-300 rounded text-sm box-border focus:outline-none focus:border-figma-primary;
-  }
-
-  .form-label {
-    @apply block text-sm font-medium mb-1 text-figma-text;
-  }
-
-  .form-group {
-    @apply mb-3;
-  }
-
-  .form-row {
-    @apply flex gap-2;
-  }
-
-  .form-row .form-group {
-    @apply flex-1;
-  }
 
   .file-button {
     @apply inline-block bg-figma-primary hover:bg-figma-primaryHover text-white px-4 py-2 rounded cursor-pointer my-2 text-sm font-medium;
