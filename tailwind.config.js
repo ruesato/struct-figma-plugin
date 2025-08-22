@@ -11,8 +11,8 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "var(--figma-color-bg)",
+        foreground: "var(--figma-color-text)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -44,7 +44,7 @@ module.exports = {
         // Keep Figma-specific colors for compatibility
         figma: {
           bg: '#ffffff',
-          border: '#e5e5e5', 
+          border: '#e5e5e5',
           text: '#333333',
           textSecondary: '#666666',
           primary: '#0066cc',
@@ -65,7 +65,7 @@ module.exports = {
       },
       fontSize: {
         'xs': '12px',
-        'sm': '14px', 
+        'sm': '14px',
         'base': '14px',
         'lg': '16px',
         'xl': '18px'
@@ -75,7 +75,7 @@ module.exports = {
       },
       spacing: {
         '1': '4px',
-        '2': '8px', 
+        '2': '8px',
         '3': '12px',
         '4': '16px',
         '5': '20px',
@@ -85,4 +85,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 }
-

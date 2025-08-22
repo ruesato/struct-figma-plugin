@@ -501,7 +501,8 @@ video {
 }
   :root {
     /* Dark theme variables matching Figma design */
-    --background: 222.2 84% 4.9%; /* zinc-900 #18181b */
+    /*--background: 222.2 84% 4.9%; /* zinc-900 #18181b */
+    --background: 240, 6%, 10%;
     --foreground: 210 40% 98%; /* white text #fafafa */
     --card: 217.2 32.6% 17.5%; /* zinc-800 #27272a */
     --card-foreground: 210 40% 98%; /* white text #fafafa */
@@ -526,8 +527,8 @@ video {
   border-color: hsl(var(--border));
 }
   body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--figma-color-bg);
+  color: var(--figma-color-text);
     font-family: 'Inter', sans-serif;
 }
 .container {
@@ -1843,10 +1844,7 @@ video {
   border-color: rgb(39 39 42 / var(--tw-border-opacity, 1));
 }
 .bg-background {
-  background-color: hsl(var(--background));
-}
-.bg-background\/80 {
-  background-color: hsl(var(--background) / 0.8);
+  background-color: var(--figma-color-bg);
 }
 .bg-black {
   --tw-bg-opacity: 1;
@@ -2222,7 +2220,7 @@ video {
   color: rgb(102 102 102 / var(--tw-text-opacity, 1));
 }
 .text-foreground {
-  color: hsl(var(--foreground));
+  color: var(--figma-color-text);
 }
 .text-gray-400 {
   --tw-text-opacity: 1;
@@ -2412,7 +2410,7 @@ video {
   --tw-ring-color: rgb(63 63 70 / var(--tw-ring-opacity, 1));
 }
 .ring-offset-background {
-  --tw-ring-offset-color: hsl(var(--background));
+  --tw-ring-offset-color: var(--figma-color-bg);
 }
 .blur {
   --tw-blur: blur(8px);
@@ -2556,7 +2554,7 @@ video {
 }
 
 .file\:text-foreground::file-selector-button {
-  color: hsl(var(--foreground));
+  color: var(--figma-color-text);
 }
 
 .placeholder\:text-muted-foreground::-moz-placeholder {

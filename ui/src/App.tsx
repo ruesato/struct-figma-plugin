@@ -406,7 +406,7 @@ const App = () => {
   }, [handleFileUpload]);
 
   return (
-    <div className="bg-background text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans">
+    <div className="bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans">
       <ErrorToast
         errors={toastErrors}
         onDismiss={dismissToastError}
