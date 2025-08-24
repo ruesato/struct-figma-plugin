@@ -199,7 +199,7 @@
   }
 
   :root {
- 		scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+ 		scrollbar-color: hsl(var(--muted)) hsla(var(--background), 0);
 	 	scrollbar-width: thin;
   }
 }
