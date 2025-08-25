@@ -18,13 +18,20 @@ const ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
 const utils_1 = require("./utils");
 const App = () => {
     // All state declarations here...
-    const [jsonData, setJsonData] = (0, react_1.useState)(null);
-    const [jsonKeys, setJsonKeys] = (0, react_1.useState)([]);
-    const [mappings, setMappings] = (0, react_1.useState)([]);
+    const [dataSource, setDataSource] = (0, react_1.useState)('file');
+    // Separate data storage for each source type
+    const [dataBySource, setDataBySource] = (0, react_1.useState)({
+        file: { jsonData: null, jsonKeys: [], mappings: [] },
+        api: { jsonData: null, jsonKeys: [], mappings: [] }
+    });
+    // Current active data based on selected source
+    const currentSourceData = dataBySource[dataSource];
+    const jsonData = currentSourceData.jsonData;
+    const jsonKeys = currentSourceData.jsonKeys;
+    const mappings = currentSourceData.mappings;
     const [selectionCount, setSelectionCount] = (0, react_1.useState)(0);
     const [logs, setLogs] = (0, react_1.useState)([]);
     const [isDragging, setIsDragging] = (0, react_1.useState)(false);
-    const [dataSource, setDataSource] = (0, react_1.useState)('file');
     const [apiConfig, setApiConfig] = (0, react_1.useState)({
         url: '',
         method: 'GET',
@@ -113,9 +120,16 @@ const App = () => {
             jsonKey: key,
             layerName: (0, utils_1.getDefaultLayerName)(key)
         }));
-        setJsonData(dataArray);
-        setJsonKeys(keys);
-        setMappings(newMappings);
+        // Determine which source to update based on the source parameter
+        const sourceKey = source.toLowerCase() === 'file' ? 'file' : 'api';
+        setDataBySource(prev => ({
+            ...prev,
+            [sourceKey]: {
+                jsonData: dataArray,
+                jsonKeys: keys,
+                mappings: newMappings
+            }
+        }));
         addLog(`✅ Data processed: ${dataArray.length} items, ${keys.length} keys found`, 'info');
     }, [addLog, addToastError]);
     const fetchApiData = (0, react_1.useCallback)(async () => {
@@ -155,7 +169,7 @@ const App = () => {
             name: configName.trim(),
             dataSource,
             apiConfig,
-            mappings,
+            mappings: mappings, // Use current active mappings
             valueBuilders,
             savedAt: new Date().toISOString()
         };
@@ -178,7 +192,15 @@ const App = () => {
     const loadConfiguration = (0, react_1.useCallback)((config) => {
         setDataSource(config.dataSource);
         setApiConfig(config.apiConfig);
-        setMappings(config.mappings || []);
+        // Update mappings for the specific data source
+        const sourceKey = config.dataSource;
+        setDataBySource(prev => ({
+            ...prev,
+            [sourceKey]: {
+                ...prev[sourceKey],
+                mappings: config.mappings || []
+            }
+        }));
         setValueBuilders(config.valueBuilders || {});
         addLog(`Configuration "${config.name}" loaded`, 'info');
         setShowConfigList(false);
@@ -224,10 +246,17 @@ const App = () => {
         }
     }, [handleFileUpload]);
     const updateMapping = (0, react_1.useCallback)((jsonKey, layerName) => {
-        setMappings(prev => prev.map(mapping => mapping.jsonKey === jsonKey
-            ? { ...mapping, layerName }
-            : mapping));
-    }, []);
+        const sourceKey = dataSource;
+        setDataBySource(prev => ({
+            ...prev,
+            [sourceKey]: {
+                ...prev[sourceKey],
+                mappings: prev[sourceKey].mappings.map(mapping => mapping.jsonKey === jsonKey
+                    ? { ...mapping, layerName }
+                    : mapping)
+            }
+        }));
+    }, [dataSource]);
     // Value builder functions
     const openValueBuilder = (0, react_1.useCallback)((mappingKey) => {
         const currentMapping = mappings.find(m => m.jsonKey === mappingKey);
@@ -313,11 +342,17 @@ const App = () => {
         }, '*');
     }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
     const handleClearData = (0, react_1.useCallback)(() => {
-        setJsonData(null);
-        setJsonKeys([]);
-        setMappings([]);
-        addLog('Data cleared', 'info');
-    }, [addLog]);
+        const sourceKey = dataSource;
+        setDataBySource(prev => ({
+            ...prev,
+            [sourceKey]: {
+                jsonData: null,
+                jsonKeys: [],
+                mappings: []
+            }
+        }));
+        addLog(`${sourceKey === 'file' ? 'File' : 'API'} data cleared`, 'info');
+    }, [dataSource, addLog]);
     (0, react_1.useEffect)(() => {
         const handleMessage = (event) => {
             const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
