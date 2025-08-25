@@ -199,7 +199,7 @@
   }
 
   :root {
- 		scrollbar-color: hsl(var(--muted)) hsla(var(--background), 0);
+ 		scrollbar-color: var(--figma-color-border) hsla(var(--background), 0);
 	 	scrollbar-width: thin;
   }
 }

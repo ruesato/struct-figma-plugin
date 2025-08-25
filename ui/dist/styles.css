@@ -1035,7 +1035,7 @@ video {
   background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
 }
 :root {
- 		scrollbar-color: hsl(var(--muted)) hsla(var(--background), 0);
+ 		scrollbar-color: var(--figma-color-border) hsla(var(--background), 0);
 	 	scrollbar-width: thin;
   }
 .sr-only {
@@ -2097,6 +2097,15 @@ video {
 }
 .tracking-wider {
   letter-spacing: 0.05em;
+}
+.text-\[var\(--figma-color-text\)\] {
+  color: var(--figma-color-text);
+}
+.text-\[var\(--figma-color-text-primary\)\] {
+  color: var(--figma-color-text-primary);
+}
+.text-\[var\(--figma-color-text-secondary\)\] {
+  color: var(--figma-color-text-secondary);
 }
 .text-blue-100 {
   --tw-text-opacity: 1;
