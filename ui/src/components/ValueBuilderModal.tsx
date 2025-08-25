@@ -48,18 +48,18 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
 }) => {
   return (
     <Dialog open={valueBuilderModal.isOpen} onOpenChange={closeValueBuilder}>
-      <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-2xl p-0">
+      <DialogContent className="bg-[var(--figma-color-bg)] border-[var(--figma-color-border)] text-[var(--figma-color-text)] max-w-2xl p-0 shadow-lg">
         {/* Header */}
         <DialogHeader className="p-6 pb-4">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-sm font-normal text-zinc-300 uppercase tracking-wide">
+            <DialogTitle className="text-sm font-normal text-[var(--figma-color-text-secondary)] uppercase tracking-wide">
               VALUE BUILDER: {valueBuilderModal.mappingKey}
             </DialogTitle>
             <Button
-              variant="ghost"
               size="sm"
+              variant="outline"
               onClick={closeValueBuilder}
-              className="h-6 w-6 p-0 text-zinc-400 hover:text-white hover:bg-zinc-800"
+              className="h-6 w-6 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)]"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -70,8 +70,8 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
           {/* Preview Section */}
           {jsonData && jsonData.length > 0 && (
             <div className="space-y-2">
-              <label className="text-sm text-zinc-300">Preview</label>
-              <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-md text-sm text-zinc-100">
+              <label className="text-sm text-[var(--figma-color-text)]">Preview</label>
+              <div className="p-3 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-md text-sm text-[var(--figma-color-text)]">
                 {evaluateValueBuilder(currentBuilder, jsonData[0])}
               </div>
             </div>
@@ -80,12 +80,12 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
           {/* Builder Parts */}
           <div className="space-y-2">
             {currentBuilder.parts.map((part, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-zinc-900 border border-zinc-800 rounded-md">
+              <div key={index} className="flex items-center gap-3 p-3 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-md">
                 {/* Drag Handle */}
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-zinc-400 hover:text-white cursor-grab"
+                  className="h-8 w-8 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] cursor-grab"
                 >
                   <Grip className="h-4 w-4" />
                 </Button>
@@ -95,10 +95,10 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
                   value={part.type}
                   onValueChange={(value) => updateBuilderPart(index, 'type', value)}
                 >
-                  <SelectTrigger className="w-32 h-8 bg-zinc-800 border-zinc-700 text-white">
+                  <SelectTrigger className="w-32 h-8 bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)] text-[var(--figma-color-text)]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                  <SelectContent className="bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)]">
                     <SelectItem value="key">JSON Key</SelectItem>
                     <SelectItem value="text">Text</SelectItem>
                     <SelectItem value="separator">Separator</SelectItem>
@@ -112,10 +112,10 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
                       value={part.value}
                       onValueChange={(value) => updateBuilderPart(index, 'value', value)}
                     >
-                      <SelectTrigger className="h-8 bg-zinc-800 border-zinc-700 text-white">
+                      <SelectTrigger className="h-8 bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)] text-[var(--figma-color-text)]">
                         <SelectValue placeholder="Select key..." />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectContent className="bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)]">
                         {jsonKeys.map(key => (
                           <SelectItem key={key} value={key}>{key}</SelectItem>
                         ))}
@@ -126,7 +126,7 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
                       value={part.value}
                       onChange={(e) => updateBuilderPart(index, 'value', e.target.value)}
                       placeholder={part.type === 'text' ? 'Enter text' : 'e.g., " - "'}
-                      className="h-8 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                      className="h-8 bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)] text-[var(--figma-color-text)] placeholder:text-[var(--figma-color-text-tertiary)]"
                     />
                   )}
                 </div>
@@ -136,7 +136,7 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => removeBuilderPart(index)}
-                  className="h-8 w-8 p-0 text-zinc-400 hover:text-red-400 hover:bg-zinc-800"
+                  className="h-8 w-8 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] hover:bg-[var(--figma-color-bg-danger)]"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -148,7 +148,7 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
           <Button
             variant="ghost"
             onClick={() => addBuilderPart('key')}
-            className="w-full h-10 border border-dashed border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-900"
+            className="w-full h-10 border border-dashed border-[var(--figma-color-border)] text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] hover:border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-secondary)]"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add another value
@@ -159,13 +159,13 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
             <Button
               variant="outline"
               onClick={closeValueBuilder}
-              className="flex-1 bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+              className="flex-1 bg-transparent border-[var(--figma-color-border)] text-[var(--figma-color-text)] hover:bg-[var(--figma-color-bg-secondary)] hover:text-[var(--figma-color-text)]"
             >
               Cancel
             </Button>
             <Button
               onClick={saveValueBuilder}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              className="flex-1 bg-[var(--figma-color-bg-brand)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)]"
             >
               Save
             </Button>

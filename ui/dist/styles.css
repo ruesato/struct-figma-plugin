@@ -2482,6 +2482,14 @@ video {
   color: var(--figma-color-text-disabled);
 }
 
+.placeholder\:text-\[var\(--figma-color-text-tertiary\)\]::-moz-placeholder {
+  color: var(--figma-color-text-tertiary);
+}
+
+.placeholder\:text-\[var\(--figma-color-text-tertiary\)\]::placeholder {
+  color: var(--figma-color-text-tertiary);
+}
+
 .placeholder\:text-muted-foreground::-moz-placeholder {
   color: hsl(var(--muted-foreground));
 }
@@ -2490,27 +2498,24 @@ video {
   color: hsl(var(--muted-foreground));
 }
 
-.placeholder\:text-zinc-500::-moz-placeholder {
-  --tw-text-opacity: 1;
-  color: rgb(113 113 122 / var(--tw-text-opacity, 1));
-}
-
-.placeholder\:text-zinc-500::placeholder {
-  --tw-text-opacity: 1;
-  color: rgb(113 113 122 / var(--tw-text-opacity, 1));
+.hover\:border-\[var\(--figma-color-border\)\]:hover {
+  border-color: var(--figma-color-border);
 }
 
 .hover\:border-\[var\(--figma-color-border-onselected\)\]:hover {
   border-color: var(--figma-color-border-onselected);
 }
 
-.hover\:border-zinc-600:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(82 82 91 / var(--tw-border-opacity, 1));
-}
-
 .hover\:bg-\[var\(--figma-color-bg-brand-hover\)\]:hover {
   background-color: var(--figma-color-bg-brand-hover);
+}
+
+.hover\:bg-\[var\(--figma-color-bg-danger\)\]:hover {
+  background-color: var(--figma-color-bg-danger);
+}
+
+.hover\:bg-\[var\(--figma-color-bg-secondary\)\]:hover {
+  background-color: var(--figma-color-bg-secondary);
 }
 
 .hover\:bg-black:hover {
