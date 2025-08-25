@@ -8,10 +8,10 @@ interface ActionSectionProps {
 }
 
 const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectionCount, onOpenSaveModal }) => (
-  <div className="bg-background flex flex-row gap-3 p-6 w-full">
+  <div className="bg-[var(--figma-color-bg)] flex flex-row gap-3 p-6 w-full">
     <Button
       variant="outline"
-      className="h-11 px-8"
+      className="h-11 px-8 text-[var(--figma-color-text)]"
       onClick={onOpenSaveModal}
     >
       Save configuration
@@ -19,7 +19,7 @@ const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectio
     <Button
       onClick={handleApplyData}
       disabled={selectionCount === 0}
-      className="h-11 flex-1 text-white"
+      className="h-11 flex-1 bg-[var(--figma-color-bg-brand)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text-onbrand)]"
     >
       Apply data to selection
     </Button>
