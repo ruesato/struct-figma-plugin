@@ -1765,6 +1765,9 @@ video {
 .border-t-transparent {
   border-top-color: transparent;
 }
+.bg-\[var\(--figma-color-bg\)\] {
+  background-color: var(--figma-color-bg);
+}
 .bg-\[var\(--figma-color-bg-brand\)\] {
   background-color: var(--figma-color-bg-brand);
 }
@@ -2518,11 +2521,6 @@ video {
   background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));
 }
 
-.hover\:bg-zinc-600:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(82 82 91 / var(--tw-bg-opacity, 1));
-}
-
 .hover\:bg-zinc-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(63 63 70 / var(--tw-bg-opacity, 1));
@@ -2540,6 +2538,10 @@ video {
 
 .hover\:bg-opacity-10:hover {
   --tw-bg-opacity: 0.1;
+}
+
+.hover\:text-\[var\(--figma-color-text\)\]:hover {
+  color: var(--figma-color-text);
 }
 
 .hover\:text-blue-300:hover {
