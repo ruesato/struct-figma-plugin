@@ -11,7 +11,7 @@ const ActionSection: React.FC<ActionSectionProps> = ({ handleApplyData, selectio
   <div className="bg-[var(--figma-color-bg)] flex flex-row gap-3 p-6 w-full">
     <Button
       variant="outline"
-      className="h-11 px-8 text-[var(--figma-color-text)]"
+      className="h-11 px-8 border-[var(--figma-color-border)] text-[var(--figma-color-text)]"
       onClick={onOpenSaveModal}
     >
       Save configuration

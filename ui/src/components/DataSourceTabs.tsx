@@ -164,7 +164,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
             {/* Fetch button */}
             <Button
-              className="w-full text-[var(--figma-color-text)]"
+              className="w-full bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text)]"
               onClick={fetchApiData}
               disabled={isLoadingData || !apiConfig.url.trim()}
             >
