@@ -43,8 +43,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
       <div className="grid grid-cols-2 gap-3 mb-6">
         {/* JSON File Upload Card */}
         <Card
-          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-foreground bg-[var(--figma-color-bg-secondary)] ${
-            dataSource === 'file' ? 'bg-[var(--figma-color-bg-brand)]' : ''
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] bg-[var(--figma-color-bg-secondary)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] hover:text-[var(--figma-color-text-onbrand)] ${
+            dataSource === 'file' ? 'bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)]' : ''
           }`}
           onClick={() => setDataSource('file')}
         >
@@ -58,8 +58,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
         {/* API Connection Card */}
         <Card
-          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-foreground bg-[var(--figma-color-bg-secondary)] ${
-            dataSource === 'api' ? 'bg-[var(--figma-color-bg-brand)]' : ''
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] bg-[var(--figma-color-bg-secondary)] hover:text-[var(--figma-color-text-onbrand)] ${
+            dataSource === 'api' ? 'bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)]' : ''
           }`}
           onClick={() => setDataSource('api')}
         >
@@ -78,8 +78,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
           ref={dropZoneRef}
           className="border-2 border-dashed border-[var(--figma-color-border)] rounded-lg p-8 text-center hover:border-[var(--figma-color-border-onselected)] transition-colors cursor-pointer"
         >
-          <FileText className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground mb-4">Drop JSON file here or</p>
+          <FileText className="h-8 w-8 mx-auto mb-4 text-[var(--figma-color-text)]" />
+          <p className="text-sm text-[var(--figma-color-text)] mb-4">Drop JSON file here or</p>
           <div className="inline-block">
             <input
               type="file"
@@ -90,12 +90,12 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             />
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-[var(--figma-color-bg-brand)] shadow-sm hover:bg-[var(--figma-color-bg-brand-hover)] hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-[var(--figma-color-bg-brand)] shadow-sm hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text-onbrand-secondary)] hover:text-[var(--figma-color-text-onbrand)] h-9 px-4 py-2 cursor-pointer"
             >
               Choose File
             </label>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">Max 2MB</p>
+          <p className="text-xs text-[var(--figma-color-text)] mt-2">Max 2MB</p>
         </div>
       )}
 
@@ -104,7 +104,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
           <CardContent className="p-3 space-y-3">
             {/* API URL */}
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">API URL</label>
+              <label className="text-sm text-[var(--figma-color-text)]">API URL</label>
               <Input
                 placeholder="Enter API URL"
                 value={apiConfig.url}
@@ -115,7 +115,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             {/* Method and Auth Type */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Method</label>
+                <label className="text-sm text-[var(--figma-color-text)]">Method</label>
                 <Select
                   value={apiConfig.method}
                   onValueChange={(value) => setApiConfig(prev => ({ ...prev, method: value }))}
@@ -131,7 +131,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Auth type</label>
+                <label className="text-sm text-[var(--figma-color-text)]">Auth type</label>
                 <Select
                   value={apiConfig.authType}
                   onValueChange={(value) => setApiConfig(prev => ({ ...prev, authType: value }))}
@@ -151,7 +151,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             {/* Token field */}
             {(apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && (
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Token</label>
+                <label className="text-sm text-[var(--figma-color-text)]">Token</label>
                 <Input
                   type="password"
                   placeholder="Enter Bearer Token"
@@ -163,7 +163,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
             {/* Fetch button */}
             <Button
-              className="w-full text-white"
+              className="w-full text-[var(--figma-color-text)]"
               onClick={fetchApiData}
               disabled={isLoadingData || !apiConfig.url.trim()}
             >

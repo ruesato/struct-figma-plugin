@@ -2104,6 +2104,12 @@ video {
 .text-\[var\(--figma-color-text\)\] {
   color: var(--figma-color-text);
 }
+.text-\[var\(--figma-color-text-onbrand\)\] {
+  color: var(--figma-color-text-onbrand);
+}
+.text-\[var\(--figma-color-text-onbrand-secondary\)\] {
+  color: var(--figma-color-text-onbrand-secondary);
+}
 .text-\[var\(--figma-color-text-primary\)\] {
   color: var(--figma-color-text-primary);
 }
@@ -2542,6 +2548,10 @@ video {
 
 .hover\:text-\[var\(--figma-color-text\)\]:hover {
   color: var(--figma-color-text);
+}
+
+.hover\:text-\[var\(--figma-color-text-onbrand\)\]:hover {
+  color: var(--figma-color-text-onbrand);
 }
 
 .hover\:text-blue-300:hover {
