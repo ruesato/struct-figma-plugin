@@ -1774,6 +1774,9 @@ video {
 .bg-\[var\(--figma-color-bg-secondary\)\] {
   background-color: var(--figma-color-bg-secondary);
 }
+.bg-\[var\(--figma-color-border\)\] {
+  background-color: var(--figma-color-border);
+}
 .bg-background {
   background-color: var(--figma-color-bg);
 }
@@ -2467,8 +2470,16 @@ video {
   font-weight: 500;
 }
 
-.file\:text-foreground::file-selector-button {
+.file\:text-\[var\(--figma-color-text\)\]::file-selector-button {
   color: var(--figma-color-text);
+}
+
+.placeholder\:text-\[var\(--figma-color-text-disabled\)\]::-moz-placeholder {
+  color: var(--figma-color-text-disabled);
+}
+
+.placeholder\:text-\[var\(--figma-color-text-disabled\)\]::placeholder {
+  color: var(--figma-color-text-disabled);
 }
 
 .placeholder\:text-muted-foreground::-moz-placeholder {
@@ -2588,6 +2599,10 @@ video {
 
 .focus\:border-transparent:focus {
   border-color: transparent;
+}
+
+.focus\:bg-\[var\(--figma-color-bg-hover\)\]:focus {
+  background-color: var(--figma-color-bg-hover);
 }
 
 .focus\:outline-none:focus {

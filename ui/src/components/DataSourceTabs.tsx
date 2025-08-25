@@ -100,7 +100,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
       )}
 
       {dataSource === 'api' && (
-        <Card>
+        <Card className="bg-[var(--figma-color-bg-secondary)] border-[var(--figma-color-border)]">
           <CardContent className="p-3 space-y-3">
             {/* API URL */}
             <div className="space-y-2">
@@ -109,6 +109,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
                 placeholder="Enter API URL"
                 value={apiConfig.url}
                 onChange={(e) => setApiConfig(prev => ({ ...prev, url: e.target.value }))}
+                className="bg-[var(--figma-color-bg)] border-[var(--figma-color-border)]"
               />
             </div>
 
