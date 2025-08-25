@@ -43,8 +43,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
       <div className="grid grid-cols-2 gap-3 mb-6">
         {/* JSON File Upload Card */}
         <Card
-          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring text-foreground ${
-            dataSource === 'file' ? 'bg-primary ring-2 ring-primary' : ''
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-foreground bg-[var(--figma-color-bg-secondary)] ${
+            dataSource === 'file' ? 'bg-[var(--figma-color-bg-brand)]' : ''
           }`}
           onClick={() => setDataSource('file')}
         >
@@ -58,8 +58,8 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
         {/* API Connection Card */}
         <Card
-          className={`cursor-pointer transition-all hover:ring-2 hover:ring-ring text-foreground ${
-            dataSource === 'api' ? 'bg-primary ring-2 ring-primary' : ''
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-foreground bg-[var(--figma-color-bg-secondary)] ${
+            dataSource === 'api' ? 'bg-[var(--figma-color-bg-brand)]' : ''
           }`}
           onClick={() => setDataSource('api')}
         >
@@ -76,7 +76,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
       {dataSource === 'file' && (
         <div
           ref={dropZoneRef}
-          className="border-2 border-dashed border-input rounded-lg p-8 text-center hover:border-ring transition-colors cursor-pointer"
+          className="border-2 border-dashed border-[var(--figma-color-border)] rounded-lg p-8 text-center hover:border-[var(--figma-color-border-onselected)] transition-colors cursor-pointer"
         >
           <FileText className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
           <p className="text-sm text-muted-foreground mb-4">Drop JSON file here or</p>
@@ -90,7 +90,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
             />
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-[var(--figma-color-bg-brand)] shadow-sm hover:bg-[var(--figma-color-bg-brand-hover)] hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer"
             >
               Choose File
             </label>
