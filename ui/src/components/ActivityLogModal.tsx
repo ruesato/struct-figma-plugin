@@ -24,10 +24,10 @@ const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, lo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-2xl p-0">
+      <DialogContent className="bg-[var(--figma-color-bg)] border-[var(--figma-color-border)] text-[var(--figma-color-text)] max-w-2xl p-0">
         {/* Header */}
         <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-sm font-normal text-zinc-300 uppercase tracking-wide">
+          <DialogTitle className="text-sm font-normal text-[var(--figma-color-text-secondary)] uppercase tracking-wide">
             ACTIVITY HISTORY
           </DialogTitle>
         </DialogHeader>
@@ -36,16 +36,16 @@ const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, lo
         <div className="px-6 pb-6">
           {logs.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-zinc-400">No activity logged yet.</p>
+              <p className="text-[var(--figma-color-text-secondary)]">No activity logged yet.</p>
             </div>
           ) : (
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {logs.map((log, index) => (
                 <div key={index} className="space-y-2">
-                  <div className="text-xs text-zinc-400">
+                  <div className="text-xs text-[var(--figma-color-text-secondary)]">
                     {formatDate(log.timestamp)}
                   </div>
-                  <div className="text-sm text-zinc-100 leading-relaxed">
+                  <div className="text-sm text-[var(--figma-color-text)] leading-relaxed">
                     {log.message}
                   </div>
                 </div>
@@ -54,10 +54,10 @@ const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, lo
           )}
 
           {/* Close Button */}
-          <div className="flex justify-center pt-6 mt-6 border-t border-zinc-800">
+          <div className="flex justify-center pt-6 mt-6 border-t border-[var(--figma-color-border)]">
             <Button
               onClick={onClose}
-              className="bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700 px-8"
+              className="bg-[var(--figma-color-bg-secondary)] hover:bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text)] border-[var(--figma-color-border)] px-8"
             >
               Close
             </Button>
