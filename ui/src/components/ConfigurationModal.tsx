@@ -67,16 +67,16 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-950 border-zinc-800 text-white max-w-md p-0">
+      <DialogContent className="bg-[var(--figma-color-bg)] border-[var(--figma-color-border)] text-[var(--figma-color-text)] max-w-md p-0">
         {/* Header */}
         <DialogHeader className="p-6 pb-0">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg font-medium text-white">Saved configurations</DialogTitle>
+            <DialogTitle className="text-lg font-medium text-[var(--figma-color-text)]">Saved configurations</DialogTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-6 w-6 p-0 text-zinc-400 hover:text-white hover:bg-zinc-800"
+              className="h-6 w-6 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] hover:bg-[var(--figma-color-bg-secondary)]"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -87,7 +87,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
         <div className="px-6 pb-6">
           {savedConfigs.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-zinc-400">No configurations saved yet.</p>
+              <p className="text-[var(--figma-color-text-secondary)]">No configurations saved yet.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -96,8 +96,8 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
                   key={config.name}
                   className={`group flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                     selectedConfig?.name === config.name
-                      ? 'bg-zinc-800 ring-1 ring-zinc-700'
-                      : 'hover:bg-zinc-900'
+                      ? 'bg-[var(--figma-color-bg-secondary)] ring-1 ring-[var(--figma-color-border)]'
+                      : 'hover:bg-[var(--figma-color-bg-secondary)]'
                   }`}
                   onClick={() => setSelectedConfig(config)}
                 >
@@ -106,17 +106,17 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
                       {/* Selection indicator */}
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         selectedConfig?.name === config.name
-                          ? 'border-blue-500 bg-blue-500'
-                          : 'border-zinc-600'
+                          ? 'border-[var(--figma-color-border-brand)] bg-[var(--figma-color-bg-brand)]'
+                          : 'border-[var(--figma-color-border)]'
                       }`}>
                         {selectedConfig?.name === config.name && (
-                          <div className="w-2 h-2 bg-white rounded-full" />
+                          <div className="w-2 h-2 bg-[var(--figma-color-text)] rounded-full" />
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{config.name}</p>
-                        <p className="text-xs text-zinc-400 truncate">
+                        <p className="text-sm font-medium text-[var(--figma-color-text)] truncate">{config.name}</p>
+                        <p className="text-xs text-[var(--figma-color-text-secondary)] truncate">
                           {new Date(config.savedAt).toLocaleDateString()} • {config.dataSource} • {config.mappings?.length || 0} mappings
                         </p>
                       </div>
@@ -130,7 +130,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
                       e.stopPropagation();
                       handleDeleteConfiguration(config.name);
                     }}
-                    className="h-8 w-8 p-0 text-zinc-400 hover:text-red-400 hover:bg-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="h-8 w-8 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text-danger)] hover:bg-[var(--figma-color-bg-secondary)] opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -138,12 +138,12 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
               ))}
               
               {/* Clear all button */}
-              <div className="pt-2 mt-4 border-t border-zinc-800">
+              <div className="pt-2 mt-4 border-t border-[var(--figma-color-border)]">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClearAll}
-                  className="text-xs text-zinc-400 hover:text-red-400 h-8 px-0"
+                  className="text-xs text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text-danger)] h-8 px-0"
                 >
                   Clear all configurations
                 </Button>
@@ -156,14 +156,14 @@ const ConfigurationModal: React.FC<ConfigurationModalProps> = ({
             <Button
               variant="outline"
               onClick={onClose}
-              className="flex-1 bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+              className="flex-1 bg-transparent border-[var(--figma-color-border)] text-[var(--figma-color-text-secondary)] hover:bg-[var(--figma-color-bg-secondary)] hover:text-[var(--figma-color-text)]"
             >
               Cancel
             </Button>
             <Button
               onClick={handleApplyConfiguration}
               disabled={!selectedConfig}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-[var(--figma-color-bg-brand)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Load configuration
             </Button>

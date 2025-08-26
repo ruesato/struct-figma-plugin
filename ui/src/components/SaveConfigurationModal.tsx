@@ -90,7 +90,7 @@ const SaveConfigurationModal: React.FC<SaveConfigurationModalProps> = ({
           {/* Configuration Preview */}
           <div className="mb-6 p-4 bg-[var(--figma-color-bg-secondary)] rounded-lg">
             <h3 className="text-sm font-medium text-[var(--figma-color-text)] mb-3">Configuration Preview</h3>
-            <div className="space-y-2 text-sm text-zinc-300">
+            <div className="space-y-2 text-sm text-[var(--figma-color-text-secondary)]">
               <div className="flex justify-between">
                 <span>Data Source:</span>
                 <span className="font-medium capitalize text-[var(--figma-color-text)]">{dataSource}</span>
@@ -139,7 +139,7 @@ const SaveConfigurationModal: React.FC<SaveConfigurationModalProps> = ({
               onChange={(e) => setConfigName(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isSaving}
-              className="w-full px-3 py-2 border border-[var(--figma-color-border)] bg-[var(--figma-color-bg-secondary)] text-[var(--figma-color-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-[var(--figma-color-text-secondary)] disabled:cursor-not-allowed placeholder:text-[var(--figma-color-text-tertiary)]"
+              className="w-full px-3 py-2 border border-[var(--figma-color-border)] bg-[var(--figma-color-bg-secondary)] text-[var(--figma-color-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--figma-color-border-brand)] focus:border-[var(--figma-color-border-brand)] disabled:bg-[var(--figma-color-text-secondary)] disabled:cursor-not-allowed placeholder:text-[var(--figma-color-text-tertiary)]"
               autoFocus
             />
             <p className="mt-1 text-xs text-[var(--figma-color-secondary)]">
