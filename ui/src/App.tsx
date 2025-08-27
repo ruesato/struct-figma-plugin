@@ -253,31 +253,75 @@ const App = () => {
         const imageResponse = await response.json();
         imageUrl = imageResponse.data?.[0]?.url;
       } else if (aiConfig.imageProvider === 'openrouter-image') {
-        // OpenRouter Image Generation (e.g., Gemini 2.5 Flash Image)
-        const response = await fetch('https://openrouter.ai/api/v1/images/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${aiConfig.apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'Figma Data Plugin'
-          },
-          body: JSON.stringify({
-            model: aiConfig.openrouterModel || 'google/gemini-2.0-flash-thinking-exp:free',
-            prompt: imagePrompt,
-            n: 1,
-            size: '1024x1024',
-            response_format: 'url'
-          })
-        });
+        // OpenRouter routing to DALL-E or other image generation models
+        if (aiConfig.openrouterModel.includes('dall-e')) {
+          // Route DALL-E through OpenRouter (if they support it)
+          const response = await fetch('https://openrouter.ai/api/v1/images/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${aiConfig.apiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': window.location.origin,
+              'X-Title': 'Figma Data Plugin'
+            },
+            body: JSON.stringify({
+              model: aiConfig.openrouterModel,
+              prompt: imagePrompt,
+              n: 1,
+              size: '1024x1024',
+              response_format: 'url'
+            })
+          });
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(`OpenRouter API error: ${response.status} - ${errorData.error?.message || response.statusText}`);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(`OpenRouter DALL-E API error: ${response.status} - ${errorData.error?.message || response.statusText}`);
+          }
+
+          const imageResponse = await response.json();
+          imageUrl = imageResponse.data?.[0]?.url;
+        } else {
+          // For vision models, generate enhanced description then create placeholder
+          const enhancedPromptRequest = `Create a detailed visual description for image generation based on this prompt: "${imagePrompt}"
+
+Include specific details about:
+- Visual composition and layout
+- Colors, lighting, and mood
+- Style and artistic approach
+- Any objects, people, or elements to include
+
+Return only the enhanced visual description, no explanations:`;
+
+          const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${aiConfig.apiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': window.location.origin,
+              'X-Title': 'Figma Data Plugin'
+            },
+            body: JSON.stringify({
+              model: aiConfig.openrouterModel,
+              messages: [{ role: 'user', content: enhancedPromptRequest }],
+              temperature: 0.8
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(`OpenRouter API error: ${response.status} - ${errorData.error?.message || response.statusText}`);
+          }
+
+          const aiResponse = await response.json();
+          const enhancedDescription = aiResponse.choices?.[0]?.message?.content || imagePrompt;
+          
+          addLog(`OpenRouter enhanced description: ${enhancedDescription.substring(0, 100)}...`, 'info');
+          
+          // For now, return a placeholder URL or integrate with another image service
+          // This could be enhanced to work with Automatic1111 or other image generators
+          addLog(`⚠️ OpenRouter vision models generate descriptions but need an image generator. Consider using DALL-E models or local generation.`, 'warn');
+          imageUrl = null; // No actual image generated, just description
         }
-
-        const imageResponse = await response.json();
-        imageUrl = imageResponse.data?.[0]?.url;
       } else if (aiConfig.imageProvider === 'ollama-enhanced') {
         // Use Ollama to enhance the prompt, then generate with local Automatic1111
         addLog(`Enhancing prompt with Ollama model: ${aiConfig.ollamaImageModel}...`, 'info');

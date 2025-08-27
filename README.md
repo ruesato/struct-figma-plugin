@@ -35,6 +35,13 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
 - **Comprehensive Logging**: Detailed activity log with technical information
 - **Client-side Processing**: All operations happen locally, no backend required
 
+### 🎨 **AI-Powered Generation** (In Development)
+- **AI Text Generation**: Generate contextual text content using multiple AI providers
+- **AI Image Generation**: Create custom images based on layer context and user prompts
+- **Multiple AI Providers**: Support for OpenAI, Anthropic, OpenRouter, and local models (Ollama)
+- **Context-Aware Generation**: Uses layer names, parent context, and user prompts for relevant content
+- **Local Model Support**: Integration with local AI services for privacy-focused workflows
+
 ## How to Use
 
 ### 🚀 **Quick Start**

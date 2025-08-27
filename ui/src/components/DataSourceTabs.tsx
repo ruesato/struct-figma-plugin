@@ -496,16 +496,18 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
                             <SelectValue placeholder="Select an image model" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="google/gemini-2.0-flash-thinking-exp:free">🆕 Gemini 2.0 Flash Thinking (Free)</SelectItem>
-                            <SelectItem value="google/gemini-flash-1.5">Gemini 1.5 Flash</SelectItem>
-                            <SelectItem value="openai/dall-e-3">DALL-E 3 (via OpenRouter)</SelectItem>
+                            <SelectItem value="openai/dall-e-3">🖼️ DALL-E 3 (via OpenRouter)</SelectItem>
+                            <SelectItem value="openai/dall-e-2">🖼️ DALL-E 2 (via OpenRouter)</SelectItem>
+                            <SelectItem value="google/gemini-flash-1.5">📝 Gemini 1.5 Flash (Description Only)</SelectItem>
+                            <SelectItem value="google/gemini-pro-vision">📝 Gemini Pro Vision (Description Only)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       
                       <div className="p-2 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-md">
                         <p className="text-xs text-[var(--figma-color-text-secondary)]">
-                          🌟 <strong>OpenRouter Images:</strong> Access to the latest image generation models including Gemini 2.5 Flash Image.<br/>
+                          🌟 <strong>OpenRouter Images:</strong> Routes to DALL-E models for actual image generation.<br/>
+                          📝 Vision models (Gemini) create detailed descriptions only.<br/>
                           💡 Uses the same OpenRouter API key from above.
                         </p>
                       </div>

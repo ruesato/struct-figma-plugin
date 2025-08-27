@@ -596,9 +596,141 @@ export default React.memo(MyComponent);
 - **Optimized Re-rendering**: Proper React patterns for performance
 - **Activity Logging**: Complete operation history with timestamps and categorization
 
+## Recent AI Image Generation Development Work
+
+### 🎨 AI-Powered Content Generation (In Development)
+
+**Current Work Summary** (Latest Session):
+During the most recent development session, we focused on implementing AI-powered image generation capabilities for the Figma plugin. This was a comprehensive effort to enhance the existing AI text generation features with image creation functionality.
+
+#### Key Objectives:
+- **Context-Aware Image Generation**: Generate images based on user prompt + parent layer name + target layer name in priority order
+- **Multiple AI Providers**: Support for cloud-based and local image generation services
+- **Consistent Theming**: Images should maintain consistent style and theme across each session
+- **Local & Cost-Effective Options**: Focus on providing both cloud and local generation options
+
+#### Implementation Approach:
+1. **Cloud Services Integration**:
+   - OpenAI DALL-E 3 (direct API integration)
+   - OpenRouter integration (attempted with Gemini 2.5 Flash Image)
+   - Together AI and Replicate (recommended for future implementation)
+
+2. **Local Generation Support**:
+   - Ollama hybrid approach (prompt enhancement + local image generation)
+   - Automatic1111 WebUI integration for Stable Diffusion
+   - ComfyUI integration (recommended for enhanced local workflows)
+
+3. **UI Enhancements Added**:
+   - Image generation toggle controls in DataSourceTabs component
+   - AI provider selection with multiple options
+   - Image style selection (photorealistic, artistic, etc.)
+   - Model selection dropdowns for different providers
+
+#### Technical Implementation Details:
+
+```typescript
+// Enhanced AI configuration interface
+interface AiConfig {
+  // Existing text generation properties...
+  generateImages: boolean;
+  imageProvider: 'openai-dalle' | 'openrouter-image' | 'ollama-enhanced' | 'local-automatic1111';
+  imageStyle: 'photorealistic' | 'artistic' | 'cartoon' | 'sketch';
+  ollamaImageModel: string;
+  openrouterModel: string;
+}
+
+// Image generation function implementation
+const generateImageForLayer = async (dataItem: any, layerName: string, parentName: string) => {
+  const contextPrompt = `${aiConfig.prompt}. Parent: ${parentName}. Layer: ${layerName}`;
+  
+  switch (aiConfig.imageProvider) {
+    case 'openai-dalle':
+      return await generateWithDALLE(contextPrompt);
+    case 'openrouter-image':
+      return await generateWithOpenRouter(contextPrompt);
+    case 'local-automatic1111':
+      return await generateWithAutomatic1111(contextPrompt);
+    case 'ollama-enhanced':
+      const enhancedPrompt = await enhancePromptWithOllama(contextPrompt);
+      return await generateWithAutomatic1111(enhancedPrompt);
+  }
+};
+```
+
+#### Challenges Encountered:
+1. **OpenRouter Image API Issues**: 
+   - Initially implemented with non-existent OpenRouter image generation endpoint
+   - OpenRouter doesn't have direct image generation API like expected
+   - Had to implement fallback strategies and clarify service capabilities
+
+2. **Activity History Bug**: 
+   - Fixed timestamp formatting issue showing "Invalid date" 
+   - Changed from `toLocaleTimeString()` to `toISOString()` for proper date storage
+   - Enhanced date formatting with Today/Yesterday relative display
+
+3. **Image Generation Implementation Complexity**:
+   - Multiple API patterns across different services
+   - Context prompt construction with layer hierarchy
+   - Error handling for network requests and image blob conversion
+
+#### Current Status:
+- ✅ UI controls for image generation implemented
+- ✅ Multiple AI provider options added
+- ✅ Context-based prompt engineering implemented
+- ✅ Activity History timestamp bug fixed
+- ❌ **Image generation still not working correctly** (user reported)
+- ❌ OpenRouter image API endpoint doesn't exist as implemented
+
+#### Recommended Next Steps (Based on Analysis):
+1. **Replace Problematic Implementations**:
+   - Remove OpenRouter image generation (API doesn't exist)
+   - Focus on proven services: Together AI, Replicate, direct DALL-E 3
+
+2. **Implement Working Solutions**:
+   ```typescript
+   // Together AI implementation (recommended)
+   const togetherAiImageGeneration = async (prompt: string) => {
+     const response = await fetch('https://api.together.xyz/inference', {
+       method: 'POST',
+       headers: {
+         'Authorization': `Bearer ${apiKey}`,
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({
+         model: 'black-forest-labs/FLUX.1-schnell-Free',
+         prompt: prompt,
+         width: 1024,
+         height: 1024,
+         steps: 4
+       })
+     });
+     return response.json();
+   };
+   ```
+
+3. **Enhanced Local Integration**:
+   - ComfyUI workflow integration for advanced local generation
+   - Automatic1111 with proper API endpoint validation
+   - Better error handling for local service connectivity
+
+#### Files Modified During Development:
+- `/ui/src/App.tsx`: Added `generateImageForLayer` function and image generation logic
+- `/ui/src/components/DataSourceTabs.tsx`: Extended UI with image generation controls
+- `/ui/src/components/ActivityLogModal.tsx`: Fixed timestamp formatting bug
+- Main application logic enhanced with comprehensive AI provider support
+
+#### Cost Analysis & Recommendations:
+- **Most Cost-Effective**: Together AI (~$0.003-0.006 per image with Flux models)
+- **Highest Quality**: DALL-E 3 (~$0.04 per image)
+- **Local Options**: ComfyUI + Automatic1111 (free after setup, requires local GPU)
+- **Balanced Option**: Replicate (multiple models, pay-per-use pricing)
+
+This AI image generation work represents a significant enhancement to the plugin's capabilities, though it requires completion of the implementation fixes to achieve the desired functionality.
+
 ## Future Enhancement Opportunities
 
 ### High Priority
+- [ ] **Complete AI Image Generation**: Fix current implementation issues with proven services
 - [ ] **Real-time Configuration Sync**: Live preview of configuration changes
 - [ ] **Advanced Error Recovery**: Automatic retry mechanisms for failed operations
 - [ ] **Bulk Configuration Management**: Import/export configuration sets
