@@ -98,7 +98,7 @@ const App = () => {
 
   // Helper functions
   const addLog = useCallback((message: string, level: string = 'info') => {
-    const timestamp = new Date().toLocaleTimeString();
+    const timestamp = new Date().toISOString();
     setLogs(prev => [...prev, { message, level, timestamp }]);
   }, []);
 

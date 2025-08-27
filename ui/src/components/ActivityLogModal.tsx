@@ -9,14 +9,34 @@ interface ActivityLogModalProps {
 }
 
 const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, logs }) => {
-  const formatDate = (timestamp: string) => {
+  const formatTimestamp = (timestamp: string) => {
     try {
       const date = new Date(timestamp);
-      return date.toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric'
+      if (isNaN(date.getTime())) {
+        // If it's not a valid date, it might be just a time string
+        return timestamp;
+      }
+      
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const logDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      
+      const timeStr = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
       });
+      
+      if (logDate.getTime() === today.getTime()) {
+        return `Today ${timeStr}`;
+      } else if (logDate.getTime() === today.getTime() - 86400000) {
+        return `Yesterday ${timeStr}`;
+      } else {
+        return `${date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric'
+        })} ${timeStr}`;
+      }
     } catch {
       return timestamp;
     }
@@ -43,9 +63,14 @@ const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, lo
               {logs.map((log, index) => (
                 <div key={index} className="space-y-2">
                   <div className="text-xs text-[var(--figma-color-text-secondary)]">
-                    {formatDate(log.timestamp)}
+                    {formatTimestamp(log.timestamp)}
                   </div>
-                  <div className="text-sm text-[var(--figma-color-text)] leading-relaxed">
+                  <div className={`text-sm leading-relaxed ${
+                    log.level === 'error' ? 'text-red-400' :
+                    log.level === 'warn' ? 'text-yellow-400' :
+                    log.level === 'success' ? 'text-green-400' :
+                    'text-[var(--figma-color-text)]'
+                  }`}>
                     {log.message}
                   </div>
                 </div>

@@ -75,7 +75,7 @@ const App = () => {
     const dropZoneRef = (0, react_1.useRef)(null);
     // Helper functions
     const addLog = (0, react_1.useCallback)((message, level = 'info') => {
-        const timestamp = new Date().toLocaleTimeString();
+        const timestamp = new Date().toISOString();
         setLogs(prev => [...prev, { message, level, timestamp }]);
     }, []);
     const addToastError = (0, react_1.useCallback)((title, message, severity = 'error', technicalDetails) => {
