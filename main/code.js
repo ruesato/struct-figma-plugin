@@ -1,5 +1,38 @@
 "use strict";
 // Main thread code for Struct Figma plugin
+// Helper function to recursively find child layers suitable for data population
+function findDataLayers(node) {
+    const childLayers = [];
+    function isDataLayer(node) {
+        // Text layers are always suitable for data
+        if (node.type === 'TEXT')
+            return true;
+        // Shape layers with images (fills that are images)
+        if ('fills' in node && node.fills) {
+            const fills = node.fills;
+            return fills.some(fill => fill.type === 'IMAGE');
+        }
+        return false;
+    }
+    function searchRecursively(node) {
+        // Add this node if it's a suitable data layer
+        if (isDataLayer(node)) {
+            childLayers.push(node.name);
+        }
+        // Recursively search children if they exist
+        if ('children' in node && node.children) {
+            for (const child of node.children) {
+                searchRecursively(child);
+            }
+        }
+    }
+    // Search the node and its children
+    searchRecursively(node);
+    return {
+        parent: node.name,
+        children: childLayers
+    };
+}
 // Helper function to extract nested values from JSON objects
 function getNestedValue(obj, path) {
     const parts = path.split('.');
@@ -300,15 +333,47 @@ figma.ui.onmessage = async (msg) => {
 };
 // Send initial selection to UI
 figma.on('selectionchange', () => {
+    const selection = figma.currentPage.selection;
+    const layerInfo = selection.map(node => findDataLayers(node));
+    // Flatten all layer names (parent + children) for the AI to use
+    const allLayerNames = [];
+    layerInfo.forEach(info => {
+        // Add parent name for context
+        allLayerNames.push(info.parent);
+        // Add all child layer names
+        info.children.forEach(child => allLayerNames.push(child));
+    });
+    // Remove duplicates
+    const uniqueLayerNames = Array.from(new Set(allLayerNames));
     figma.ui.postMessage({
         type: 'selection-changed',
-        selectionCount: figma.currentPage.selection.length
+        selectionCount: selection.length,
+        data: {
+            layerNames: uniqueLayerNames,
+            layerInfo: layerInfo // Send detailed info for UI display
+        }
     });
 });
 // Send initial selection count and load configurations
+const initialSelection = figma.currentPage.selection;
+const initialLayerInfo = initialSelection.map(node => findDataLayers(node));
+// Flatten all layer names (parent + children) for the AI to use
+const initialAllLayerNames = [];
+initialLayerInfo.forEach(info => {
+    // Add parent name for context
+    initialAllLayerNames.push(info.parent);
+    // Add all child layer names
+    info.children.forEach(child => initialAllLayerNames.push(child));
+});
+// Remove duplicates
+const initialUniqueLayerNames = Array.from(new Set(initialAllLayerNames));
 figma.ui.postMessage({
     type: 'selection-changed',
-    selectionCount: figma.currentPage.selection.length
+    selectionCount: initialSelection.length,
+    data: {
+        layerNames: initialUniqueLayerNames,
+        layerInfo: initialLayerInfo // Send detailed info for UI display
+    }
 });
 // Load saved configurations on startup
 loadConfigurations();

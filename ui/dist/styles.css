@@ -1166,6 +1166,12 @@ video {
 .mb-6 {
   margin-bottom: 24px;
 }
+.ml-4 {
+  margin-left: 16px;
+}
+.ml-7 {
+  margin-left: 1.75rem;
+}
 .mr-2 {
   margin-right: 8px;
 }
@@ -1460,6 +1466,9 @@ video {
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 .grid-cols-\[140px_1fr\] {
   grid-template-columns: 140px 1fr;
 }
@@ -1509,6 +1518,11 @@ video {
   --tw-space-x-reverse: 0;
   margin-right: calc(8px * var(--tw-space-x-reverse));
   margin-left: calc(8px * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(12px * var(--tw-space-x-reverse));
+  margin-left: calc(12px * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-0 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
@@ -1698,6 +1712,9 @@ video {
 .border-\[var\(--figma-color-border-brand\)\] {
   border-color: var(--figma-color-border-brand);
 }
+.border-\[var\(--figma-color-border-warning\)\] {
+  border-color: var(--figma-color-border-warning);
+}
 .border-blue-200 {
   --tw-border-opacity: 1;
   border-color: rgb(191 219 254 / var(--tw-border-opacity, 1));
@@ -1776,6 +1793,9 @@ video {
 }
 .bg-\[var\(--figma-color-bg-secondary\)\] {
   background-color: var(--figma-color-bg-secondary);
+}
+.bg-\[var\(--figma-color-bg-warning\)\] {
+  background-color: var(--figma-color-bg-warning);
 }
 .bg-\[var\(--figma-color-border\)\] {
   background-color: var(--figma-color-border);
@@ -1920,6 +1940,10 @@ video {
   padding-left: 0px;
   padding-right: 0px;
 }
+.px-1 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 .px-2 {
   padding-left: 8px;
   padding-right: 8px;
@@ -1939,6 +1963,14 @@ video {
 .px-8 {
   padding-left: 2rem;
   padding-right: 2rem;
+}
+.py-0 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
 }
 .py-1 {
   padding-top: 4px;
@@ -2127,6 +2159,9 @@ video {
 }
 .text-\[var\(--figma-color-text-secondary\)\] {
   color: var(--figma-color-text-secondary);
+}
+.text-\[var\(--figma-color-text-warning\)\] {
+  color: var(--figma-color-text-warning);
 }
 .text-blue-100 {
   --tw-text-opacity: 1;
