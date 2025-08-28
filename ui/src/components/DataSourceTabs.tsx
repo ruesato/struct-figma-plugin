@@ -41,7 +41,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
     <div className="mb-6">
       {/* Two-column card layout */}
       <div className="grid grid-cols-2 gap-3 mb-6">
-        {/* JSON File Upload Card */}
+        {/* File Upload Card */}
         <Card
           className={`cursor-pointer transition-all border-[var(--figma-color-border)] bg-[var(--figma-color-bg-secondary)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] hover:text-[var(--figma-color-text-onbrand)] ${
             dataSource === 'file' ? 'bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)]' : ''
@@ -51,7 +51,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
           <CardContent className="p-6 flex flex-col items-center justify-center text-center min-h-[120px]">
             <FileText className="h-8 w-8 mb-4" />
             <p className="text-sm">
-              Upload a <span className="font-bold">JSON file</span> with your data
+              Upload a <span className="font-bold">JSON or CSV file</span> with your data
             </p>
           </CardContent>
         </Card>
@@ -79,11 +79,11 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
           className="border-2 border-dashed border-[var(--figma-color-border)] rounded-lg p-8 text-center hover:border-[var(--figma-color-border-onselected)] transition-colors cursor-pointer"
         >
           <FileText className="h-8 w-8 mx-auto mb-4 text-[var(--figma-color-text)]" />
-          <p className="text-sm text-[var(--figma-color-text)] mb-4">Drop JSON file here or</p>
+          <p className="text-sm text-[var(--figma-color-text)] mb-4">Drop JSON or CSV file here or</p>
           <div className="inline-block">
             <input
               type="file"
-              accept=".json,application/json"
+              accept=".json,.csv,application/json,text/csv"
               onChange={handleFileInputChange}
               className="hidden"
               id="file-upload"

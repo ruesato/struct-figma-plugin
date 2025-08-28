@@ -220,6 +220,37 @@ const App = () => {
             }
         }, '*');
     }, []);
+    const parseCSV = (0, react_1.useCallback)((csvText) => {
+        const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+        if (lines.length < 2) {
+            throw new Error('CSV file must have at least a header row and one data row');
+        }
+        const headers = lines[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
+        return lines.slice(1).map((line, index) => {
+            const values = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                }
+                else if (char === ',' && !inQuotes) {
+                    values.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                }
+                else {
+                    current += char;
+                }
+            }
+            values.push(current.trim().replace(/^"|"$/g, ''));
+            const row = {};
+            headers.forEach((header, i) => {
+                row[header] = values[i] || '';
+            });
+            return row;
+        });
+    }, []);
     const handleFileUpload = (0, react_1.useCallback)((file) => {
         if (file.size > 2 * 1024 * 1024) {
             addToastError('File Too Large', 'The selected file exceeds the 2MB size limit', 'validation', `File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
@@ -229,16 +260,25 @@ const App = () => {
         reader.onload = (e) => {
             try {
                 const content = e.target?.result;
-                const parsed = JSON.parse(content);
-                processJsonData(parsed, 'file');
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    const parsed = parseCSV(content);
+                    processJsonData(parsed, 'file');
+                    addLog(`CSV file processed: ${file.name}`, 'info');
+                }
+                else {
+                    const parsed = JSON.parse(content);
+                    processJsonData(parsed, 'file');
+                    addLog(`JSON file processed: ${file.name}`, 'info');
+                }
             }
             catch (error) {
                 const errorMessage = error.message;
-                addToastError('Invalid JSON File', 'The selected file contains invalid JSON data', 'error', errorMessage);
+                const fileType = file.name.toLowerCase().endsWith('.csv') ? 'CSV' : 'JSON';
+                addToastError(`Invalid ${fileType} File`, `The selected file contains invalid ${fileType} data`, 'error', errorMessage);
             }
         };
         reader.readAsText(file);
-    }, [processJsonData, addLog, addToastError]);
+    }, [processJsonData, parseCSV, addLog, addToastError]);
     const handleFileInputChange = (0, react_1.useCallback)((e) => {
         const file = e.target.files?.[0];
         if (file) {

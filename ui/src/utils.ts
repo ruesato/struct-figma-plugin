@@ -116,7 +116,8 @@ export function setupDragAndDrop(dropZone: HTMLElement, onFileDrop: (file: File)
 
     if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
-      if (file.type === 'application/json' || file.name.endsWith('.json')) {
+      if (file.type === 'application/json' || file.name.endsWith('.json') || 
+          file.type === 'text/csv' || file.name.endsWith('.csv')) {
         onFileDrop(file);
       }
     }
