@@ -1319,9 +1319,6 @@ video {
 .max-h-96 {
   max-height: 24rem;
 }
-.max-h-\[80vh\] {
-  max-height: 80vh;
-}
 .min-h-\[120px\] {
   min-height: 120px;
 }
@@ -2586,11 +2583,6 @@ video {
   border-color: var(--figma-color-border-onselected);
 }
 
-.hover\:border-red-200:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
-}
-
 .hover\:bg-\[var\(--figma-color-bg-brand\)\]:hover {
   background-color: var(--figma-color-bg-brand);
 }
@@ -2635,11 +2627,6 @@ video {
   background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));
 }
 
-.hover\:bg-red-50:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
-}
-
 .hover\:bg-opacity-10:hover {
   --tw-bg-opacity: 0.1;
 }
@@ -2664,11 +2651,6 @@ video {
 .hover\:text-gray-800:hover {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity, 1));
-}
-
-.hover\:text-green-300:hover {
-  --tw-text-opacity: 1;
-  color: rgb(134 239 172 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
@@ -2843,10 +2825,6 @@ video {
 
   .sm\:w-auto {
     width: auto;
-  }
-
-  .sm\:max-w-2xl {
-    max-width: 42rem;
   }
 
   .sm\:max-w-md {

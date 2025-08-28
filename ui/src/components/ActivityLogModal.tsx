@@ -9,13 +9,24 @@ interface ActivityLogModalProps {
 }
 
 const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, logs }) => {
-  const formatDate = (timestamp: string) => {
+  const formatTimestamp = (timestamp: string) => {
+    // Check if it's already a time string (from toLocaleTimeString())
+    if (timestamp.includes(':') && (timestamp.includes('AM') || timestamp.includes('PM') || timestamp.match(/^\d{1,2}:\d{2}(:\d{2})?$/))) {
+      return timestamp;
+    }
+    // Try to parse as full date
     try {
       const date = new Date(timestamp);
-      return date.toLocaleDateString('en-US', {
+      if (isNaN(date.getTime())) {
+        return timestamp;
+      }
+      return date.toLocaleString('en-US', {
         month: 'numeric',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
       });
     } catch {
       return timestamp;
@@ -40,10 +51,10 @@ const ActivityLogModal: React.FC<ActivityLogModalProps> = ({ isOpen, onClose, lo
             </div>
           ) : (
             <div className="space-y-4 max-h-96 overflow-y-auto">
-              {logs.map((log, index) => (
+              {[...logs].reverse().map((log, index) => (
                 <div key={index} className="space-y-2">
                   <div className="text-xs text-[var(--figma-color-text-secondary)]">
-                    {formatDate(log.timestamp)}
+                    {formatTimestamp(log.timestamp)}
                   </div>
                   <div className="text-sm text-[var(--figma-color-text)] leading-relaxed">
                     {log.message}
