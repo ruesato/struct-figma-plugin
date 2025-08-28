@@ -5,9 +5,10 @@
   "main": "main/code.js",
   "ui": "ui/index.html",
   "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["*"],
-    "reasoning": "Required for fetching images from URLs provided in JSON data and making API calls to external data sources"
+    "reasoning": "Wildcard access is required to support arbitrary API endpoints that users may need to connect to. The plugin implements comprehensive security controls including domain validation, user approval prompts, and request monitoring to ensure safe usage despite broad network permissions."
   },
   "permissions": ["currentuser"],
   "relaunchButtons": [

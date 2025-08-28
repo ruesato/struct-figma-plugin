@@ -13,6 +13,7 @@ const ActionSection_1 = __importDefault(require("./components/ActionSection"));
 const ActivityLogModal_1 = __importDefault(require("./components/ActivityLogModal"));
 const ConfigurationModal_1 = __importDefault(require("./components/ConfigurationModal"));
 const SaveConfigurationModal_1 = __importDefault(require("./components/SaveConfigurationModal"));
+const DomainApprovalModal_1 = __importDefault(require("./components/DomainApprovalModal"));
 const ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
 // Import utilities
 const utils_1 = require("./utils");
@@ -56,6 +57,13 @@ const App = () => {
     const [isConfigModalOpen, setIsConfigModalOpen] = (0, react_1.useState)(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = (0, react_1.useState)(false);
     const [toastErrors, setToastErrors] = (0, react_1.useState)([]);
+    // Domain approval state
+    const [domainApprovalRequest, setDomainApprovalRequest] = (0, react_1.useState)({
+        isOpen: false,
+        url: '',
+        domain: '',
+        purpose: ''
+    });
     const dropZoneRef = (0, react_1.useRef)(null);
     // Helper functions
     const addLog = (0, react_1.useCallback)((message, level = 'info') => {
@@ -142,24 +150,27 @@ const App = () => {
             if ((apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && apiConfig.apiKey) {
                 headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
             }
-            const response = await fetch(apiConfig.url, {
-                method: apiConfig.method,
-                headers
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            const data = await response.json();
-            processJsonData(data, 'API');
+            // Generate unique request ID
+            const requestId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            // Send API fetch request to main plugin code for domain approval
+            parent.postMessage({
+                pluginMessage: {
+                    type: 'fetch-api-data',
+                    url: apiConfig.url,
+                    method: apiConfig.method,
+                    headers,
+                    requestId
+                }
+            }, '*');
+            // Log the request (response handling is done in useEffect)
+            addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
         }
         catch (error) {
             const errorMessage = error.message;
             addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
-        }
-        finally {
             setIsLoadingData(false);
         }
-    }, [apiConfig, processJsonData, addLog]);
+    }, [apiConfig, addLog, addToastError]);
     const saveConfiguration = (0, react_1.useCallback)(() => {
         if (!configName.trim()) {
             addToastError('Configuration Name Required', 'Please enter a name for your configuration', 'validation');
@@ -393,6 +404,37 @@ const App = () => {
         }));
         addLog(`${sourceKey === 'file' ? 'File' : 'API'} data cleared`, 'info');
     }, [dataSource, addLog]);
+    // Domain approval handlers
+    const handleDomainApproval = (0, react_1.useCallback)((approved) => {
+        parent.postMessage({
+            pluginMessage: {
+                type: 'domain-approval-response',
+                approved,
+                domain: domainApprovalRequest.domain
+            }
+        }, '*');
+        setDomainApprovalRequest({
+            isOpen: false,
+            url: '',
+            domain: '',
+            purpose: ''
+        });
+        if (approved) {
+            addLog(`Domain ${domainApprovalRequest.domain} approved`, 'info');
+        }
+        else {
+            addLog(`Domain ${domainApprovalRequest.domain} denied`, 'warning');
+        }
+    }, [domainApprovalRequest.domain, addLog]);
+    const handleApproveDomain = (0, react_1.useCallback)(() => {
+        handleDomainApproval(true);
+    }, [handleDomainApproval]);
+    const handleDenyDomain = (0, react_1.useCallback)(() => {
+        handleDomainApproval(false);
+    }, [handleDomainApproval]);
+    const closeDomainApproval = (0, react_1.useCallback)(() => {
+        handleDomainApproval(false);
+    }, [handleDomainApproval]);
     (0, react_1.useEffect)(() => {
         const handleMessage = (event) => {
             const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
@@ -426,10 +468,36 @@ const App = () => {
             else if (type === 'plugin-error') {
                 addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
             }
+            else if (type === 'request-domain-approval') {
+                const { url, domain, purpose } = event.data.pluginMessage;
+                setDomainApprovalRequest({
+                    isOpen: true,
+                    url,
+                    domain,
+                    purpose
+                });
+            }
+            else if (type === 'domain-approved') {
+                addLog(message || 'Domain approved successfully', 'info');
+            }
+            else if (type === 'domain-removed') {
+                addLog(message || 'Domain removed successfully', 'info');
+            }
+            else if (type === 'api-fetch-success') {
+                const { data, requestId } = event.data.pluginMessage;
+                processJsonData(data, 'API');
+                setIsLoadingData(false);
+                addLog('API data fetched successfully', 'info');
+            }
+            else if (type === 'api-fetch-error') {
+                const { error, requestId } = event.data.pluginMessage;
+                addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', error);
+                setIsLoadingData(false);
+            }
         };
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [addLog, loadConfigurations]);
+    }, [addLog, loadConfigurations, processJsonData, addToastError]);
     (0, react_1.useEffect)(() => {
         loadConfigurations();
     }, [loadConfigurations]);
@@ -438,6 +506,6 @@ const App = () => {
             (0, utils_1.setupDragAndDrop)(dropZoneRef.current, handleFileUpload);
         }
     }, [handleFileUpload]);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: () => setIsConfigModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: () => setIsActivityModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: setApiConfig, isLoadingData: isLoadingData, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: () => setIsSaveModalOpen(true) }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: () => setIsConfigModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: () => setIsActivityModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: setApiConfig, isLoadingData: isLoadingData, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: () => setIsSaveModalOpen(true) }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData }), (0, jsx_runtime_1.jsx)(DomainApprovalModal_1.default, { isOpen: domainApprovalRequest.isOpen, onClose: closeDomainApproval, url: domainApprovalRequest.url, domain: domainApprovalRequest.domain, purpose: domainApprovalRequest.purpose, onApprove: handleApproveDomain, onDeny: handleDenyDomain })] }));
 };
 exports.default = App;

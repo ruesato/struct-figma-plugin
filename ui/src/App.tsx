@@ -11,6 +11,7 @@ import LogsSection from './components/LogsSection';
 import ActivityLogModal from './components/ActivityLogModal';
 import ConfigurationModal from './components/ConfigurationModal';
 import SaveConfigurationModal from './components/SaveConfigurationModal';
+import DomainApprovalModal from './components/DomainApprovalModal';
 import ErrorToast, { ToastError } from './components/ErrorToast';
 
 // Import utilities
@@ -72,6 +73,19 @@ const App = () => {
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [toastErrors, setToastErrors] = useState<ToastError[]>([]);
+  
+  // Domain approval state
+  const [domainApprovalRequest, setDomainApprovalRequest] = useState<{
+    isOpen: boolean;
+    url: string;
+    domain: string;
+    purpose: string;
+  }>({
+    isOpen: false,
+    url: '',
+    domain: '',
+    purpose: ''
+  });
 
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
@@ -172,24 +186,29 @@ const App = () => {
         headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
       }
 
-      const response = await fetch(apiConfig.url, {
-        method: apiConfig.method,
-        headers
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      processJsonData(data, 'API');
+      // Generate unique request ID
+      const requestId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Send API fetch request to main plugin code for domain approval
+      parent.postMessage({
+        pluginMessage: {
+          type: 'fetch-api-data',
+          url: apiConfig.url,
+          method: apiConfig.method,
+          headers,
+          requestId
+        }
+      }, '*');
+      
+      // Log the request (response handling is done in useEffect)
+      addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
+      
     } catch (error) {
       const errorMessage = (error as Error).message;
       addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
-    } finally {
       setIsLoadingData(false);
     }
-  }, [apiConfig, processJsonData, addLog]);
+  }, [apiConfig, addLog, addToastError]);
 
   const saveConfiguration = useCallback(() => {
     if (!configName.trim()) {
@@ -461,6 +480,42 @@ const App = () => {
     addLog(`${sourceKey === 'file' ? 'File' : 'API'} data cleared`, 'info');
   }, [dataSource, addLog]);
 
+  // Domain approval handlers
+  const handleDomainApproval = useCallback((approved: boolean) => {
+    parent.postMessage({
+      pluginMessage: {
+        type: 'domain-approval-response',
+        approved,
+        domain: domainApprovalRequest.domain
+      }
+    }, '*');
+    
+    setDomainApprovalRequest({
+      isOpen: false,
+      url: '',
+      domain: '',
+      purpose: ''
+    });
+    
+    if (approved) {
+      addLog(`Domain ${domainApprovalRequest.domain} approved`, 'info');
+    } else {
+      addLog(`Domain ${domainApprovalRequest.domain} denied`, 'warning');
+    }
+  }, [domainApprovalRequest.domain, addLog]);
+
+  const handleApproveDomain = useCallback(() => {
+    handleDomainApproval(true);
+  }, [handleDomainApproval]);
+
+  const handleDenyDomain = useCallback(() => {
+    handleDomainApproval(false);
+  }, [handleDomainApproval]);
+
+  const closeDomainApproval = useCallback(() => {
+    handleDomainApproval(false);
+  }, [handleDomainApproval]);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
@@ -486,12 +541,33 @@ const App = () => {
         addToastError('Data Application Failed', 'Failed to apply data to selected layers', 'error', message);
       } else if (type === 'plugin-error') {
         addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
+      } else if (type === 'request-domain-approval') {
+        const { url, domain, purpose } = event.data.pluginMessage;
+        setDomainApprovalRequest({
+          isOpen: true,
+          url,
+          domain,
+          purpose
+        });
+      } else if (type === 'domain-approved') {
+        addLog(message || 'Domain approved successfully', 'info');
+      } else if (type === 'domain-removed') {
+        addLog(message || 'Domain removed successfully', 'info');
+      } else if (type === 'api-fetch-success') {
+        const { data, requestId } = event.data.pluginMessage;
+        processJsonData(data, 'API');
+        setIsLoadingData(false);
+        addLog('API data fetched successfully', 'info');
+      } else if (type === 'api-fetch-error') {
+        const { error, requestId } = event.data.pluginMessage;
+        addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', error);
+        setIsLoadingData(false);
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [addLog, loadConfigurations]);
+  }, [addLog, loadConfigurations, processJsonData, addToastError]);
 
   useEffect(() => {
     loadConfigurations();
@@ -620,6 +696,17 @@ const App = () => {
         mappings={mappings}
         jsonData={jsonData}
       />
+
+      <DomainApprovalModal
+        isOpen={domainApprovalRequest.isOpen}
+        onClose={closeDomainApproval}
+        url={domainApprovalRequest.url}
+        domain={domainApprovalRequest.domain}
+        purpose={domainApprovalRequest.purpose}
+        onApprove={handleApproveDomain}
+        onDeny={handleDenyDomain}
+      />
+
     </div>
   );
 };
