@@ -1,3 +1,13 @@
 .DS_Store
 .env
 .env*
+
+PROGRESS_NOTES.md
+SECURITY_AUDIT_REPORT.md
+MIGRATION_SUMMARY.md
+test-api-endpoints.md
+test-tmdb-data.json
+test-tmdb-realistic.json
+/assets
+claude.md
+/.claude
