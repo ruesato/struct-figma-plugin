@@ -29,6 +29,13 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
 - **Batch Processing**: Apply data to multiple selected instances at once
 - **Value Builder System**: Create custom field combinations with drag-and-drop interface
 
+### 🔐 **Enterprise-Grade Security**
+- **Secure Network Access**: Wildcard domain support with user approval system
+- **Session-Based Approval**: Secure domain access that resets between plugin sessions
+- **Enhanced URL Validation**: HTTPS-only, private IP blocking, suspicious domain filtering
+- **Rate Limiting**: 10 requests per hour per domain with security monitoring
+- **Request Auditing**: Complete activity logging for security compliance
+
 ### 🛠️ **Professional Tools**
 - **Configuration Persistence**: Save and reuse plugin settings across sessions
 - **Error Toast System**: Immediate feedback for critical errors with severity levels
@@ -302,6 +309,8 @@ json-data-mapper/
   - Mixed notation: `patient.encounters[].provider_name`
 
 ### 🔧 **Advanced Systems**
+- **Security Architecture**: Wildcard network access with session-based domain approval system
+- **URL Validation Engine**: Multi-layer security with HTTPS enforcement and threat detection
 - **Configuration Management**: Persistent settings using Figma's clientStorage API
 - **Error Handling**: Multi-level error system with toast notifications and activity logging
 - **Value Builder**: Drag-and-drop interface for creating custom field combinations
