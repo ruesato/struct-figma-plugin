@@ -144,7 +144,6 @@ const DEFAULT_APPROVED_DOMAINS = [
     'httpbin.org',
     'images.unsplash.com',
     'via.placeholder.com',
-    'image.tmdb.org', // The Movie Database images
     'picsum.photos', // Lorem Picsum placeholder images
     'loremflickr.com', // Lorem Flickr placeholder images
     'dummyimage.com' // Dummy image generator
