@@ -17,6 +17,9 @@ const DomainApprovalModal_1 = __importDefault(require("./components/DomainApprov
 const ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
 // Import utilities
 const utils_1 = require("./utils");
+const secureCredentialManager_1 = __importDefault(require("./utils/secureCredentialManager"));
+const credentialCrypto_1 = __importDefault(require("./utils/credentialCrypto"));
+const secureMessageHandler_1 = __importDefault(require("./utils/secureMessageHandler"));
 const App = () => {
     // All state declarations here...
     const [dataSource, setDataSource] = (0, react_1.useState)('file');
@@ -57,6 +60,9 @@ const App = () => {
     const [isConfigModalOpen, setIsConfigModalOpen] = (0, react_1.useState)(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = (0, react_1.useState)(false);
     const [toastErrors, setToastErrors] = (0, react_1.useState)([]);
+    // Security state
+    const [isEncryptionAvailable, setIsEncryptionAvailable] = (0, react_1.useState)(false);
+    const [isLoadingCredentials, setIsLoadingCredentials] = (0, react_1.useState)(true);
     // Domain approval state
     const [domainApprovalRequest, setDomainApprovalRequest] = (0, react_1.useState)({
         isOpen: false,
@@ -90,6 +96,46 @@ const App = () => {
     const dismissToastError = (0, react_1.useCallback)((id) => {
         setToastErrors(prev => prev.filter(error => error.id !== id));
     }, []);
+    // Secure credential management
+    const loadSecureApiConfig = (0, react_1.useCallback)(async () => {
+        try {
+            setIsLoadingCredentials(true);
+            const secureConfig = await secureCredentialManager_1.default.loadSecureApiConfig();
+            setApiConfig(secureConfig);
+            addLog('API configuration loaded successfully', 'info');
+        }
+        catch (error) {
+            addLog(`Failed to load API configuration: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+            // Use default config on failure
+            setApiConfig({
+                url: '',
+                method: 'GET',
+                headers: {},
+                apiKey: '',
+                authType: 'none'
+            });
+        }
+        finally {
+            setIsLoadingCredentials(false);
+        }
+    }, [addLog]);
+    const saveSecureApiConfig = (0, react_1.useCallback)(async (config) => {
+        try {
+            await secureCredentialManager_1.default.saveSecureApiConfig(config);
+            addLog('API configuration saved securely', 'info');
+        }
+        catch (error) {
+            addToastError('Configuration Save Failed', 'Failed to securely save API configuration', 'error', error instanceof Error ? error.message : 'Unknown error');
+        }
+    }, [addLog, addToastError]);
+    const updateApiConfig = (0, react_1.useCallback)(async (updates) => {
+        const newConfig = { ...apiConfig, ...updates };
+        setApiConfig(newConfig);
+        // Auto-save when credentials change (with debouncing)
+        if (updates.apiKey !== undefined || updates.authType !== undefined) {
+            await saveSecureApiConfig(newConfig);
+        }
+    }, [apiConfig, saveSecureApiConfig]);
     const processJsonData = (0, react_1.useCallback)((data, source) => {
         addLog(`Processing data from ${source}...`, 'info');
         let dataArray = [];
@@ -153,15 +199,13 @@ const App = () => {
             // Generate unique request ID
             const requestId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             // Send API fetch request to main plugin code for domain approval
-            parent.postMessage({
-                pluginMessage: {
-                    type: 'fetch-api-data',
-                    url: apiConfig.url,
-                    method: apiConfig.method,
-                    headers,
-                    requestId
-                }
-            }, '*');
+            secureMessageHandler_1.default.sendSecureMessage({
+                type: 'fetch-api-data',
+                url: apiConfig.url,
+                method: apiConfig.method,
+                headers,
+                requestId
+            });
             // Log the request (response handling is done in useEffect)
             addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
         }
@@ -184,21 +228,17 @@ const App = () => {
             valueBuilders,
             savedAt: new Date().toISOString()
         };
-        parent.postMessage({
-            pluginMessage: {
-                type: 'save-config',
-                data: config
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'save-config',
+            data: config
+        });
         setConfigName('');
         setShowConfigSave(false);
     }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);
     const loadConfigurations = (0, react_1.useCallback)(() => {
-        parent.postMessage({
-            pluginMessage: {
-                type: 'load-configs'
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'load-configs'
+        });
     }, []);
     const loadConfiguration = (0, react_1.useCallback)((config) => {
         setDataSource(config.dataSource);
@@ -217,19 +257,15 @@ const App = () => {
         setShowConfigList(false);
     }, [addLog]);
     const deleteConfiguration = (0, react_1.useCallback)((configName) => {
-        parent.postMessage({
-            pluginMessage: {
-                type: 'delete-config',
-                configName
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'delete-config',
+            configName
+        });
     }, []);
     const clearAllConfigurations = (0, react_1.useCallback)(() => {
-        parent.postMessage({
-            pluginMessage: {
-                type: 'clear-configs'
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'clear-configs'
+        });
     }, []);
     const parseCSV = (0, react_1.useCallback)((csvText) => {
         const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
@@ -383,14 +419,12 @@ const App = () => {
             addToastError('No Layers Selected', 'Please select one or more layers in Figma', 'validation');
             return;
         }
-        parent.postMessage({
-            pluginMessage: {
-                type: 'apply-data',
-                jsonData,
-                mappings: activeMappings,
-                valueBuilders
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'apply-data',
+            jsonData,
+            mappings: activeMappings,
+            valueBuilders
+        });
     }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
     const handleClearData = (0, react_1.useCallback)(() => {
         const sourceKey = dataSource;
@@ -406,13 +440,11 @@ const App = () => {
     }, [dataSource, addLog]);
     // Domain approval handlers
     const handleDomainApproval = (0, react_1.useCallback)((approved) => {
-        parent.postMessage({
-            pluginMessage: {
-                type: 'domain-approval-response',
-                approved,
-                domain: domainApprovalRequest.domain
-            }
-        }, '*');
+        secureMessageHandler_1.default.sendSecureMessage({
+            type: 'domain-approval-response',
+            approved,
+            domain: domainApprovalRequest.domain
+        });
         setDomainApprovalRequest({
             isOpen: false,
             url: '',
@@ -436,8 +468,8 @@ const App = () => {
         handleDomainApproval(false);
     }, [handleDomainApproval]);
     (0, react_1.useEffect)(() => {
-        const handleMessage = (event) => {
-            const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
+        const handleSecureMessage = (messageData) => {
+            const { type, message, level, selectionCount: count, data } = messageData;
             if (type === 'log') {
                 addLog(message, level);
             }
@@ -469,7 +501,7 @@ const App = () => {
                 addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
             }
             else if (type === 'request-domain-approval') {
-                const { url, domain, purpose } = event.data.pluginMessage;
+                const { url, domain, purpose } = messageData;
                 setDomainApprovalRequest({
                     isOpen: true,
                     url,
@@ -484,19 +516,24 @@ const App = () => {
                 addLog(message || 'Domain removed successfully', 'info');
             }
             else if (type === 'api-fetch-success') {
-                const { data, requestId } = event.data.pluginMessage;
+                const { data, requestId } = messageData;
                 processJsonData(data, 'API');
                 setIsLoadingData(false);
                 addLog('API data fetched successfully', 'info');
             }
             else if (type === 'api-fetch-error') {
-                const { error, requestId } = event.data.pluginMessage;
+                const { error, requestId } = messageData;
                 addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', error);
                 setIsLoadingData(false);
             }
         };
-        window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
+        // Create secure message listener with origin validation
+        const secureListener = secureMessageHandler_1.default.createSecureListener(handleSecureMessage, {
+            logBlocked: true,
+            throwOnInvalid: false
+        });
+        window.addEventListener('message', secureListener);
+        return () => window.removeEventListener('message', secureListener);
     }, [addLog, loadConfigurations, processJsonData, addToastError]);
     (0, react_1.useEffect)(() => {
         loadConfigurations();
@@ -506,6 +543,40 @@ const App = () => {
             (0, utils_1.setupDragAndDrop)(dropZoneRef.current, handleFileUpload);
         }
     }, [handleFileUpload]);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: () => setIsConfigModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: () => setIsActivityModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: setApiConfig, isLoadingData: isLoadingData, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: () => setIsSaveModalOpen(true) }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData }), (0, jsx_runtime_1.jsx)(DomainApprovalModal_1.default, { isOpen: domainApprovalRequest.isOpen, onClose: closeDomainApproval, url: domainApprovalRequest.url, domain: domainApprovalRequest.domain, purpose: domainApprovalRequest.purpose, onApprove: handleApproveDomain, onDeny: handleDenyDomain })] }));
+    // Initialize security and load credentials
+    (0, react_1.useEffect)(() => {
+        const initializeSecurity = async () => {
+            try {
+                // Check crypto availability
+                const cryptoSupported = credentialCrypto_1.default.isSupported();
+                setIsEncryptionAvailable(cryptoSupported);
+                if (cryptoSupported) {
+                    addLog('🔐 Web Crypto API is available - using secure encryption', 'info');
+                }
+                else {
+                    addLog('🔐 Web Crypto API not available - using fallback encryption', 'info');
+                    addLog('ℹ️ Fallback provides obfuscation-level security (better than plaintext)', 'info');
+                }
+                // Test crypto functionality (will use Web Crypto or fallback automatically)
+                const cryptoTest = await credentialCrypto_1.default.testCrypto();
+                if (cryptoTest) {
+                    const cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
+                    addLog(`✅ Encryption test passed using ${cryptoType}`, 'info');
+                }
+                else {
+                    addLog('❌ Encryption test failed - credential storage may not work', 'error');
+                    addToastError('Encryption Test Failed', 'Credential storage may not function properly', 'error');
+                }
+                // Load existing API configuration
+                await loadSecureApiConfig();
+            }
+            catch (error) {
+                addLog(`Security initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+                addToastError('Security Initialization Failed', 'Some security features may not work properly', 'warning');
+            }
+        };
+        initializeSecurity();
+    }, [addLog, addToastError, loadSecureApiConfig]);
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: () => setIsConfigModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: () => setIsActivityModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: updateApiConfig, isLoadingData: isLoadingData || isLoadingCredentials, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: () => setIsSaveModalOpen(true) }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData }), (0, jsx_runtime_1.jsx)(DomainApprovalModal_1.default, { isOpen: domainApprovalRequest.isOpen, onClose: closeDomainApproval, url: domainApprovalRequest.url, domain: domainApprovalRequest.domain, purpose: domainApprovalRequest.purpose, onApprove: handleApproveDomain, onDeny: handleDenyDomain })] }));
 };
 exports.default = App;

@@ -85,27 +85,17 @@ async function buildUI() {
         await execAsync(`npx postcss ${inputCssPath} -o ${outputCssPath}`);
         const cssContent = fs.readFileSync(outputCssPath, 'utf-8');
         console.log(`✅ CSS processed: ${(cssContent.length / 1024).toFixed(1)} KB`);
-        // Step 4: Create optimized HTML
-        console.log('📄 Creating optimized HTML...');
+        // Step 4: Create optimized HTML from template with security headers
+        console.log('📄 Creating optimized HTML from template...');
         const jsContent = fs.readFileSync(path.join(distDir, 'bundle.js'), 'utf-8');
-        const htmlTemplate = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Struct</title>
-  <style>
-    ${cssContent}
-  </style>
-</head>
-<body>
-  <div id="react-page"></div>
-  <script>
-    ${jsContent}
-  </script>
-</body>
-</html>`;
+        // Read the template file with security headers
+        const templatePath = path.join(uiDir, 'index.template.html');
+        let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+        // Inject CSS and JS into template
+        htmlContent = htmlContent.replace('/* INJECT_CSS */', cssContent);
+        htmlContent = htmlContent.replace('/* INJECT_JS */', jsContent);
         const finalHtmlPath = path.join(uiDir, 'index.html');
-        fs.writeFileSync(finalHtmlPath, htmlTemplate);
+        fs.writeFileSync(finalHtmlPath, htmlContent);
         // Step 5: Calculate final sizes
         const finalHtmlSize = fs.statSync(finalHtmlPath).size;
         console.log('🎉 Build completed successfully!');

@@ -587,6 +587,59 @@ async function handleApiDataFetch(msg) {
         sendLog(`API fetch failed: ${errorMessage}`, 'error');
     }
 }
+// Secure storage handlers for encrypted credential management
+async function handleSecureStorageSave(msg) {
+    try {
+        const { key, value } = msg;
+        if (!key) {
+            throw new Error('Storage key is required');
+        }
+        await figma.clientStorage.setAsync(key, value);
+        figma.ui.postMessage({
+            type: 'storage-save-response',
+            key,
+            success: true
+        });
+        sendLog(`Secure storage save completed for key: ${key}`, 'info');
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Storage save failed';
+        figma.ui.postMessage({
+            type: 'storage-save-response',
+            key: msg.key,
+            success: false,
+            error: errorMessage
+        });
+        sendLog(`Secure storage save failed: ${errorMessage}`, 'error');
+    }
+}
+async function handleSecureStorageLoad(msg) {
+    try {
+        const { key } = msg;
+        if (!key) {
+            throw new Error('Storage key is required');
+        }
+        const value = await figma.clientStorage.getAsync(key);
+        figma.ui.postMessage({
+            type: 'storage-load-response',
+            key,
+            success: true,
+            value
+        });
+        sendLog(`Secure storage load completed for key: ${key}`, 'info');
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Storage load failed';
+        figma.ui.postMessage({
+            type: 'storage-load-response',
+            key: msg.key,
+            success: false,
+            error: errorMessage,
+            value: null
+        });
+        sendLog(`Secure storage load failed: ${errorMessage}`, 'error');
+    }
+}
 // Message handler for UI communications
 figma.ui.onmessage = async (msg) => {
     switch (msg.type) {
@@ -625,6 +678,13 @@ figma.ui.onmessage = async (msg) => {
             break;
         case 'fetch-api-data':
             await handleApiDataFetch(msg);
+            break;
+        // Secure credential storage handlers
+        case 'storage-save-request':
+            await handleSecureStorageSave(msg);
+            break;
+        case 'storage-load-request':
+            await handleSecureStorageLoad(msg);
             break;
         case 'close':
             figma.closePlugin();

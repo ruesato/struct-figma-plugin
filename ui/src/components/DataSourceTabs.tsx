@@ -17,7 +17,7 @@ interface DataSourceTabsProps {
   dataSource: string;
   setDataSource: (source: string) => void;
   apiConfig: ApiConfig;
-  setApiConfig: React.Dispatch<React.SetStateAction<ApiConfig>>;
+  setApiConfig: (updates: Partial<ApiConfig>) => Promise<void>;
   isLoadingData: boolean;
   fetchApiData: () => void;
   processJsonData: (data: any, source: string) => void;
@@ -108,7 +108,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
               <Input
                 placeholder="Enter API URL"
                 value={apiConfig.url}
-                onChange={(e) => setApiConfig(prev => ({ ...prev, url: e.target.value }))}
+                onChange={(e) => setApiConfig({ url: e.target.value })}
                 className="bg-[var(--figma-color-bg)] border-[var(--figma-color-border)]"
               />
             </div>
@@ -119,7 +119,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
                 <label className="text-sm text-[var(--figma-color-text)]">Method</label>
                 <Select
                   value={apiConfig.method}
-                  onValueChange={(value) => setApiConfig(prev => ({ ...prev, method: value }))}
+                  onValueChange={(value) => setApiConfig({ method: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Banana" />
@@ -135,7 +135,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
                 <label className="text-sm text-[var(--figma-color-text)]">Auth type</label>
                 <Select
                   value={apiConfig.authType}
-                  onValueChange={(value) => setApiConfig(prev => ({ ...prev, authType: value }))}
+                  onValueChange={(value) => setApiConfig({ authType: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Bearer Token" />
@@ -157,7 +157,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
                   type="password"
                   placeholder="Enter Bearer Token"
                   value={apiConfig.apiKey}
-                  onChange={(e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value }))}
+                  onChange={(e) => setApiConfig({ apiKey: e.target.value })}
                 />
               </div>
             )}
