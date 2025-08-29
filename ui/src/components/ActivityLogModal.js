@@ -24,7 +24,7 @@ const ActivityLogModal = ({ isOpen, onClose, logs }) => {
                 hour12: true
             });
         }
-        catch {
+        catch (_a) {
             return timestamp;
         }
     };

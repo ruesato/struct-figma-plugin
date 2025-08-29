@@ -305,8 +305,9 @@ const App = () => {
         }
         const reader = new FileReader();
         reader.onload = (e) => {
+            var _a;
             try {
-                const content = e.target?.result;
+                const content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
                 if (file.name.toLowerCase().endsWith('.csv')) {
                     const parsed = parseCSV(content);
                     processJsonData(parsed, 'file');
@@ -327,7 +328,8 @@ const App = () => {
         reader.readAsText(file);
     }, [processJsonData, parseCSV, addLog, addToastError]);
     const handleFileInputChange = (0, react_1.useCallback)((e) => {
-        const file = e.target.files?.[0];
+        var _a;
+        const file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
         if (file) {
             handleFileUpload(file);
         }

@@ -105,10 +105,11 @@ function setupDragAndDrop(dropZone, onFileDrop) {
         dropZone.classList.remove('drag-over');
     };
     const handleDrop = (e) => {
+        var _a;
         e.preventDefault();
         e.stopPropagation();
         dropZone.classList.remove('drag-over');
-        if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+        if (((_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.files) && e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
             if (file.type === 'application/json' || file.name.endsWith('.json') ||
                 file.type === 'text/csv' || file.name.endsWith('.csv')) {

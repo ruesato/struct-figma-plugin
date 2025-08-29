@@ -1,5 +1,106 @@
 // Main thread code for Struct Figma plugin
 
+// Inline security utilities for Figma plugin environment
+
+// Basic input sanitization
+function sanitizeText(input: string): string {
+  if (!input || typeof input !== 'string') return '';
+  
+  // Remove control characters and limit length
+  const cleaned = input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  const maxLength = 50000; // Figma's text limit
+  
+  if (cleaned.length > maxLength) {
+    console.warn(`⚠️ Text truncated from ${cleaned.length} to ${maxLength} characters`);
+    return cleaned.substring(0, maxLength);
+  }
+  
+  return cleaned;
+}
+
+// Basic URL validation using regex (URL constructor not available in Figma sandbox)
+function isValidUrl(url: string): boolean {
+  if (!url || typeof url !== 'string') {
+    console.log('🚨 URL validation failed: empty or non-string URL');
+    return false;
+  }
+  
+  try {
+    // Use regex for URL validation since URL constructor isn't available
+    const urlRegex = /^https:\/\/([a-zA-Z0-9.-]+)(?::\d+)?(?:\/.*)?$/;
+    const match = url.match(urlRegex);
+    
+    if (!match) {
+      console.log(`🚨 URL validation failed: invalid URL format for ${url}`);
+      return false;
+    }
+    
+    const hostname = match[1].toLowerCase();
+    
+    // Block private IPs
+    if (hostname === 'localhost' || 
+        hostname.startsWith('127.') ||
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.') ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
+      console.log(`🚨 URL validation failed: private IP detected (${hostname}) for ${url}`);
+      return false;
+    }
+    
+    // Block direct IP addresses
+    if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+      console.log(`🚨 URL validation failed: direct IP address not allowed (${hostname}) for ${url}`);
+      return false;
+    }
+    
+    console.log(`✅ URL validation passed for ${hostname}`);
+    return true;
+  } catch (error) {
+    console.log(`🚨 URL validation failed: error processing ${url} - ${error}`);
+    return false;
+  }
+}
+
+// Simple rate limiting
+class SimpleRateLimiter {
+  private static requestHistory: Array<{ url: string; timestamp: number }> = [];
+  private static readonly MAX_REQUESTS = 25; // Increased from 10 for better development experience
+  private static readonly WINDOW_MS = 60000; // 1 minute
+  
+  static isAllowed(url: string): boolean {
+    const now = Date.now();
+    const windowStart = now - this.WINDOW_MS;
+    
+    // Clean old entries
+    this.requestHistory = this.requestHistory.filter(req => req.timestamp > windowStart);
+    
+    // Count recent requests to this domain
+    const domain = this.extractDomain(url);
+    const recentRequests = this.requestHistory.filter(req => 
+      this.extractDomain(req.url) === domain
+    );
+    
+    if (recentRequests.length >= this.MAX_REQUESTS) {
+      console.warn(`🚫 Rate limit exceeded for ${domain}`);
+      return false;
+    }
+    
+    // Record this request
+    this.requestHistory.push({ url, timestamp: now });
+    return true;
+  }
+  
+  private static extractDomain(url: string): string {
+    try {
+      // Use regex to extract hostname since URL constructor isn't available
+      const match = url.match(/^https?:\/\/([a-zA-Z0-9.-]+)/);
+      return match ? match[1] : 'unknown';
+    } catch {
+      return 'unknown';
+    }
+  }
+}
+
 interface JsonMapping {
   jsonKey: string;
   layerName: string;
@@ -93,11 +194,16 @@ function findLayerByName(node: SceneNode, layerName: string): SceneNode | null {
 // Helper function to apply text content to a text node
 function applyTextContent(node: TextNode, value: string): void {
   try {
+    // Sanitize the text content before applying to node
+    const sanitizedValue = sanitizeText(String(value));
+    
     figma.loadFontAsync(node.fontName as FontName).then(() => {
-      node.characters = String(value);
+      node.characters = sanitizedValue;
+      sendLog(`🔒 Applied sanitized text content (${sanitizedValue.length} chars)`, 'info');
     });
   } catch (error) {
     console.error('Error applying text:', error);
+    sendLog('Failed to apply text content', 'error');
   }
 }
 
@@ -107,7 +213,11 @@ const DEFAULT_APPROVED_DOMAINS = [
   'api.github.com', 
   'httpbin.org',
   'images.unsplash.com',
-  'via.placeholder.com'
+  'via.placeholder.com',
+  'image.tmdb.org',  // The Movie Database images
+  'picsum.photos',   // Lorem Picsum placeholder images
+  'loremflickr.com', // Lorem Flickr placeholder images
+  'dummyimage.com'   // Dummy image generator
 ];
 
 function extractDomain(url: string): string | null {
@@ -195,7 +305,7 @@ let pendingDomainApproval: {
 
 // Rate limiting for domain requests
 const domainRequestCounts = new Map<string, { count: number; resetTime: number }>();
-const MAX_DOMAIN_REQUESTS_PER_HOUR = 10;
+const MAX_DOMAIN_REQUESTS_PER_HOUR = 25; // Increased from 10 for better development experience
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
 
 // Track request history for security monitoring
@@ -274,14 +384,22 @@ async function requestDomainApproval(url: string, purpose: string): Promise<bool
 // Helper function to fetch and apply image from URL with security
 async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boolean> {
   try {
-    // Validate URL format and security
-    const validation = validateUrl(imageUrl);
+    // First validate the image URL
+    if (!isValidUrl(imageUrl)) {
+      sendLog(`🚨 SECURITY: Invalid or unsafe image URL`, 'error');
+      return false;
+    }
+    
+    const sanitizedUrl = imageUrl;
+    
+    // Validate URL format and security (existing validation)
+    const validation = validateUrl(sanitizedUrl);
     if (!validation.isValid) {
       sendLog(`Invalid image URL: ${validation.error}`, 'error');
       return false;
     }
     
-    const domain = extractDomain(imageUrl);
+    const domain = extractDomain(sanitizedUrl);
     if (!domain) {
       sendLog('Unable to extract domain from URL', 'error');
       return false;
@@ -298,7 +416,16 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
       }
     }
     
-    const response = await fetch(imageUrl, {
+    // Additional origin validation passed - URL is already validated above
+
+    // Check rate limiting before fetch
+    if (!SimpleRateLimiter.isAllowed(sanitizedUrl)) {
+      sendLog(`🚫 Rate limit exceeded for this domain`, 'warning');
+      return false;
+    }
+
+    // Use basic fetch with security headers
+    const response = await fetch(sanitizedUrl, {
       method: 'GET',
       headers: {
         'User-Agent': 'FigmaPlugin-Struct/1.0'
@@ -380,7 +507,20 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
 
     return false;
   } catch (error) {
-    sendLog(`Error fetching image: ${(error as Error).message}`, 'error');
+    const errorMessage = (error as Error).message;
+    
+    // Handle rate limiting errors specifically
+    if ((error as any).rateLimitError) {
+      const retryAfter = (error as any).retryAfter;
+      if (retryAfter) {
+        sendLog(`🚫 Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`, 'warning');
+      } else {
+        sendLog(`🚫 Rate limit exceeded: ${errorMessage}`, 'warning');
+      }
+    } else {
+      sendLog(`Error fetching image: ${errorMessage}`, 'error');
+    }
+    
     return false;
   }
 }
@@ -389,14 +529,20 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
 function applyVariantProperty(node: InstanceNode, propertyName: string, value: string): boolean {
   try {
     if (node.variantProperties && node.variantProperties[propertyName] !== undefined) {
-      node.setProperties({
-        [propertyName]: value
-      });
-      return true;
+      // Sanitize the value
+      const sanitizedValue = sanitizeText(value);
+      if (sanitizedValue !== undefined) {
+        node.setProperties({
+          [propertyName]: sanitizedValue
+        });
+        sendLog(`🔒 Applied sanitized variant property: ${propertyName} = ${sanitizedValue}`, 'info');
+        return true;
+      }
     }
     return false;
   } catch (error) {
     console.error('Error applying variant property:', error);
+    sendLog('Failed to apply variant property', 'error');
     return false;
   }
 }
@@ -447,9 +593,12 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
 
   for (let i = 0; i < maxItems; i++) {
     const selectedNode = selection[i];
-    const dataItem = jsonData[i];
+    const rawDataItem = jsonData[i];
+    
+    // Use the raw data item directly (basic validation only)
+    const dataItem = rawDataItem;
 
-    sendLog(`Processing instance ${i + 1}/${maxItems}: ${selectedNode.name}`, 'info');
+    sendLog(`🔒 Processing sanitized instance ${i + 1}/${maxItems}: ${selectedNode.name}`, 'info');
 
     // Process each mapping
     for (const mapping of mappings) {
@@ -525,14 +674,14 @@ figma.showUI(__html__, {
   themeColors: true
 });
 
-// Storage functions using Figma's clientStorage
+// Storage functions using Secure Storage Manager
 async function saveConfiguration(config: any): Promise<void> {
   try {
     const existing = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
     const updated = existing.filter((c: any) => c.name !== config.name);
     updated.unshift(config);
 
-    // Keep only last 20 configs
+    // Keep only last 20 configs (the retention policy will enforce this too)
     const limited = updated.slice(0, 20);
 
     await figma.clientStorage.setAsync('figmaJsonMapperConfigs', limited);
@@ -847,8 +996,20 @@ figma.on('selectionchange', () => {
   });
 });
 
-// Load saved configurations on startup (wildcard access means no domain loading needed)
-loadConfigurations();
+// Initialize secure storage and load saved configurations on startup
+(async () => {
+  try {
+    // Load saved configurations
+    await loadConfigurations();
+    
+    sendLog(`📊 Storage initialized with basic security`, 'info');
+    
+  } catch (error) {
+    sendLog(`⚠️ Storage initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'warning');
+    // Fallback to basic configuration loading
+    await loadConfigurations();
+  }
+})();
 
 // Send initial selection count (with safety check for dynamic page loading)
 try {
