@@ -714,6 +714,65 @@ async function handleApiDataFetch(msg: any) {
   }
 }
 
+// Secure storage handlers for encrypted credential management
+async function handleSecureStorageSave(msg: any) {
+  try {
+    const { key, value } = msg;
+    if (!key) {
+      throw new Error('Storage key is required');
+    }
+    
+    await figma.clientStorage.setAsync(key, value);
+    
+    figma.ui.postMessage({
+      type: 'storage-save-response',
+      key,
+      success: true
+    });
+    
+    sendLog(`Secure storage save completed for key: ${key}`, 'info');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Storage save failed';
+    figma.ui.postMessage({
+      type: 'storage-save-response',
+      key: msg.key,
+      success: false,
+      error: errorMessage
+    });
+    sendLog(`Secure storage save failed: ${errorMessage}`, 'error');
+  }
+}
+
+async function handleSecureStorageLoad(msg: any) {
+  try {
+    const { key } = msg;
+    if (!key) {
+      throw new Error('Storage key is required');
+    }
+    
+    const value = await figma.clientStorage.getAsync(key);
+    
+    figma.ui.postMessage({
+      type: 'storage-load-response',
+      key,
+      success: true,
+      value
+    });
+    
+    sendLog(`Secure storage load completed for key: ${key}`, 'info');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Storage load failed';
+    figma.ui.postMessage({
+      type: 'storage-load-response',
+      key: msg.key,
+      success: false,
+      error: errorMessage,
+      value: null
+    });
+    sendLog(`Secure storage load failed: ${errorMessage}`, 'error');
+  }
+}
+
 // Message handler for UI communications
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
@@ -742,7 +801,6 @@ figma.ui.onmessage = async (msg) => {
       approveDomainForSession(msg.domain!);
       break;
 
-
     case 'domain-approval-response':
       // Handle the domain approval response
       if (pendingDomainApproval && pendingDomainApproval.domain === msg.domain) {
@@ -761,6 +819,15 @@ figma.ui.onmessage = async (msg) => {
 
     case 'fetch-api-data':
       await handleApiDataFetch(msg);
+      break;
+
+    // Secure credential storage handlers
+    case 'storage-save-request':
+      await handleSecureStorageSave(msg);
+      break;
+
+    case 'storage-load-request':
+      await handleSecureStorageLoad(msg);
       break;
 
     case 'close':

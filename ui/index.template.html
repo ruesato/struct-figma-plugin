@@ -3,18 +3,36 @@
 <head>
   <meta charset="utf-8">
   <title>Struct</title>
+  
+  <!-- Content Security Policy for enhanced security -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self'; 
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com/react@18 https://unpkg.com/react-dom@18 https://unpkg.com/@babel; 
+    style-src 'self' 'unsafe-inline'; 
+    img-src 'self' data: https:; 
+    connect-src 'self' https:; 
+    font-src 'self' data:; 
+    object-src 'none'; 
+    media-src 'self'; 
+    frame-src 'none'; 
+    worker-src 'self' blob:; 
+    child-src 'none'; 
+    form-action 'self'; 
+    base-uri 'self';">
+  
+  <!-- Additional Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  
   <style>
     /* INJECT_CSS */
   </style>
 </head>
 <body>
   <div id="react-page"></div>
-
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <script type="text/babel">
+  <script>
     /* INJECT_JS */
   </script>
 </body>

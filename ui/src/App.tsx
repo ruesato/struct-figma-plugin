@@ -16,6 +16,9 @@ import ErrorToast, { ToastError } from './components/ErrorToast';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
+import SecureCredentialManager from './utils/secureCredentialManager';
+import CredentialCrypto from './utils/credentialCrypto';
+import SecureMessageHandler from './utils/secureMessageHandler';
 
 const App = () => {
   // All state declarations here...
@@ -74,6 +77,10 @@ const App = () => {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [toastErrors, setToastErrors] = useState<ToastError[]>([]);
   
+  // Security state
+  const [isEncryptionAvailable, setIsEncryptionAvailable] = useState(false);
+  const [isLoadingCredentials, setIsLoadingCredentials] = useState(true);
+  
   // Domain approval state
   const [domainApprovalRequest, setDomainApprovalRequest] = useState<{
     isOpen: boolean;
@@ -118,6 +125,52 @@ const App = () => {
   const dismissToastError = useCallback((id: string) => {
     setToastErrors(prev => prev.filter(error => error.id !== id));
   }, []);
+
+  // Secure credential management
+  const loadSecureApiConfig = useCallback(async () => {
+    try {
+      setIsLoadingCredentials(true);
+      const secureConfig = await SecureCredentialManager.loadSecureApiConfig();
+      setApiConfig(secureConfig);
+      addLog('API configuration loaded successfully', 'info');
+    } catch (error) {
+      addLog(`Failed to load API configuration: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+      // Use default config on failure
+      setApiConfig({
+        url: '',
+        method: 'GET',
+        headers: {},
+        apiKey: '',
+        authType: 'none'
+      });
+    } finally {
+      setIsLoadingCredentials(false);
+    }
+  }, [addLog]);
+
+  const saveSecureApiConfig = useCallback(async (config: typeof apiConfig) => {
+    try {
+      await SecureCredentialManager.saveSecureApiConfig(config);
+      addLog('API configuration saved securely', 'info');
+    } catch (error) {
+      addToastError(
+        'Configuration Save Failed', 
+        'Failed to securely save API configuration',
+        'error',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
+    }
+  }, [addLog, addToastError]);
+
+  const updateApiConfig = useCallback(async (updates: Partial<typeof apiConfig>) => {
+    const newConfig = { ...apiConfig, ...updates };
+    setApiConfig(newConfig);
+    
+    // Auto-save when credentials change (with debouncing)
+    if (updates.apiKey !== undefined || updates.authType !== undefined) {
+      await saveSecureApiConfig(newConfig);
+    }
+  }, [apiConfig, saveSecureApiConfig]);
 
   const processJsonData = useCallback((data: any, source: string) => {
     addLog(`Processing data from ${source}...`, 'info');
@@ -190,15 +243,13 @@ const App = () => {
       const requestId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       // Send API fetch request to main plugin code for domain approval
-      parent.postMessage({
-        pluginMessage: {
-          type: 'fetch-api-data',
-          url: apiConfig.url,
-          method: apiConfig.method,
-          headers,
-          requestId
-        }
-      }, '*');
+      SecureMessageHandler.sendSecureMessage({
+        type: 'fetch-api-data',
+        url: apiConfig.url,
+        method: apiConfig.method,
+        headers,
+        requestId
+      });
       
       // Log the request (response handling is done in useEffect)
       addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
@@ -225,23 +276,19 @@ const App = () => {
       savedAt: new Date().toISOString()
     };
 
-    parent.postMessage({
-      pluginMessage: {
-        type: 'save-config',
-        data: config
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'save-config',
+      data: config
+    });
 
     setConfigName('');
     setShowConfigSave(false);
   }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);
 
   const loadConfigurations = useCallback(() => {
-    parent.postMessage({
-      pluginMessage: {
-        type: 'load-configs'
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'load-configs'
+    });
   }, []);
 
   const loadConfiguration = useCallback((config: any) => {
@@ -264,20 +311,16 @@ const App = () => {
   }, [addLog]);
 
   const deleteConfiguration = useCallback((configName: string) => {
-    parent.postMessage({
-      pluginMessage: {
-        type: 'delete-config',
-        configName
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'delete-config',
+      configName
+    });
   }, []);
 
   const clearAllConfigurations = useCallback(() => {
-    parent.postMessage({
-      pluginMessage: {
-        type: 'clear-configs'
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'clear-configs'
+    });
   }, []);
 
   const parseCSV = useCallback((csvText: string): any[] => {
@@ -457,14 +500,12 @@ const App = () => {
       return;
     }
 
-    parent.postMessage({
-      pluginMessage: {
-        type: 'apply-data',
-        jsonData,
-        mappings: activeMappings,
-        valueBuilders
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'apply-data',
+      jsonData,
+      mappings: activeMappings,
+      valueBuilders
+    });
   }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
 
   const handleClearData = useCallback(() => {
@@ -482,13 +523,11 @@ const App = () => {
 
   // Domain approval handlers
   const handleDomainApproval = useCallback((approved: boolean) => {
-    parent.postMessage({
-      pluginMessage: {
-        type: 'domain-approval-response',
-        approved,
-        domain: domainApprovalRequest.domain
-      }
-    }, '*');
+    SecureMessageHandler.sendSecureMessage({
+      type: 'domain-approval-response',
+      approved,
+      domain: domainApprovalRequest.domain
+    });
     
     setDomainApprovalRequest({
       isOpen: false,
@@ -517,8 +556,8 @@ const App = () => {
   }, [handleDomainApproval]);
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
+    const handleSecureMessage = (messageData: any) => {
+      const { type, message, level, selectionCount: count, data } = messageData;
 
       if (type === 'log') {
         addLog(message, level);
@@ -542,7 +581,7 @@ const App = () => {
       } else if (type === 'plugin-error') {
         addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
       } else if (type === 'request-domain-approval') {
-        const { url, domain, purpose } = event.data.pluginMessage;
+        const { url, domain, purpose } = messageData;
         setDomainApprovalRequest({
           isOpen: true,
           url,
@@ -554,19 +593,25 @@ const App = () => {
       } else if (type === 'domain-removed') {
         addLog(message || 'Domain removed successfully', 'info');
       } else if (type === 'api-fetch-success') {
-        const { data, requestId } = event.data.pluginMessage;
+        const { data, requestId } = messageData;
         processJsonData(data, 'API');
         setIsLoadingData(false);
         addLog('API data fetched successfully', 'info');
       } else if (type === 'api-fetch-error') {
-        const { error, requestId } = event.data.pluginMessage;
+        const { error, requestId } = messageData;
         addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', error);
         setIsLoadingData(false);
       }
     };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    // Create secure message listener with origin validation
+    const secureListener = SecureMessageHandler.createSecureListener(handleSecureMessage, {
+      logBlocked: true,
+      throwOnInvalid: false
+    });
+
+    window.addEventListener('message', secureListener);
+    return () => window.removeEventListener('message', secureListener);
   }, [addLog, loadConfigurations, processJsonData, addToastError]);
 
   useEffect(() => {
@@ -578,6 +623,51 @@ const App = () => {
       setupDragAndDrop(dropZoneRef.current, handleFileUpload);
     }
   }, [handleFileUpload]);
+
+  // Initialize security and load credentials
+  useEffect(() => {
+    const initializeSecurity = async () => {
+      try {
+        // Check crypto availability
+        const cryptoSupported = CredentialCrypto.isSupported();
+        setIsEncryptionAvailable(cryptoSupported);
+        
+        if (cryptoSupported) {
+          addLog('🔐 Web Crypto API is available - using secure encryption', 'info');
+        } else {
+          addLog('🔐 Web Crypto API not available - using fallback encryption', 'info');
+          addLog('ℹ️ Fallback provides obfuscation-level security (better than plaintext)', 'info');
+        }
+        
+        // Test crypto functionality (will use Web Crypto or fallback automatically)
+        const cryptoTest = await CredentialCrypto.testCrypto();
+        if (cryptoTest) {
+          const cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
+          addLog(`✅ Encryption test passed using ${cryptoType}`, 'info');
+        } else {
+          addLog('❌ Encryption test failed - credential storage may not work', 'error');
+          addToastError(
+            'Encryption Test Failed',
+            'Credential storage may not function properly',
+            'error'
+          );
+        }
+        
+        // Load existing API configuration
+        await loadSecureApiConfig();
+        
+      } catch (error) {
+        addLog(`Security initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+        addToastError(
+          'Security Initialization Failed',
+          'Some security features may not work properly',
+          'warning'
+        );
+      }
+    };
+
+    initializeSecurity();
+  }, [addLog, addToastError, loadSecureApiConfig]);
 
   return (
     <div className="bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans">
@@ -615,8 +705,8 @@ const App = () => {
 	        dataSource={dataSource}
 	        setDataSource={setDataSource}
 	        apiConfig={apiConfig}
-	        setApiConfig={setApiConfig}
-	        isLoadingData={isLoadingData}
+	        setApiConfig={updateApiConfig}
+	        isLoadingData={isLoadingData || isLoadingCredentials}
 	        fetchApiData={fetchApiData}
 	        processJsonData={processJsonData}
 	        dropZoneRef={dropZoneRef}
