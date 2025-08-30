@@ -61,6 +61,8 @@ async function buildUnified() {
       define: {
         'process.env.NODE_ENV': '"production"'
       },
+      drop: ['console'], // Remove console.* calls in production
+      pure: ['console.log', 'console.debug'], // Mark as pure functions for removal
       jsx: 'automatic',
       jsxImportSource: 'react',
       metafile: true,

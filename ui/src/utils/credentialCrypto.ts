@@ -8,6 +8,7 @@
  */
 
 import FallbackCrypto from './fallbackCrypto';
+import logger from './secureLogger';
 
 interface EncryptedCredential {
   encryptedData: string;
@@ -33,31 +34,22 @@ export class CredentialCrypto {
     const getRandomValuesExists = cryptoExists && typeof crypto.getRandomValues === 'function';
     const isSupported = cryptoExists && cryptoSubtleExists && getRandomValuesExists;
     
-    // Enhanced debug logging for crypto availability
-    console.log(`🔍 DEBUG: Crypto API detailed check:`, {
-      windowCrypto: typeof window.crypto,
-      globalCrypto: typeof crypto,
-      cryptoExists,
-      cryptoSubtleExists,
-      getRandomValuesExists,
-      isSupported,
-      isSecureContext: window.isSecureContext,
-      protocol: window.location.protocol,
-      hostname: window.location.hostname,
-      userAgent: navigator.userAgent.slice(0, 50)
-    });
+    logger.debug('Checking crypto API availability', {
+      hasWebCrypto: isSupported,
+      isSecureContext: window.isSecureContext
+    }, { component: 'CredentialCrypto', action: 'availability-check' });
     
     // In some Figma iframe contexts, crypto might be available on window but not globally
     if (!isSupported && typeof window.crypto !== 'undefined') {
-      console.log(`🔍 DEBUG: Checking window.crypto as fallback...`);
       const windowCryptoSupported = typeof window.crypto !== 'undefined' && 
                                    typeof window.crypto.subtle !== 'undefined' && 
                                    typeof window.crypto.getRandomValues === 'function';
       
-      console.log(`🔍 DEBUG: Window crypto supported: ${windowCryptoSupported}`);
-      
       if (windowCryptoSupported) {
-        console.log(`✅ DEBUG: Using window.crypto as fallback`);
+        logger.debug('Using window.crypto as fallback', undefined, { 
+          component: 'CredentialCrypto', action: 'fallback-setup' 
+        });
+        
         // Assign window.crypto to global crypto for our use
         if (typeof crypto === 'undefined') {
           (globalThis as any).crypto = window.crypto;
@@ -67,8 +59,10 @@ export class CredentialCrypto {
     }
     
     if (!isSupported) {
-      console.warn(`⚠️ CRYPTO: Web Crypto API not available in this context`);
-      console.warn(`⚠️ CRYPTO: Secure context: ${window.isSecureContext}, Protocol: ${window.location.protocol}`);
+      logger.warn('Web Crypto API not available, using fallback encryption', {
+        isSecureContext: window.isSecureContext,
+        protocol: window.location.protocol
+      }, { component: 'CredentialCrypto', action: 'fallback-warning' });
     }
     
     return isSupported;
@@ -166,16 +160,22 @@ export class CredentialCrypto {
 
     // Try Web Crypto API first
     if (this.isSupported()) {
-      console.log('🔐 Using Web Crypto API for encryption');
+      logger.debug('Using Web Crypto API for encryption', undefined, { 
+        component: 'CredentialCrypto', action: 'encrypt' 
+      });
       try {
         return await this.encryptWithWebCrypto(plaintext);
       } catch (error) {
-        console.warn('🔐 Web Crypto encryption failed, falling back to JavaScript crypto:', error);
+        logger.warn('Web Crypto encryption failed, using fallback', error, { 
+          component: 'CredentialCrypto', action: 'encrypt-fallback' 
+        });
       }
     }
     
     // Use fallback crypto
-    console.log('🔐 Using fallback JavaScript crypto for encryption');
+    logger.debug('Using fallback encryption', undefined, { 
+      component: 'CredentialCrypto', action: 'encrypt-fallback' 
+    });
     return await this.encryptWithFallback(plaintext);
   }
 
@@ -238,16 +238,22 @@ export class CredentialCrypto {
 
     // Check if this is a Web Crypto encrypted credential (has IV) or fallback (no IV)
     if (encrypted.iv && this.isSupported()) {
-      console.log('🔐 Using Web Crypto API for decryption');
+      logger.debug('Using Web Crypto API for decryption', undefined, { 
+        component: 'CredentialCrypto', action: 'decrypt' 
+      });
       try {
         return await this.decryptWithWebCrypto(encrypted);
       } catch (error) {
-        console.warn('🔐 Web Crypto decryption failed, trying fallback:', error);
+        logger.warn('Web Crypto decryption failed, using fallback', error, { 
+          component: 'CredentialCrypto', action: 'decrypt-fallback' 
+        });
       }
     }
     
     // Use fallback crypto (either no IV or Web Crypto failed)
-    console.log('🔐 Using fallback JavaScript crypto for decryption');
+    logger.debug('Using fallback decryption', undefined, { 
+      component: 'CredentialCrypto', action: 'decrypt-fallback' 
+    });
     return await this.decryptWithFallback(encrypted);
   }
 
@@ -321,33 +327,25 @@ export class CredentialCrypto {
    */
   static async testCrypto(): Promise<boolean> {
     try {
-      console.log('🧪 DEBUG: Starting crypto test...');
-      const testData = 'test-credential-' + Date.now();
-      console.log('🧪 DEBUG: Test data generated:', testData.length, 'chars');
-      
-      console.log('🧪 DEBUG: Starting encryption...');
-      const encrypted = await this.encryptCredential(testData);
-      console.log('🧪 DEBUG: Encryption completed:', {
-        hasEncryptedData: !!encrypted.encryptedData,
-        hasSalt: !!encrypted.salt,
-        hasIv: !!encrypted.iv,
-        version: encrypted.version
+      logger.debug('Starting crypto test', undefined, { 
+        component: 'CredentialCrypto', action: 'test' 
       });
       
-      console.log('🧪 DEBUG: Starting decryption...');
+      const testData = 'test-credential-' + Date.now();
+      const encrypted = await this.encryptCredential(testData);
       const decrypted = await this.decryptCredential(encrypted);
-      console.log('🧪 DEBUG: Decryption completed, length:', decrypted.length);
       
       const success = decrypted === testData;
-      console.log('🧪 DEBUG: Test result:', { success, originalLength: testData.length, decryptedLength: decrypted.length });
       
       if (success) {
-        const cryptoType = encrypted.iv ? 'Web Crypto API' : 'Fallback JavaScript crypto';
-        console.log(`✅ Crypto test passed using ${cryptoType}`);
+        const cryptoType = encrypted.iv ? 'Web Crypto API' : 'Fallback encryption';
+        logger.info(`Crypto test passed using ${cryptoType}`, undefined, { 
+          component: 'CredentialCrypto', action: 'test-success' 
+        });
       } else {
-        console.warn('❌ Crypto test failed: decrypted data does not match original');
-        console.warn('Original:', testData.substring(0, 50));
-        console.warn('Decrypted:', decrypted.substring(0, 50));
+        logger.error('Crypto test failed: decrypted data mismatch', undefined, { 
+          component: 'CredentialCrypto', action: 'test-failure' 
+        });
       }
       
       // Clean up test data (only if crypto is available for secure wipe)
@@ -358,8 +356,9 @@ export class CredentialCrypto {
       
       return success;
     } catch (error) {
-      console.error('❌ CRYPTO TEST ERROR:', error);
-      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+      logger.error('Crypto test failed with exception', error, { 
+        component: 'CredentialCrypto', action: 'test-error' 
+      });
       return false;
     }
   }

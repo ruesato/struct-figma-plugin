@@ -16,6 +16,7 @@ import ErrorToast, { ToastError } from './components/ErrorToast';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
+import logger from './utils/secureLogger';
 import SecureCredentialManager from './utils/secureCredentialManager';
 import CredentialCrypto from './utils/credentialCrypto';
 import SecureMessageHandler from './utils/secureMessageHandler';
@@ -642,9 +643,9 @@ const App = () => {
         }
         
         // Test crypto functionality (will use Web Crypto or fallback automatically)
-        console.log('🚀 About to start crypto test...');
+        logger.debug('Starting crypto test', undefined, { component: 'App', action: 'crypto-test' });
         const cryptoTest = await CredentialCrypto.testCrypto();
-        console.log('🚀 Crypto test result:', cryptoTest);
+        logger.debug('Crypto test completed', { passed: cryptoTest }, { component: 'App', action: 'crypto-test' });
         
         if (cryptoTest) {
           const cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
@@ -652,7 +653,9 @@ const App = () => {
         } else {
           // Just log the failure, don't show disruptive modal
           addLog('⚠️ Encryption test failed - API credential storage will not work', 'warning');
-          console.warn('Encryption test failed. API credentials cannot be stored securely.');
+          logger.warn('Encryption test failed, API credentials cannot be stored securely', undefined, {
+            component: 'App', action: 'crypto-test-failure'
+          });
         }
         
         // Load existing API configuration

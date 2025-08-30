@@ -3,6 +3,8 @@
  * Prevents message injection attacks and unauthorized communication
  */
 
+import logger from './secureLogger';
+
 /**
  * Valid origins for Figma plugin messages
  * These are the only origins that can send messages to our plugin UI
@@ -73,7 +75,9 @@ export class SecureMessageHandler {
   static validateMessage(event: MessageEvent): ValidatedMessage {
     // Check origin validation - now that we know figma.com is the correct origin
     if (!this.isOriginAllowed(event.origin)) {
-      console.warn(`🚨 SECURITY: Blocked message from unauthorized origin: ${event.origin}`);
+      logger.security('Blocked message from unauthorized origin', { 
+        origin: event.origin 
+      }, { component: 'SecureMessageHandler', action: 'validate' });
       return {
         isValid: false,
         reason: `Unauthorized origin: ${event.origin}`
@@ -127,7 +131,9 @@ export class SecureMessageHandler {
       
       if (!validation.isValid) {
         if (logBlocked) {
-          console.warn(`🚨 SECURITY: Blocked invalid message - ${validation.reason}`);
+          logger.security('Blocked invalid message', { reason: validation.reason }, {
+            component: 'SecureMessageHandler', action: 'message-validation'
+          });
         }
         
         if (throwOnInvalid) {
@@ -141,7 +147,9 @@ export class SecureMessageHandler {
       try {
         handler(validation.data);
       } catch (error) {
-        console.error('🚨 ERROR: Message handler failed:', error);
+        logger.error('Message handler failed', error, {
+          component: 'SecureMessageHandler', action: 'handler-error'
+        });
         // Don't re-throw to prevent breaking the application
       }
     };
@@ -169,7 +177,9 @@ export class SecureMessageHandler {
       }, targetOrigin);
       
     } catch (error) {
-      console.error('🚨 SECURITY: Failed to send secure message:', error);
+      logger.error('Failed to send secure message', error, {
+        component: 'SecureMessageHandler', action: 'send-error'
+      });
       throw error;
     }
   }
@@ -231,7 +241,9 @@ export class SecureMessageHandler {
     };
     
     // In production, this could be sent to a security monitoring service
-    console.log('🔒 SECURITY EVENT:', logData);
+    logger.security('Security event logged', logData, {
+      component: 'SecureMessageHandler', action: 'security-log'
+    });
     
     // Store recent events in sessionStorage for debugging (max 50 entries)
     try {
