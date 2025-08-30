@@ -2,7 +2,7 @@
   "name": "Struct",
   "id": "json-data-mapper",
   "api": "1.0.0",
-  "main": "main/code.js",
+  "main": "dist/code.js",
   "ui": "ui/index.html",
   "editorType": ["figma"],
   "documentAccess": "dynamic-page",

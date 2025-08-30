@@ -2,20 +2,21 @@
 .env
 .env*
 
-# Compiled TypeScript outputs
-# Main thread compiled files
-main/code.js
-main/code-minimal.js
-main/utils/*.js
+# Compiled files from unified build system
+dist/
+ui/dist/
 
-# UI compiled files  
+# Legacy compiled TypeScript outputs (now cleaned up)
+# Any .js files that might be accidentally generated in source dirs
+main/**/*.js
 ui/src/**/*.js
 ui/src/*.js
+
+# Keep final bundled outputs only in designated dist directories
+!dist/*.js
 !ui/dist/*.js
 
-# Build outputs are intentionally kept
-# ui/dist/ - keep build outputs
-# node_modules/ - handled by default
+# Build outputs intentionally kept in dist directories only
 
 PROGRESS_NOTES.md
 SECURITY_AUDIT_REPORT.md

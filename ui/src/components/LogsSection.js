@@ -1,8 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var jsx_runtime_1 = require("react/jsx-runtime");
-var LogsSection = function (_a) {
-    var logs = _a.logs, onOpenModal = _a.onOpenModal;
-    return ((0, jsx_runtime_1.jsx)("section", { className: "logs-section", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-2", children: [(0, jsx_runtime_1.jsx)("h3", { className: "text-lg font-semibold", children: "Activity Log" }), onOpenModal && ((0, jsx_runtime_1.jsxs)("button", { onClick: onOpenModal, className: "px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors flex items-center gap-1.5", children: [(0, jsx_runtime_1.jsx)("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: (0, jsx_runtime_1.jsx)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 8V4a1 1 0 011-1h4m5 0h4a1 1 0 011 1v4m0 5v4a1 1 0 01-1 1h-4m-5 0H4a1 1 0 01-1-1v-4m5-4a2 2 0 100-4 2 2 0 000 4z" }) }), "View All"] }))] }) }));
-};
-exports.default = LogsSection;

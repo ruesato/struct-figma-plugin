@@ -1,26 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "lib": ["ES5", "DOM"],
-    "module": "CommonJS",
-    "outDir": "./",
-    "rootDir": "./",
+    "target": "ES6",
+    "lib": ["ES6", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "jsx": "react-jsx",
-    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
   },
   "include": [
     "main/**/*",
-    "ui/**/*",
+    "ui/src/**/*",
     "scripts/**/*"
   ],
   "exclude": [
     "node_modules",
+    "dist",
+    "ui/dist",
     "**/*.js"
   ]
 }
