@@ -80,12 +80,30 @@ const ValueBuilderModal: React.FC<ValueBuilderModalProps> = ({
           {/* Builder Parts */}
           <div className="space-y-2">
             {currentBuilder.parts.map((part, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-md">
+              <div key={index}
+                   className="flex items-center gap-3 p-3 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-md"
+                   onDragOver={(e) => {
+                     e.preventDefault(); // allow drop
+                     if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+                   }}
+                   onDrop={(e) => {
+                     e.preventDefault();
+                     const from = Number(e.dataTransfer?.getData('text/plain'));
+                     const to = index;
+                     if (!Number.isNaN(from) && from !== to) moveBuilderPart(from, to);
+                   }}>
                 {/* Drag Handle */}
                 <Button
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] cursor-grab"
+                  draggable={true}
+                  onDragStart={(e) => {
+                    // store source index
+                    e.dataTransfer?.setData('text/plain', String(index));
+                    // set allowed effect
+                    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+                  }}
                 >
                   <Grip className="h-4 w-4" />
                 </Button>
