@@ -1,39 +1,61 @@
 "use strict";
 // Helper functions for JSON processing and UI interactions
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.extractJsonKeys = extractJsonKeys;
 exports.getDefaultLayerName = getDefaultLayerName;
 exports.getNestedValue = getNestedValue;
 exports.evaluateValueBuilder = evaluateValueBuilder;
 exports.setupDragAndDrop = setupDragAndDrop;
-function extractJsonKeys(data, maxDepth = 3) {
-    const keys = new Set();
-    function extractKeysRecursive(obj, prefix = '', depth = 0) {
+function extractJsonKeys(data, maxDepth) {
+    if (maxDepth === void 0) { maxDepth = 3; }
+    var keys = new Set();
+    function extractKeysRecursive(obj, prefix, depth) {
+        if (prefix === void 0) { prefix = ''; }
+        if (depth === void 0) { depth = 0; }
         if (depth >= maxDepth || obj === null || typeof obj !== 'object') {
             return;
         }
-        for (const key in obj) {
+        var _loop_1 = function (key) {
             if (obj.hasOwnProperty(key)) {
-                const fullKey = prefix ? `${prefix}.${key}` : key;
-                keys.add(fullKey);
+                var fullKey_1 = prefix ? "".concat(prefix, ".").concat(key) : key;
+                keys.add(fullKey_1);
                 if (typeof obj[key] === 'object' && obj[key] !== null) {
                     if (Array.isArray(obj[key])) {
-                        const arrayItems = obj[key].slice(0, 3);
-                        arrayItems.forEach((item, index) => {
+                        var arrayItems = obj[key].slice(0, 3);
+                        arrayItems.forEach(function (item, index) {
                             if (typeof item === 'object' && item !== null) {
-                                extractKeysRecursive(item, `${fullKey}[${index}]`, depth + 1);
-                                extractKeysRecursive(item, `${fullKey}[]`, depth + 1);
+                                extractKeysRecursive(item, "".concat(fullKey_1, "[").concat(index, "]"), depth + 1);
+                                extractKeysRecursive(item, "".concat(fullKey_1, "[]"), depth + 1);
                             }
                         });
                     }
                     else {
-                        extractKeysRecursive(obj[key], fullKey, depth + 1);
+                        extractKeysRecursive(obj[key], fullKey_1, depth + 1);
                     }
                 }
             }
+        };
+        for (var key in obj) {
+            _loop_1(key);
         }
     }
-    data.slice(0, 10).forEach(item => extractKeysRecursive(item));
+    data.slice(0, 10).forEach(function (item) { return extractKeysRecursive(item); });
     return Array.from(keys).sort();
 }
 function getDefaultLayerName(jsonKey) {
@@ -49,14 +71,14 @@ function getDefaultLayerName(jsonKey) {
     return jsonKey;
 }
 function getNestedValue(obj, path) {
-    const parts = path.split('.');
-    return parts.reduce((current, part) => {
+    var parts = path.split('.');
+    return parts.reduce(function (current, part) {
         if (current === null || current === undefined)
             return undefined;
-        const arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
+        var arrayMatch = part.match(/^(.+)\[(\d*)\]$/);
         if (arrayMatch) {
-            const [, arrayKey, index] = arrayMatch;
-            const arrayValue = current[arrayKey];
+            var _a = __read(arrayMatch, 3), arrayKey = _a[1], index = _a[2];
+            var arrayValue = current[arrayKey];
             if (!Array.isArray(arrayValue))
                 return undefined;
             if (index === '') {
@@ -72,7 +94,7 @@ function getNestedValue(obj, path) {
 function evaluateValueBuilder(builder, data) {
     if (!builder || !builder.parts || builder.parts.length === 0)
         return '';
-    return builder.parts.map((part) => {
+    return builder.parts.map(function (part) {
         switch (part.type) {
             case 'text':
                 return part.value || '';
@@ -90,27 +112,27 @@ function evaluateValueBuilder(builder, data) {
 function setupDragAndDrop(dropZone, onFileDrop) {
     if (!dropZone)
         return;
-    const handleDrag = (e) => {
+    var handleDrag = function (e) {
         e.preventDefault();
         e.stopPropagation();
     };
-    const handleDragIn = (e) => {
+    var handleDragIn = function (e) {
         e.preventDefault();
         e.stopPropagation();
         dropZone.classList.add('drag-over');
     };
-    const handleDragOut = (e) => {
+    var handleDragOut = function (e) {
         e.preventDefault();
         e.stopPropagation();
         dropZone.classList.remove('drag-over');
     };
-    const handleDrop = (e) => {
+    var handleDrop = function (e) {
         var _a;
         e.preventDefault();
         e.stopPropagation();
         dropZone.classList.remove('drag-over');
         if (((_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.files) && e.dataTransfer.files.length > 0) {
-            const file = e.dataTransfer.files[0];
+            var file = e.dataTransfer.files[0];
             if (file.type === 'application/json' || file.name.endsWith('.json') ||
                 file.type === 'text/csv' || file.name.endsWith('.csv')) {
                 onFileDrop(file);

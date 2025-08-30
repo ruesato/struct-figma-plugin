@@ -1,159 +1,264 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsx_runtime_1 = require("react/jsx-runtime");
-const react_1 = require("react");
-const DataSourceTabs_1 = __importDefault(require("./components/DataSourceTabs"));
-const JsonPreview_1 = __importDefault(require("./components/JsonPreview"));
-const KeyMapping_1 = __importDefault(require("./components/KeyMapping"));
-const ValueBuilderModal_1 = __importDefault(require("./components/ValueBuilderModal"));
-const ActionSection_1 = __importDefault(require("./components/ActionSection"));
-const ActivityLogModal_1 = __importDefault(require("./components/ActivityLogModal"));
-const ConfigurationModal_1 = __importDefault(require("./components/ConfigurationModal"));
-const SaveConfigurationModal_1 = __importDefault(require("./components/SaveConfigurationModal"));
-const DomainApprovalModal_1 = __importDefault(require("./components/DomainApprovalModal"));
-const ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
+var jsx_runtime_1 = require("react/jsx-runtime");
+var react_1 = require("react");
+var DataSourceTabs_1 = __importDefault(require("./components/DataSourceTabs"));
+var JsonPreview_1 = __importDefault(require("./components/JsonPreview"));
+var KeyMapping_1 = __importDefault(require("./components/KeyMapping"));
+var ValueBuilderModal_1 = __importDefault(require("./components/ValueBuilderModal"));
+var ActionSection_1 = __importDefault(require("./components/ActionSection"));
+var ActivityLogModal_1 = __importDefault(require("./components/ActivityLogModal"));
+var ConfigurationModal_1 = __importDefault(require("./components/ConfigurationModal"));
+var SaveConfigurationModal_1 = __importDefault(require("./components/SaveConfigurationModal"));
+var DomainApprovalModal_1 = __importDefault(require("./components/DomainApprovalModal"));
+var ErrorToast_1 = __importDefault(require("./components/ErrorToast"));
 // Import utilities
-const utils_1 = require("./utils");
-const secureCredentialManager_1 = __importDefault(require("./utils/secureCredentialManager"));
-const credentialCrypto_1 = __importDefault(require("./utils/credentialCrypto"));
-const secureMessageHandler_1 = __importDefault(require("./utils/secureMessageHandler"));
-const App = () => {
+var utils_1 = require("./utils");
+var secureCredentialManager_1 = __importDefault(require("./utils/secureCredentialManager"));
+var credentialCrypto_1 = __importDefault(require("./utils/credentialCrypto"));
+var secureMessageHandler_1 = __importDefault(require("./utils/secureMessageHandler"));
+var configurationSanitizer_1 = require("./utils/configurationSanitizer");
+var App = function () {
     // All state declarations here...
-    const [dataSource, setDataSource] = (0, react_1.useState)('file');
+    var _a = __read((0, react_1.useState)('file'), 2), dataSource = _a[0], setDataSource = _a[1];
     // Separate data storage for each source type
-    const [dataBySource, setDataBySource] = (0, react_1.useState)({
+    var _b = __read((0, react_1.useState)({
         file: { jsonData: null, jsonKeys: [], mappings: [] },
         api: { jsonData: null, jsonKeys: [], mappings: [] }
-    });
+    }), 2), dataBySource = _b[0], setDataBySource = _b[1];
     // Current active data based on selected source
-    const currentSourceData = dataBySource[dataSource];
-    const jsonData = currentSourceData.jsonData;
-    const jsonKeys = currentSourceData.jsonKeys;
-    const mappings = currentSourceData.mappings;
-    const [selectionCount, setSelectionCount] = (0, react_1.useState)(0);
-    const [logs, setLogs] = (0, react_1.useState)([]);
-    const [isDragging, setIsDragging] = (0, react_1.useState)(false);
-    const [apiConfig, setApiConfig] = (0, react_1.useState)({
+    var currentSourceData = dataBySource[dataSource];
+    var jsonData = currentSourceData.jsonData;
+    var jsonKeys = currentSourceData.jsonKeys;
+    var mappings = currentSourceData.mappings;
+    var _c = __read((0, react_1.useState)(0), 2), selectionCount = _c[0], setSelectionCount = _c[1];
+    var _d = __read((0, react_1.useState)([]), 2), logs = _d[0], setLogs = _d[1];
+    var _e = __read((0, react_1.useState)(false), 2), isDragging = _e[0], setIsDragging = _e[1];
+    var _f = __read((0, react_1.useState)({
         url: '',
         method: 'GET',
         headers: {},
         apiKey: '',
         authType: 'none'
-    });
-    const [isLoadingData, setIsLoadingData] = (0, react_1.useState)(false);
-    const [savedConfigs, setSavedConfigs] = (0, react_1.useState)([]);
-    const [showConfigSave, setShowConfigSave] = (0, react_1.useState)(false);
-    const [configName, setConfigName] = (0, react_1.useState)('');
-    const [showConfigList, setShowConfigList] = (0, react_1.useState)(false);
-    const [valueBuilderModal, setValueBuilderModal] = (0, react_1.useState)({
+    }), 2), apiConfig = _f[0], setApiConfig = _f[1];
+    var _g = __read((0, react_1.useState)(false), 2), isLoadingData = _g[0], setIsLoadingData = _g[1];
+    var _h = __read((0, react_1.useState)([]), 2), savedConfigs = _h[0], setSavedConfigs = _h[1];
+    var _j = __read((0, react_1.useState)(false), 2), showConfigSave = _j[0], setShowConfigSave = _j[1];
+    var _k = __read((0, react_1.useState)(''), 2), configName = _k[0], setConfigName = _k[1];
+    var _l = __read((0, react_1.useState)(false), 2), showConfigList = _l[0], setShowConfigList = _l[1];
+    var _m = __read((0, react_1.useState)({
         isOpen: false,
         mappingKey: null
-    });
-    const [currentBuilder, setCurrentBuilder] = (0, react_1.useState)({
+    }), 2), valueBuilderModal = _m[0], setValueBuilderModal = _m[1];
+    var _o = __read((0, react_1.useState)({
         parts: [{ type: 'key', value: '' }]
-    });
-    const [valueBuilders, setValueBuilders] = (0, react_1.useState)({});
-    const [isActivityModalOpen, setIsActivityModalOpen] = (0, react_1.useState)(false);
-    const [isConfigModalOpen, setIsConfigModalOpen] = (0, react_1.useState)(false);
-    const [isSaveModalOpen, setIsSaveModalOpen] = (0, react_1.useState)(false);
-    const [toastErrors, setToastErrors] = (0, react_1.useState)([]);
+    }), 2), currentBuilder = _o[0], setCurrentBuilder = _o[1];
+    var _p = __read((0, react_1.useState)({}), 2), valueBuilders = _p[0], setValueBuilders = _p[1];
+    var _q = __read((0, react_1.useState)(false), 2), isActivityModalOpen = _q[0], setIsActivityModalOpen = _q[1];
+    var _r = __read((0, react_1.useState)(false), 2), isConfigModalOpen = _r[0], setIsConfigModalOpen = _r[1];
+    var _s = __read((0, react_1.useState)(false), 2), isSaveModalOpen = _s[0], setIsSaveModalOpen = _s[1];
+    var _t = __read((0, react_1.useState)([]), 2), toastErrors = _t[0], setToastErrors = _t[1];
     // Security state
-    const [isEncryptionAvailable, setIsEncryptionAvailable] = (0, react_1.useState)(false);
-    const [isLoadingCredentials, setIsLoadingCredentials] = (0, react_1.useState)(true);
+    var _u = __read((0, react_1.useState)(false), 2), isEncryptionAvailable = _u[0], setIsEncryptionAvailable = _u[1];
+    var _v = __read((0, react_1.useState)(true), 2), isLoadingCredentials = _v[0], setIsLoadingCredentials = _v[1];
     // Domain approval state
-    const [domainApprovalRequest, setDomainApprovalRequest] = (0, react_1.useState)({
+    var _w = __read((0, react_1.useState)({
         isOpen: false,
         url: '',
         domain: '',
         purpose: ''
-    });
-    const dropZoneRef = (0, react_1.useRef)(null);
+    }), 2), domainApprovalRequest = _w[0], setDomainApprovalRequest = _w[1];
+    var dropZoneRef = (0, react_1.useRef)(null);
     // Helper functions
-    const addLog = (0, react_1.useCallback)((message, level = 'info') => {
-        const timestamp = new Date().toLocaleTimeString();
-        setLogs(prev => [...prev, { message, level, timestamp }]);
+    var addLog = (0, react_1.useCallback)(function (message, level) {
+        if (level === void 0) { level = 'info'; }
+        var timestamp = new Date().toLocaleTimeString();
+        setLogs(function (prev) { return __spreadArray(__spreadArray([], __read(prev), false), [{ message: message, level: level, timestamp: timestamp }], false); });
     }, []);
-    const addToastError = (0, react_1.useCallback)((title, message, severity = 'error', technicalDetails) => {
-        const timestamp = new Date().toLocaleTimeString();
-        const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    var addToastError = (0, react_1.useCallback)(function (title, message, severity, technicalDetails) {
+        if (severity === void 0) { severity = 'error'; }
+        var timestamp = new Date().toLocaleTimeString();
+        var id = "toast-".concat(Date.now(), "-").concat(Math.random().toString(36).substr(2, 9));
         // Add to toast
-        const toastError = {
-            id,
-            severity,
-            title,
-            message,
-            timestamp
+        var toastError = {
+            id: id,
+            severity: severity,
+            title: title,
+            message: message,
+            timestamp: timestamp
         };
-        setToastErrors(prev => [...prev, toastError]);
+        setToastErrors(function (prev) { return __spreadArray(__spreadArray([], __read(prev), false), [toastError], false); });
         // Also add to activity log with technical details if provided
-        const logMessage = technicalDetails ? `${title}: ${message} (${technicalDetails})` : `${title}: ${message}`;
-        const logLevel = severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'info';
+        var logMessage = technicalDetails ? "".concat(title, ": ").concat(message, " (").concat(technicalDetails, ")") : "".concat(title, ": ").concat(message);
+        var logLevel = severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'info';
         addLog(logMessage, logLevel);
     }, [addLog]);
-    const dismissToastError = (0, react_1.useCallback)((id) => {
-        setToastErrors(prev => prev.filter(error => error.id !== id));
+    var dismissToastError = (0, react_1.useCallback)(function (id) {
+        setToastErrors(function (prev) { return prev.filter(function (error) { return error.id !== id; }); });
     }, []);
     // Secure credential management
-    const loadSecureApiConfig = (0, react_1.useCallback)(async () => {
-        try {
-            setIsLoadingCredentials(true);
-            const secureConfig = await secureCredentialManager_1.default.loadSecureApiConfig();
-            setApiConfig(secureConfig);
-            addLog('API configuration loaded successfully', 'info');
-        }
-        catch (error) {
-            addLog(`Failed to load API configuration: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
-            // Use default config on failure
-            setApiConfig({
-                url: '',
-                method: 'GET',
-                headers: {},
-                apiKey: '',
-                authType: 'none'
-            });
-        }
-        finally {
-            setIsLoadingCredentials(false);
-        }
-    }, [addLog]);
-    const saveSecureApiConfig = (0, react_1.useCallback)(async (config) => {
-        try {
-            await secureCredentialManager_1.default.saveSecureApiConfig(config);
-            addLog('API configuration saved securely', 'info');
-        }
-        catch (error) {
-            addToastError('Configuration Save Failed', 'Failed to securely save API configuration', 'error', error instanceof Error ? error.message : 'Unknown error');
-        }
-    }, [addLog, addToastError]);
-    const updateApiConfig = (0, react_1.useCallback)(async (updates) => {
-        const newConfig = { ...apiConfig, ...updates };
-        setApiConfig(newConfig);
-        // Auto-save when credentials change (with debouncing)
-        if (updates.apiKey !== undefined || updates.authType !== undefined) {
-            await saveSecureApiConfig(newConfig);
-        }
-    }, [apiConfig, saveSecureApiConfig]);
-    const processJsonData = (0, react_1.useCallback)((data, source) => {
-        addLog(`Processing data from ${source}...`, 'info');
-        let dataArray = [];
+    var loadSecureApiConfig = (0, react_1.useCallback)(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var secureConfig, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, 3, 4]);
+                    setIsLoadingCredentials(true);
+                    return [4 /*yield*/, secureCredentialManager_1.default.loadSecureApiConfig()];
+                case 1:
+                    secureConfig = _a.sent();
+                    setApiConfig(secureConfig);
+                    addLog('API configuration loaded successfully', 'info');
+                    return [3 /*break*/, 4];
+                case 2:
+                    error_1 = _a.sent();
+                    addLog("Failed to load API configuration: ".concat(error_1 instanceof Error ? error_1.message : 'Unknown error'), 'error');
+                    // Use default config on failure
+                    setApiConfig({
+                        url: '',
+                        method: 'GET',
+                        headers: {},
+                        apiKey: '',
+                        authType: 'none'
+                    });
+                    return [3 /*break*/, 4];
+                case 3:
+                    setIsLoadingCredentials(false);
+                    return [7 /*endfinally*/];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [addLog]);
+    var saveSecureApiConfig = (0, react_1.useCallback)(function (config) { return __awaiter(void 0, void 0, void 0, function () {
+        var error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, secureCredentialManager_1.default.saveSecureApiConfig(config)];
+                case 1:
+                    _a.sent();
+                    addLog('API configuration saved securely', 'info');
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    // Note: We intentionally don't show toast errors for API config saves since
+                    // users are informed about credential security through the Save Configuration modal
+                    addLog("API configuration save note: ".concat(error_2 instanceof Error ? error_2.message : 'Credentials are not persisted for security'), 'info');
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); }, [addLog]);
+    var updateApiConfig = (0, react_1.useCallback)(function (updates) { return __awaiter(void 0, void 0, void 0, function () {
+        var newConfig;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newConfig = __assign(__assign({}, apiConfig), updates);
+                    setApiConfig(newConfig);
+                    if (!(updates.apiKey !== undefined || updates.authType !== undefined)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, saveSecureApiConfig(newConfig)];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
+    }); }, [apiConfig, saveSecureApiConfig]);
+    var processJsonData = (0, react_1.useCallback)(function (data, source) {
+        addLog("Processing data from ".concat(source, "..."), 'info');
+        var dataArray = [];
         if (Array.isArray(data)) {
             dataArray = data;
-            addLog(`Direct array detected: ${dataArray.length} items`, 'info');
+            addLog("Direct array detected: ".concat(dataArray.length, " items"), 'info');
         }
         else if (typeof data === 'object' && data !== null) {
-            const keys = Object.keys(data);
-            if (keys.length === 1 && Array.isArray(data[keys[0]])) {
-                dataArray = data[keys[0]];
-                addLog(`Wrapped array detected in "${keys[0]}": ${dataArray.length} items`, 'info');
+            var keys_1 = Object.keys(data);
+            if (keys_1.length === 1 && Array.isArray(data[keys_1[0]])) {
+                dataArray = data[keys_1[0]];
+                addLog("Wrapped array detected in \"".concat(keys_1[0], "\": ").concat(dataArray.length, " items"), 'info');
             }
             else {
-                const arrayProperty = keys.find(key => Array.isArray(data[key]));
+                var arrayProperty = keys_1.find(function (key) { return Array.isArray(data[key]); });
                 if (arrayProperty) {
                     dataArray = data[arrayProperty];
-                    addLog(`Array found in property "${arrayProperty}": ${dataArray.length} items`, 'info');
+                    addLog("Array found in property \"".concat(arrayProperty, "\": ").concat(dataArray.length, " items"), 'info');
                 }
                 else {
                     dataArray = [data];
@@ -169,116 +274,116 @@ const App = () => {
             addToastError('No Data Found', 'The uploaded file contains no data items', 'validation', 'Data array is empty');
             return;
         }
-        const keys = (0, utils_1.extractJsonKeys)(dataArray);
-        const newMappings = keys.map(key => ({
+        var keys = (0, utils_1.extractJsonKeys)(dataArray);
+        var newMappings = keys.map(function (key) { return ({
             jsonKey: key,
             layerName: (0, utils_1.getDefaultLayerName)(key)
-        }));
+        }); });
         // Determine which source to update based on the source parameter
-        const sourceKey = source.toLowerCase() === 'file' ? 'file' : 'api';
-        setDataBySource(prev => ({
-            ...prev,
-            [sourceKey]: {
+        var sourceKey = source.toLowerCase() === 'file' ? 'file' : 'api';
+        setDataBySource(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[sourceKey] = {
                 jsonData: dataArray,
                 jsonKeys: keys,
                 mappings: newMappings
-            }
-        }));
-        addLog(`✅ Data processed: ${dataArray.length} items, ${keys.length} keys found`, 'info');
+            }, _a)));
+        });
+        addLog("\u2705 Data processed: ".concat(dataArray.length, " items, ").concat(keys.length, " keys found"), 'info');
     }, [addLog, addToastError]);
-    const fetchApiData = (0, react_1.useCallback)(async () => {
-        setIsLoadingData(true);
-        try {
-            const headers = {
-                'Content-Type': 'application/json',
-                ...apiConfig.headers
-            };
-            if ((apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && apiConfig.apiKey) {
-                headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;
+    var fetchApiData = (0, react_1.useCallback)(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var headers, requestId, errorMessage;
+        return __generator(this, function (_a) {
+            setIsLoadingData(true);
+            try {
+                headers = __assign({ 'Content-Type': 'application/json' }, apiConfig.headers);
+                if ((apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && apiConfig.apiKey) {
+                    headers['Authorization'] = "Bearer ".concat(apiConfig.apiKey);
+                }
+                requestId = "api_".concat(Date.now(), "_").concat(Math.random().toString(36).substr(2, 9));
+                // Send API fetch request to main plugin code for domain approval
+                secureMessageHandler_1.default.sendSecureMessage({
+                    type: 'fetch-api-data',
+                    url: apiConfig.url,
+                    method: apiConfig.method,
+                    headers: headers,
+                    requestId: requestId
+                });
+                // Log the request (response handling is done in useEffect)
+                addLog("Fetching data from API: ".concat(apiConfig.url), 'info');
             }
-            // Generate unique request ID
-            const requestId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            // Send API fetch request to main plugin code for domain approval
-            secureMessageHandler_1.default.sendSecureMessage({
-                type: 'fetch-api-data',
-                url: apiConfig.url,
-                method: apiConfig.method,
-                headers,
-                requestId
-            });
-            // Log the request (response handling is done in useEffect)
-            addLog(`Fetching data from API: ${apiConfig.url}`, 'info');
-        }
-        catch (error) {
-            const errorMessage = error.message;
-            addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
-            setIsLoadingData(false);
-        }
-    }, [apiConfig, addLog, addToastError]);
-    const saveConfiguration = (0, react_1.useCallback)(() => {
+            catch (error) {
+                errorMessage = error.message;
+                addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', errorMessage);
+                setIsLoadingData(false);
+            }
+            return [2 /*return*/];
+        });
+    }); }, [apiConfig, addLog, addToastError]);
+    var saveConfiguration = (0, react_1.useCallback)(function () {
         if (!configName.trim()) {
             addToastError('Configuration Name Required', 'Please enter a name for your configuration', 'validation');
             return;
         }
-        const config = {
+        var config = {
             name: configName.trim(),
-            dataSource,
-            apiConfig,
+            dataSource: dataSource,
+            apiConfig: apiConfig,
             mappings: mappings, // Use current active mappings
-            valueBuilders,
+            valueBuilders: valueBuilders,
             savedAt: new Date().toISOString()
         };
+        // Sanitize configuration before storage to remove sensitive data
+        var sanitizedConfig = (0, configurationSanitizer_1.sanitizeConfigurationForStorage)(config);
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'save-config',
-            data: config
+            data: sanitizedConfig
         });
+        addLog("Configuration \"".concat(configName.trim(), "\" saved (API credentials excluded for security)"), 'info');
         setConfigName('');
         setShowConfigSave(false);
     }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);
-    const loadConfigurations = (0, react_1.useCallback)(() => {
+    var loadConfigurations = (0, react_1.useCallback)(function () {
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'load-configs'
         });
     }, []);
-    const loadConfiguration = (0, react_1.useCallback)((config) => {
+    var loadConfiguration = (0, react_1.useCallback)(function (config) {
         setDataSource(config.dataSource);
         setApiConfig(config.apiConfig);
         // Update mappings for the specific data source
-        const sourceKey = config.dataSource;
-        setDataBySource(prev => ({
-            ...prev,
-            [sourceKey]: {
-                ...prev[sourceKey],
-                mappings: config.mappings || []
-            }
-        }));
+        var sourceKey = config.dataSource;
+        setDataBySource(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[sourceKey] = __assign(__assign({}, prev[sourceKey]), { mappings: config.mappings || [] }), _a)));
+        });
         setValueBuilders(config.valueBuilders || {});
-        addLog(`Configuration "${config.name}" loaded`, 'info');
+        addLog("Configuration \"".concat(config.name, "\" loaded"), 'info');
         setShowConfigList(false);
     }, [addLog]);
-    const deleteConfiguration = (0, react_1.useCallback)((configName) => {
+    var deleteConfiguration = (0, react_1.useCallback)(function (configName) {
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'delete-config',
-            configName
+            configName: configName
         });
     }, []);
-    const clearAllConfigurations = (0, react_1.useCallback)(() => {
+    var clearAllConfigurations = (0, react_1.useCallback)(function () {
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'clear-configs'
         });
     }, []);
-    const parseCSV = (0, react_1.useCallback)((csvText) => {
-        const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+    var parseCSV = (0, react_1.useCallback)(function (csvText) {
+        var lines = csvText.split('\n').map(function (line) { return line.trim(); }).filter(function (line) { return line; });
         if (lines.length < 2) {
             throw new Error('CSV file must have at least a header row and one data row');
         }
-        const headers = lines[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
-        return lines.slice(1).map((line, index) => {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
+        var headers = lines[0].split(',').map(function (header) { return header.trim().replace(/^"|"$/g, ''); });
+        return lines.slice(1).map(function (line, index) {
+            var values = [];
+            var current = '';
+            var inQuotes = false;
+            for (var i = 0; i < line.length; i++) {
+                var char = line[i];
                 if (char === '"') {
                     inQuotes = !inQuotes;
                 }
@@ -291,64 +396,62 @@ const App = () => {
                 }
             }
             values.push(current.trim().replace(/^"|"$/g, ''));
-            const row = {};
-            headers.forEach((header, i) => {
+            var row = {};
+            headers.forEach(function (header, i) {
                 row[header] = values[i] || '';
             });
             return row;
         });
     }, []);
-    const handleFileUpload = (0, react_1.useCallback)((file) => {
+    var handleFileUpload = (0, react_1.useCallback)(function (file) {
         if (file.size > 2 * 1024 * 1024) {
-            addToastError('File Too Large', 'The selected file exceeds the 2MB size limit', 'validation', `File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+            addToastError('File Too Large', 'The selected file exceeds the 2MB size limit', 'validation', "File size: ".concat((file.size / 1024 / 1024).toFixed(2), "MB"));
             return;
         }
-        const reader = new FileReader();
-        reader.onload = (e) => {
+        var reader = new FileReader();
+        reader.onload = function (e) {
             var _a;
             try {
-                const content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
+                var content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
                 if (file.name.toLowerCase().endsWith('.csv')) {
-                    const parsed = parseCSV(content);
+                    var parsed = parseCSV(content);
                     processJsonData(parsed, 'file');
-                    addLog(`CSV file processed: ${file.name}`, 'info');
+                    addLog("CSV file processed: ".concat(file.name), 'info');
                 }
                 else {
-                    const parsed = JSON.parse(content);
+                    var parsed = JSON.parse(content);
                     processJsonData(parsed, 'file');
-                    addLog(`JSON file processed: ${file.name}`, 'info');
+                    addLog("JSON file processed: ".concat(file.name), 'info');
                 }
             }
             catch (error) {
-                const errorMessage = error.message;
-                const fileType = file.name.toLowerCase().endsWith('.csv') ? 'CSV' : 'JSON';
-                addToastError(`Invalid ${fileType} File`, `The selected file contains invalid ${fileType} data`, 'error', errorMessage);
+                var errorMessage = error.message;
+                var fileType = file.name.toLowerCase().endsWith('.csv') ? 'CSV' : 'JSON';
+                addToastError("Invalid ".concat(fileType, " File"), "The selected file contains invalid ".concat(fileType, " data"), 'error', errorMessage);
             }
         };
         reader.readAsText(file);
     }, [processJsonData, parseCSV, addLog, addToastError]);
-    const handleFileInputChange = (0, react_1.useCallback)((e) => {
+    var handleFileInputChange = (0, react_1.useCallback)(function (e) {
         var _a;
-        const file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
+        var file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
         if (file) {
             handleFileUpload(file);
         }
     }, [handleFileUpload]);
-    const updateMapping = (0, react_1.useCallback)((jsonKey, layerName) => {
-        const sourceKey = dataSource;
-        setDataBySource(prev => ({
-            ...prev,
-            [sourceKey]: {
-                ...prev[sourceKey],
-                mappings: prev[sourceKey].mappings.map(mapping => mapping.jsonKey === jsonKey
-                    ? { ...mapping, layerName }
-                    : mapping)
-            }
-        }));
+    var updateMapping = (0, react_1.useCallback)(function (jsonKey, layerName) {
+        var sourceKey = dataSource;
+        setDataBySource(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[sourceKey] = __assign(__assign({}, prev[sourceKey]), { mappings: prev[sourceKey].mappings.map(function (mapping) {
+                    return mapping.jsonKey === jsonKey
+                        ? __assign(__assign({}, mapping), { layerName: layerName }) : mapping;
+                }) }), _a)));
+        });
     }, [dataSource]);
     // Value builder functions
-    const openValueBuilder = (0, react_1.useCallback)((mappingKey) => {
-        const currentMapping = mappings.find(m => m.jsonKey === mappingKey);
+    var openValueBuilder = (0, react_1.useCallback)(function (mappingKey) {
+        var currentMapping = mappings.find(function (m) { return m.jsonKey === mappingKey; });
         if (currentMapping && valueBuilders[mappingKey]) {
             setCurrentBuilder(valueBuilders[mappingKey]);
         }
@@ -357,62 +460,56 @@ const App = () => {
                 parts: [{ type: 'key', value: mappingKey }]
             });
         }
-        setValueBuilderModal({ isOpen: true, mappingKey });
+        setValueBuilderModal({ isOpen: true, mappingKey: mappingKey });
     }, [mappings, valueBuilders]);
-    const closeValueBuilder = (0, react_1.useCallback)(() => {
+    var closeValueBuilder = (0, react_1.useCallback)(function () {
         setValueBuilderModal({ isOpen: false, mappingKey: null });
         setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });
     }, []);
-    const saveValueBuilder = (0, react_1.useCallback)(() => {
+    var saveValueBuilder = (0, react_1.useCallback)(function () {
         if (!valueBuilderModal.mappingKey)
             return;
-        setValueBuilders(prev => ({
-            ...prev,
-            [valueBuilderModal.mappingKey]: { ...currentBuilder }
-        }));
-        addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');
+        setValueBuilders(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[valueBuilderModal.mappingKey] = __assign({}, currentBuilder), _a)));
+        });
+        addLog("Value builder saved for ".concat(valueBuilderModal.mappingKey), 'info');
         closeValueBuilder();
     }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
-    const clearValueBuilder = (0, react_1.useCallback)((mappingKey) => {
-        setValueBuilders(prev => {
-            const newBuilders = { ...prev };
+    var clearValueBuilder = (0, react_1.useCallback)(function (mappingKey) {
+        setValueBuilders(function (prev) {
+            var newBuilders = __assign({}, prev);
             delete newBuilders[mappingKey];
             return newBuilders;
         });
-        addLog(`Value builder cleared for ${mappingKey}`, 'info');
+        addLog("Value builder cleared for ".concat(mappingKey), 'info');
     }, [addLog]);
-    const addBuilderPart = (0, react_1.useCallback)((type) => {
-        setCurrentBuilder(prev => ({
-            ...prev,
-            parts: [...prev.parts, { type, value: '' }]
-        }));
+    var addBuilderPart = (0, react_1.useCallback)(function (type) {
+        setCurrentBuilder(function (prev) { return (__assign(__assign({}, prev), { parts: __spreadArray(__spreadArray([], __read(prev.parts), false), [{ type: type, value: '' }], false) })); });
     }, []);
-    const updateBuilderPart = (0, react_1.useCallback)((index, field, value) => {
-        setCurrentBuilder(prev => ({
-            ...prev,
-            parts: prev.parts.map((part, i) => i === index ? { ...part, [field]: value } : part)
-        }));
+    var updateBuilderPart = (0, react_1.useCallback)(function (index, field, value) {
+        setCurrentBuilder(function (prev) { return (__assign(__assign({}, prev), { parts: prev.parts.map(function (part, i) {
+                var _a;
+                return i === index ? __assign(__assign({}, part), (_a = {}, _a[field] = value, _a)) : part;
+            }) })); });
     }, []);
-    const removeBuilderPart = (0, react_1.useCallback)((index) => {
-        setCurrentBuilder(prev => ({
-            ...prev,
-            parts: prev.parts.filter((_, i) => i !== index)
-        }));
+    var removeBuilderPart = (0, react_1.useCallback)(function (index) {
+        setCurrentBuilder(function (prev) { return (__assign(__assign({}, prev), { parts: prev.parts.filter(function (_, i) { return i !== index; }) })); });
     }, []);
-    const moveBuilderPart = (0, react_1.useCallback)((fromIndex, toIndex) => {
-        setCurrentBuilder(prev => {
-            const newParts = [...prev.parts];
-            const [movedPart] = newParts.splice(fromIndex, 1);
+    var moveBuilderPart = (0, react_1.useCallback)(function (fromIndex, toIndex) {
+        setCurrentBuilder(function (prev) {
+            var newParts = __spreadArray([], __read(prev.parts), false);
+            var _a = __read(newParts.splice(fromIndex, 1), 1), movedPart = _a[0];
             newParts.splice(toIndex, 0, movedPart);
-            return { ...prev, parts: newParts };
+            return __assign(__assign({}, prev), { parts: newParts });
         });
     }, []);
-    const handleApplyData = (0, react_1.useCallback)(() => {
+    var handleApplyData = (0, react_1.useCallback)(function () {
         if (!jsonData || jsonData.length === 0) {
             addToastError('No Data Loaded', 'Please load JSON data before applying to layers', 'validation');
             return;
         }
-        const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
+        var activeMappings = mappings.filter(function (m) { return m.layerName.trim() !== ''; });
         if (activeMappings.length === 0) {
             addToastError('No Mappings Configured', 'Please configure at least one field mapping', 'validation');
             return;
@@ -423,28 +520,28 @@ const App = () => {
         }
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'apply-data',
-            jsonData,
+            jsonData: jsonData,
             mappings: activeMappings,
-            valueBuilders
+            valueBuilders: valueBuilders
         });
     }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
-    const handleClearData = (0, react_1.useCallback)(() => {
-        const sourceKey = dataSource;
-        setDataBySource(prev => ({
-            ...prev,
-            [sourceKey]: {
+    var handleClearData = (0, react_1.useCallback)(function () {
+        var sourceKey = dataSource;
+        setDataBySource(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[sourceKey] = {
                 jsonData: null,
                 jsonKeys: [],
                 mappings: []
-            }
-        }));
-        addLog(`${sourceKey === 'file' ? 'File' : 'API'} data cleared`, 'info');
+            }, _a)));
+        });
+        addLog("".concat(sourceKey === 'file' ? 'File' : 'API', " data cleared"), 'info');
     }, [dataSource, addLog]);
     // Domain approval handlers
-    const handleDomainApproval = (0, react_1.useCallback)((approved) => {
+    var handleDomainApproval = (0, react_1.useCallback)(function (approved) {
         secureMessageHandler_1.default.sendSecureMessage({
             type: 'domain-approval-response',
-            approved,
+            approved: approved,
             domain: domainApprovalRequest.domain
         });
         setDomainApprovalRequest({
@@ -454,24 +551,24 @@ const App = () => {
             purpose: ''
         });
         if (approved) {
-            addLog(`Domain ${domainApprovalRequest.domain} approved`, 'info');
+            addLog("Domain ".concat(domainApprovalRequest.domain, " approved"), 'info');
         }
         else {
-            addLog(`Domain ${domainApprovalRequest.domain} denied`, 'warning');
+            addLog("Domain ".concat(domainApprovalRequest.domain, " denied"), 'warning');
         }
     }, [domainApprovalRequest.domain, addLog]);
-    const handleApproveDomain = (0, react_1.useCallback)(() => {
+    var handleApproveDomain = (0, react_1.useCallback)(function () {
         handleDomainApproval(true);
     }, [handleDomainApproval]);
-    const handleDenyDomain = (0, react_1.useCallback)(() => {
+    var handleDenyDomain = (0, react_1.useCallback)(function () {
         handleDomainApproval(false);
     }, [handleDomainApproval]);
-    const closeDomainApproval = (0, react_1.useCallback)(() => {
+    var closeDomainApproval = (0, react_1.useCallback)(function () {
         handleDomainApproval(false);
     }, [handleDomainApproval]);
-    (0, react_1.useEffect)(() => {
-        const handleSecureMessage = (messageData) => {
-            const { type, message, level, selectionCount: count, data } = messageData;
+    (0, react_1.useEffect)(function () {
+        var handleSecureMessage = function (messageData) {
+            var type = messageData.type, message = messageData.message, level = messageData.level, count = messageData.selectionCount, data = messageData.data;
             if (type === 'log') {
                 addLog(message, level);
             }
@@ -503,12 +600,12 @@ const App = () => {
                 addToastError('Plugin Error', 'An unexpected error occurred in the plugin', 'error', message);
             }
             else if (type === 'request-domain-approval') {
-                const { url, domain, purpose } = messageData;
+                var url = messageData.url, domain = messageData.domain, purpose = messageData.purpose;
                 setDomainApprovalRequest({
                     isOpen: true,
-                    url,
-                    domain,
-                    purpose
+                    url: url,
+                    domain: domain,
+                    purpose: purpose
                 });
             }
             else if (type === 'domain-approved') {
@@ -518,70 +615,82 @@ const App = () => {
                 addLog(message || 'Domain removed successfully', 'info');
             }
             else if (type === 'api-fetch-success') {
-                const { data, requestId } = messageData;
-                processJsonData(data, 'API');
+                var data_1 = messageData.data, requestId = messageData.requestId;
+                processJsonData(data_1, 'API');
                 setIsLoadingData(false);
                 addLog('API data fetched successfully', 'info');
             }
             else if (type === 'api-fetch-error') {
-                const { error, requestId } = messageData;
+                var error = messageData.error, requestId = messageData.requestId;
                 addToastError('API Fetch Failed', 'Unable to fetch data from the API endpoint', 'error', error);
                 setIsLoadingData(false);
             }
         };
         // Create secure message listener with origin validation
-        const secureListener = secureMessageHandler_1.default.createSecureListener(handleSecureMessage, {
+        var secureListener = secureMessageHandler_1.default.createSecureListener(handleSecureMessage, {
             logBlocked: true,
             throwOnInvalid: false
         });
         window.addEventListener('message', secureListener);
-        return () => window.removeEventListener('message', secureListener);
+        return function () { return window.removeEventListener('message', secureListener); };
     }, [addLog, loadConfigurations, processJsonData, addToastError]);
-    (0, react_1.useEffect)(() => {
+    (0, react_1.useEffect)(function () {
         loadConfigurations();
     }, [loadConfigurations]);
-    (0, react_1.useEffect)(() => {
+    (0, react_1.useEffect)(function () {
         if (dropZoneRef.current) {
             (0, utils_1.setupDragAndDrop)(dropZoneRef.current, handleFileUpload);
         }
     }, [handleFileUpload]);
     // Initialize security and load credentials
-    (0, react_1.useEffect)(() => {
-        const initializeSecurity = async () => {
-            try {
-                // Check crypto availability
-                const cryptoSupported = credentialCrypto_1.default.isSupported();
-                setIsEncryptionAvailable(cryptoSupported);
-                if (cryptoSupported) {
-                    addLog('🔐 Web Crypto API is available - using secure encryption', 'info');
+    (0, react_1.useEffect)(function () {
+        var initializeSecurity = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var cryptoSupported, cryptoTest, cryptoType, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        cryptoSupported = credentialCrypto_1.default.isSupported();
+                        setIsEncryptionAvailable(cryptoSupported);
+                        if (cryptoSupported) {
+                            addLog('🔐 Web Crypto API is available - using secure encryption', 'info');
+                        }
+                        else {
+                            addLog('🔐 Web Crypto API not available - using fallback encryption', 'info');
+                            addLog('ℹ️ Fallback provides obfuscation-level security (better than plaintext)', 'info');
+                        }
+                        // Test crypto functionality (will use Web Crypto or fallback automatically)
+                        console.log('🚀 About to start crypto test...');
+                        return [4 /*yield*/, credentialCrypto_1.default.testCrypto()];
+                    case 1:
+                        cryptoTest = _a.sent();
+                        console.log('🚀 Crypto test result:', cryptoTest);
+                        if (cryptoTest) {
+                            cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
+                            addLog("\u2705 Encryption test passed using ".concat(cryptoType), 'info');
+                        }
+                        else {
+                            // Just log the failure, don't show disruptive modal
+                            addLog('⚠️ Encryption test failed - API credential storage will not work', 'warning');
+                            console.warn('Encryption test failed. API credentials cannot be stored securely.');
+                        }
+                        // Load existing API configuration
+                        return [4 /*yield*/, loadSecureApiConfig()];
+                    case 2:
+                        // Load existing API configuration
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_3 = _a.sent();
+                        addLog("Security initialization failed: ".concat(error_3 instanceof Error ? error_3.message : 'Unknown error'), 'error');
+                        addToastError('Security Initialization Failed', 'Some security features may not work properly', 'warning');
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
-                else {
-                    addLog('🔐 Web Crypto API not available - using fallback encryption', 'info');
-                    addLog('ℹ️ Fallback provides obfuscation-level security (better than plaintext)', 'info');
-                }
-                // Test crypto functionality (will use Web Crypto or fallback automatically)
-                console.log('🚀 About to start crypto test...');
-                const cryptoTest = await credentialCrypto_1.default.testCrypto();
-                console.log('🚀 Crypto test result:', cryptoTest);
-                if (cryptoTest) {
-                    const cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
-                    addLog(`✅ Encryption test passed using ${cryptoType}`, 'info');
-                }
-                else {
-                    // Just log the failure, don't show disruptive modal
-                    addLog('⚠️ Encryption test failed - API credential storage will not work', 'warning');
-                    console.warn('Encryption test failed. API credentials cannot be stored securely.');
-                }
-                // Load existing API configuration
-                await loadSecureApiConfig();
-            }
-            catch (error) {
-                addLog(`Security initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
-                addToastError('Security Initialization Failed', 'Some security features may not work properly', 'warning');
-            }
-        };
+            });
+        }); };
         initializeSecurity();
     }, [addLog, addToastError, loadSecureApiConfig]);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: () => setIsActivityModalOpen(true) }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: () => setIsConfigModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: () => setIsActivityModalOpen(true), className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: updateApiConfig, isLoadingData: isLoadingData || isLoadingCredentials, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: () => setIsSaveModalOpen(true) }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: () => setIsActivityModalOpen(false), logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: () => setIsConfigModalOpen(false), savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: () => setIsSaveModalOpen(false), saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData }), (0, jsx_runtime_1.jsx)(DomainApprovalModal_1.default, { isOpen: domainApprovalRequest.isOpen, onClose: closeDomainApproval, url: domainApprovalRequest.url, domain: domainApprovalRequest.domain, purpose: domainApprovalRequest.purpose, onApprove: handleApproveDomain, onDeny: handleDenyDomain })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "bg-background backdrop-blur-sm text-foreground flex flex-col min-h-screen h-screen overflow-hidden font-sans", children: [(0, jsx_runtime_1.jsx)(ErrorToast_1.default, { errors: toastErrors, onDismiss: dismissToastError, onOpenActivityLog: function () { return setIsActivityModalOpen(true); } }), (0, jsx_runtime_1.jsx)("div", { className: "bg-background px-6 py-4", children: (0, jsx_runtime_1.jsxs)("div", { className: "flex items-center justify-between mb-0", children: [(0, jsx_runtime_1.jsxs)("div", { className: "text-zinc-500 text-xs font-semibold uppercase tracking-wide", children: [selectionCount, " Selected layers"] }), (0, jsx_runtime_1.jsxs)("div", { className: "flex gap-3", children: [(0, jsx_runtime_1.jsx)("button", { onClick: function () { return setIsConfigModalOpen(true); }, className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Saved configurations..." }), (0, jsx_runtime_1.jsx)("button", { onClick: function () { return setIsActivityModalOpen(true); }, className: "text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors", children: "Activity history" })] })] }) }), (0, jsx_runtime_1.jsxs)("div", { className: "main flex-grow p-6 overflow-y-auto", children: [(0, jsx_runtime_1.jsx)(DataSourceTabs_1.default, { dataSource: dataSource, setDataSource: setDataSource, apiConfig: apiConfig, setApiConfig: updateApiConfig, isLoadingData: isLoadingData || isLoadingCredentials, fetchApiData: fetchApiData, processJsonData: processJsonData, dropZoneRef: dropZoneRef, handleFileInputChange: handleFileInputChange }), jsonData && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(JsonPreview_1.default, { jsonData: jsonData, jsonKeys: jsonKeys, getNestedValue: utils_1.getNestedValue }), (0, jsx_runtime_1.jsx)(KeyMapping_1.default, { mappings: mappings, updateMapping: updateMapping, valueBuilders: valueBuilders, openValueBuilder: openValueBuilder, clearValueBuilder: clearValueBuilder })] }))] }), (0, jsx_runtime_1.jsx)(ActionSection_1.default, { handleApplyData: handleApplyData, selectionCount: selectionCount, onOpenSaveModal: function () { return setIsSaveModalOpen(true); } }), (0, jsx_runtime_1.jsx)(ValueBuilderModal_1.default, { valueBuilderModal: valueBuilderModal, currentBuilder: currentBuilder, jsonKeys: jsonKeys, jsonData: jsonData, addBuilderPart: addBuilderPart, updateBuilderPart: updateBuilderPart, removeBuilderPart: removeBuilderPart, moveBuilderPart: moveBuilderPart, evaluateValueBuilder: utils_1.evaluateValueBuilder, closeValueBuilder: closeValueBuilder, saveValueBuilder: saveValueBuilder }), (0, jsx_runtime_1.jsx)(ActivityLogModal_1.default, { isOpen: isActivityModalOpen, onClose: function () { return setIsActivityModalOpen(false); }, logs: logs }), (0, jsx_runtime_1.jsx)(ConfigurationModal_1.default, { isOpen: isConfigModalOpen, onClose: function () { return setIsConfigModalOpen(false); }, savedConfigs: savedConfigs, loadConfiguration: loadConfiguration, saveConfiguration: saveConfiguration, deleteConfiguration: deleteConfiguration, clearAllConfigurations: clearAllConfigurations, configName: configName, setConfigName: setConfigName }), (0, jsx_runtime_1.jsx)(SaveConfigurationModal_1.default, { isOpen: isSaveModalOpen, onClose: function () { return setIsSaveModalOpen(false); }, saveConfiguration: saveConfiguration, configName: configName, setConfigName: setConfigName, dataSource: dataSource, mappings: mappings, jsonData: jsonData }), (0, jsx_runtime_1.jsx)(DomainApprovalModal_1.default, { isOpen: domainApprovalRequest.isOpen, onClose: closeDomainApproval, url: domainApprovalRequest.url, domain: domainApprovalRequest.domain, purpose: domainApprovalRequest.purpose, onApprove: handleApproveDomain, onDeny: handleDenyDomain })] }));
 };
 exports.default = App;

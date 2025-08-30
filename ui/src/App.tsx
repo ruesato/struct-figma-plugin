@@ -19,6 +19,7 @@ import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuil
 import SecureCredentialManager from './utils/secureCredentialManager';
 import CredentialCrypto from './utils/credentialCrypto';
 import SecureMessageHandler from './utils/secureMessageHandler';
+import { sanitizeConfigurationForStorage } from './utils/configurationSanitizer';
 
 const App = () => {
   // All state declarations here...
@@ -153,14 +154,11 @@ const App = () => {
       await SecureCredentialManager.saveSecureApiConfig(config);
       addLog('API configuration saved securely', 'info');
     } catch (error) {
-      addToastError(
-        'Configuration Save Failed', 
-        'Failed to securely save API configuration',
-        'error',
-        error instanceof Error ? error.message : 'Unknown error'
-      );
+      // Note: We intentionally don't show toast errors for API config saves since
+      // users are informed about credential security through the Save Configuration modal
+      addLog(`API configuration save note: ${error instanceof Error ? error.message : 'Credentials are not persisted for security'}`, 'info');
     }
-  }, [addLog, addToastError]);
+  }, [addLog]);
 
   const updateApiConfig = useCallback(async (updates: Partial<typeof apiConfig>) => {
     const newConfig = { ...apiConfig, ...updates };
@@ -276,11 +274,15 @@ const App = () => {
       savedAt: new Date().toISOString()
     };
 
+    // Sanitize configuration before storage to remove sensitive data
+    const sanitizedConfig = sanitizeConfigurationForStorage(config);
+
     SecureMessageHandler.sendSecureMessage({
       type: 'save-config',
-      data: config
+      data: sanitizedConfig
     });
 
+    addLog(`Configuration "${configName.trim()}" saved (API credentials excluded for security)`, 'info');
     setConfigName('');
     setShowConfigSave(false);
   }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog, addToastError]);

@@ -2,6 +2,138 @@
 
 // Inline security utilities for Figma plugin environment
 
+// Configuration interfaces for sanitization
+interface ApiConfig {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  apiKey: string;
+  authType: string;
+}
+
+interface Configuration {
+  name: string;
+  dataSource: string;
+  apiConfig: ApiConfig;
+  mappings: Array<{jsonKey: string, layerName: string}>;
+  valueBuilders: any;
+  savedAt: string;
+}
+
+// Configuration sanitization utilities (inlined to avoid CommonJS issues)
+const SENSITIVE_HEADER_PATTERNS = [
+  /authorization/i,
+  /auth/i, 
+  /token/i,
+  /key/i,
+  /secret/i,
+  /bearer/i,
+  /api[_-]?key/i,
+  /x-api[_-]?key/i,
+  /access[_-]?token/i,
+  /refresh[_-]?token/i,
+  /session[_-]?token/i,
+  /csrf[_-]?token/i,
+  /jwt/i,
+  /oauth/i,
+  /credential/i,
+  /password/i,
+  /passwd/i,
+  /pwd/i
+];
+
+function isSensitiveHeader(headerKey: string): boolean {
+  return SENSITIVE_HEADER_PATTERNS.some(pattern => pattern.test(headerKey));
+}
+
+function sanitizeHeaders(headers: Record<string, string>): Record<string, string> {
+  const cleanHeaders: Record<string, string> = {};
+  
+  for (const [key, value] of Object.entries(headers || {})) {
+    if (!isSensitiveHeader(key)) {
+      cleanHeaders[key] = value;
+    }
+  }
+  
+  return cleanHeaders;
+}
+
+function sanitizeApiConfig(apiConfig: ApiConfig): ApiConfig {
+  return {
+    ...apiConfig,
+    apiKey: '', // Always remove API key
+    headers: sanitizeHeaders(apiConfig.headers), // Filter sensitive headers
+  };
+}
+
+function configurationContainsSensitiveData(config: Configuration): boolean {
+  const { apiConfig } = config;
+  
+  // Check for API key
+  if (apiConfig.apiKey && apiConfig.apiKey.trim() !== '') {
+    return true;
+  }
+  
+  // Check for sensitive headers
+  const headerKeys = Object.keys(apiConfig.headers || {});
+  if (headerKeys.some(key => isSensitiveHeader(key))) {
+    return true;
+  }
+  
+  return false;
+}
+
+function sanitizeConfigurationForStorage(config: Configuration): Configuration {
+  return {
+    ...config,
+    apiConfig: sanitizeApiConfig(config.apiConfig),
+  };
+}
+
+function migrateConfigurations(configurations: Configuration[]): {
+  cleanedConfigurations: Configuration[];
+  migrationSummary: {
+    totalConfigs: number;
+    migratedConfigs: number;
+    removedApiKeys: number;
+    removedHeaders: number;
+  };
+} {
+  const cleanedConfigurations: Configuration[] = [];
+  let migratedConfigs = 0;
+  let removedApiKeys = 0;
+  let removedHeaders = 0;
+  
+  for (const config of configurations) {
+    if (configurationContainsSensitiveData(config)) {
+      // Count what we're removing
+      if (config.apiConfig.apiKey && config.apiConfig.apiKey.trim() !== '') {
+        removedApiKeys++;
+      }
+      
+      const sensitiveHeaders = Object.keys(config.apiConfig.headers || {})
+        .filter(key => isSensitiveHeader(key));
+      removedHeaders += sensitiveHeaders.length;
+      
+      migratedConfigs++;
+      cleanedConfigurations.push(sanitizeConfigurationForStorage(config));
+    } else {
+      // Configuration is already clean
+      cleanedConfigurations.push(config);
+    }
+  }
+  
+  return {
+    cleanedConfigurations,
+    migrationSummary: {
+      totalConfigs: configurations.length,
+      migratedConfigs,
+      removedApiKeys,
+      removedHeaders
+    }
+  };
+}
+
 // Basic input sanitization
 function sanitizeText(input: string): string {
   if (!input || typeof input !== 'string') return '';
@@ -701,14 +833,36 @@ async function saveConfiguration(config: any): Promise<void> {
 async function loadConfigurations(): Promise<void> {
   try {
     const configs = await figma.clientStorage.getAsync('figmaJsonMapperConfigs') || [];
+    
+    // Migrate configurations to remove any existing sensitive data
+    const migrationResult = migrateConfigurations(configs);
+    const { cleanedConfigurations, migrationSummary } = migrationResult;
+    
+    // If any configurations were migrated, save the cleaned versions
+    if (migrationSummary.migratedConfigs > 0) {
+      await figma.clientStorage.setAsync('figmaJsonMapperConfigs', cleanedConfigurations);
+      
+      // Log migration summary
+      console.log(`🔒 Configuration Migration: Cleaned ${migrationSummary.migratedConfigs}/${migrationSummary.totalConfigs} configurations`);
+      console.log(`🔒 Removed ${migrationSummary.removedApiKeys} API keys and ${migrationSummary.removedHeaders} sensitive headers`);
+      
+      // Notify UI about the migration
+      figma.ui.postMessage({
+        type: 'log',
+        message: `Security migration: Cleaned ${migrationSummary.migratedConfigs} configurations by removing API credentials`,
+        level: 'info'
+      });
+    }
+    
     figma.ui.postMessage({
       type: 'configs-loaded',
-      data: configs
+      data: cleanedConfigurations
     } as StorageResponse);
   } catch (error) {
+    console.error('Storage error details:', error);
     figma.ui.postMessage({
       type: 'storage-error',
-      message: 'Failed to load configurations'
+      message: `Failed to load configurations: ${error instanceof Error ? error.message : 'Unknown error'}`
     } as StorageResponse);
   }
 }

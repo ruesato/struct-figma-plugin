@@ -2153,6 +2153,9 @@ video {
 .text-\[var\(--figma-color-text\)\] {
   color: var(--figma-color-text);
 }
+.text-\[var\(--figma-color-text-brand\)\] {
+  color: var(--figma-color-text-brand);
+}
 .text-\[var\(--figma-color-text-onbrand\)\] {
   color: var(--figma-color-text-onbrand);
 }

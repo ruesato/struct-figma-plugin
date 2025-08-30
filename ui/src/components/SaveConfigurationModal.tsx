@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
-import { Save, X } from 'lucide-react';
+import { Save, X, Shield } from 'lucide-react';
 
 interface SaveConfigurationModalProps {
   isOpen: boolean;
@@ -123,6 +123,21 @@ const SaveConfigurationModal: React.FC<SaveConfigurationModalProps> = ({
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Security Notice */}
+          <div className="mb-6 p-4 bg-[var(--figma-color-bg-secondary)] border border-[var(--figma-color-border)] rounded-lg">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 text-[var(--figma-color-text-brand)] mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-medium text-[var(--figma-color-text)] mb-1">
+                  Security Notice
+                </h4>
+                <p className="text-sm text-[var(--figma-color-text-secondary)]">
+                  API credentials are not saved for security. You'll need to re-enter API keys when loading this configuration.
+                </p>
+              </div>
             </div>
           </div>
 

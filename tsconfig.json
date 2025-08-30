@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "lib": ["ES2018", "DOM"],
+    "target": "ES5",
+    "lib": ["ES5", "DOM"],
     "module": "CommonJS",
     "outDir": "./",
     "rootDir": "./",
@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "jsx": "react-jsx",
+    "downlevelIteration": true,
     "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
   },
   "include": [

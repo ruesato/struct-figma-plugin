@@ -32,12 +32,59 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const child_process_1 = require("child_process");
-const util_1 = require("util");
-const execAsync = (0, util_1.promisify)(child_process_1.exec);
+var fs = __importStar(require("fs"));
+var path = __importStar(require("path"));
+var child_process_1 = require("child_process");
+var util_1 = require("util");
+var execAsync = (0, util_1.promisify)(child_process_1.exec);
 /**
  * Build script that compiles JSX components and creates the final index.html
  * This script:
@@ -47,904 +94,98 @@ const execAsync = (0, util_1.promisify)(child_process_1.exec);
  * 4. Injects everything into HTML template
  * 5. Outputs the final ui/index.html for the Figma plugin
  */
-async function buildUI() {
-    console.log('🔨 Building UI with JSX components...');
-    const uiDir = path.join(__dirname, '..', 'ui');
-    const componentsDir = path.join(uiDir, 'components');
-    try {
-        // Step 1: Compile JSX components with Babel
-        console.log('⚛️  Compiling JSX components...');
-        await execAsync(`npx babel ${componentsDir} --out-dir ${componentsDir}/compiled --presets=@babel/preset-react`);
-        // Step 2: Read and combine compiled components
-        const componentFiles = [
-            'Header.js',
-            'ConfigSection.js',
-            'DataSourceTabs.js',
-            'JsonPreview.js',
-            'KeyMapping.js',
-            'ValueBuilderModal.js',
-            'ActionSection.js',
-            'LogsSection.js',
-            'App.js'
-        ];
-        let componentsCode = '';
-        for (const file of componentFiles) {
-            const filePath = path.join(componentsDir, 'compiled', file);
-            if (fs.existsSync(filePath)) {
-                componentsCode += fs.readFileSync(filePath, 'utf-8') + '\n\n';
+function buildUI() {
+    return __awaiter(this, void 0, void 0, function () {
+        var uiDir, componentsDir, componentFiles, componentsCode, componentFiles_1, componentFiles_1_1, file, filePath, functionsCode, inputCssPath, outputCssPath, cssContent, templatePath, htmlContent, processedJs, outputPath, stats, error_1;
+        var e_1, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    console.log('🔨 Building UI with JSX components...');
+                    uiDir = path.join(__dirname, '..', 'ui');
+                    componentsDir = path.join(uiDir, 'components');
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 4, , 5]);
+                    // Step 1: Compile JSX components with Babel
+                    console.log('⚛️  Compiling JSX components...');
+                    return [4 /*yield*/, execAsync("npx babel ".concat(componentsDir, " --out-dir ").concat(componentsDir, "/compiled --presets=@babel/preset-react"))];
+                case 2:
+                    _b.sent();
+                    componentFiles = [
+                        'Header.js',
+                        'ConfigSection.js',
+                        'DataSourceTabs.js',
+                        'JsonPreview.js',
+                        'KeyMapping.js',
+                        'ValueBuilderModal.js',
+                        'ActionSection.js',
+                        'LogsSection.js',
+                        'App.js'
+                    ];
+                    componentsCode = '';
+                    try {
+                        for (componentFiles_1 = __values(componentFiles), componentFiles_1_1 = componentFiles_1.next(); !componentFiles_1_1.done; componentFiles_1_1 = componentFiles_1.next()) {
+                            file = componentFiles_1_1.value;
+                            filePath = path.join(componentsDir, 'compiled', file);
+                            if (fs.existsSync(filePath)) {
+                                componentsCode += fs.readFileSync(filePath, 'utf-8') + '\n\n';
+                            }
+                        }
+                    }
+                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                    finally {
+                        try {
+                            if (componentFiles_1_1 && !componentFiles_1_1.done && (_a = componentFiles_1.return)) _a.call(componentFiles_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                    }
+                    console.log('✅ Combined JSX components');
+                    functionsCode = "\n    // Helper functions\n    function extractJsonKeys(data, maxDepth = 3) {\n      const keys = new Set();\n\n      function extractKeysRecursive(obj, prefix = '', depth = 0) {\n        if (depth >= maxDepth || obj === null || typeof obj !== 'object') {\n          return;\n        }\n\n        for (const key in obj) {\n          if (obj.hasOwnProperty(key)) {\n            const fullKey = prefix ? `${prefix}.${key}` : key;\n            keys.add(fullKey);\n\n            if (typeof obj[key] === 'object' && obj[key] !== null) {\n              if (Array.isArray(obj[key])) {\n                const arrayItems = obj[key].slice(0, 3);\n                arrayItems.forEach((item, index) => {\n                  if (typeof item === 'object' && item !== null) {\n                    extractKeysRecursive(item, `${fullKey}[${index}]`, depth + 1);\n                    extractKeysRecursive(item, `${fullKey}[]`, depth + 1);\n                  }\n                });\n              } else {\n                extractKeysRecursive(obj[key], fullKey, depth + 1);\n              }\n            }\n          }\n        }\n      }\n\n      data.slice(0, 10).forEach(item => extractKeysRecursive(item));\n      return Array.from(keys).sort();\n    }\n\n    function getDefaultLayerName(jsonKey) {\n      if (jsonKey.includes('[') && jsonKey.includes('.')) {\n        return jsonKey.split('.').pop() || jsonKey;\n      }\n      if (jsonKey.includes('[')) {\n        return jsonKey.split('[')[0];\n      }\n      if (jsonKey.includes('.')) {\n        return jsonKey.split('.').pop() || jsonKey;\n      }\n      return jsonKey;\n    }\n\n    function getNestedValue(obj, path) {\n      const parts = path.split('.');\n\n      return parts.reduce((current, part) => {\n        if (current === null || current === undefined) return undefined;\n\n        const arrayMatch = part.match(/^(.+)\\[(\\d*)\\]$/);\n        if (arrayMatch) {\n          const [, arrayKey, index] = arrayMatch;\n          const arrayValue = current[arrayKey];\n\n          if (!Array.isArray(arrayValue)) return undefined;\n\n          if (index === '') {\n            return arrayValue[0];\n          } else {\n            return arrayValue[parseInt(index)];\n          }\n        }\n\n        return current[part];\n      }, obj);\n    }\n\n    // Value builder utility functions\n    function evaluateValueBuilder(builder, data) {\n      if (!builder || !builder.parts || builder.parts.length === 0) return '';\n\n      return builder.parts.map(part => {\n        switch (part.type) {\n          case 'text':\n            return part.value || '';\n          case 'key':\n            if (!part.value) return '';\n            return getNestedValue(data, part.value) || '';\n          case 'separator':\n            return part.value || ' ';\n          default:\n            return '';\n        }\n      }).join('');\n    }\n\n    // Drag and drop utilities\n    function setupDragAndDrop(dropZone, onFileDrop) {\n      const handleDrag = (e) => {\n        e.preventDefault();\n        e.stopPropagation();\n      };\n\n      const handleDragIn = (e) => {\n        e.preventDefault();\n        e.stopPropagation();\n        dropZone.classList.add('dragging');\n      };\n\n      const handleDragOut = (e) => {\n        e.preventDefault();\n        e.stopPropagation();\n        dropZone.classList.remove('dragging');\n      };\n\n      const handleDrop = (e) => {\n        e.preventDefault();\n        e.stopPropagation();\n        dropZone.classList.remove('dragging');\n\n        const files = e.dataTransfer.files;\n        if (files && files.length > 0) {\n          onFileDrop(files[0]);\n        }\n      };\n\n      dropZone.addEventListener('dragenter', handleDragIn);\n      dropZone.addEventListener('dragleave', handleDragOut);\n      dropZone.addEventListener('dragover', handleDrag);\n      dropZone.addEventListener('drop', handleDrop);\n    }\n\n    // Main component\n    const JsonDataMapper = () => {\n      const { useState, useCallback, useEffect, useRef } = React;\n\n      const [jsonData, setJsonData] = useState(null);\n      const [jsonKeys, setJsonKeys] = useState([]);\n      const [mappings, setMappings] = useState([]);\n      const [selectionCount, setSelectionCount] = useState(0);\n      const [logs, setLogs] = useState([]);\n      const [isDragging, setIsDragging] = useState(false);\n\n      const [dataSource, setDataSource] = useState('file');\n      const [apiConfig, setApiConfig] = useState({\n        url: '',\n        method: 'GET',\n        headers: {},\n        apiKey: '',\n        authType: 'none'\n      });\n      const [isLoadingData, setIsLoadingData] = useState(false);\n\n      const [savedConfigs, setSavedConfigs] = useState([]);\n      const [showConfigSave, setShowConfigSave] = useState(false);\n      const [configName, setConfigName] = useState('');\n      const [showConfigList, setShowConfigList] = useState(false);\n\n      const [valueBuilderModal, setValueBuilderModal] = useState({\n        isOpen: false,\n        mappingKey: null\n      });\n      const [currentBuilder, setCurrentBuilder] = useState({\n        parts: [{ type: 'key', value: '' }]\n      });\n      const [valueBuilders, setValueBuilders] = useState({});\n\n      const dropZoneRef = useRef(null);\n\n      const addLog = useCallback((message, level = 'info') => {\n        setLogs(prev => [...prev, {\n          message,\n          level,\n          timestamp: new Date().toLocaleTimeString()\n        }]);\n      }, []);\n\n      const processJsonData = useCallback((parsed, source = 'unknown') => {\n        try {\n          let dataArray;\n\n          addLog(`Parsed JSON type: ${Array.isArray(parsed) ? 'array' : typeof parsed}`, 'info');\n\n          if (Array.isArray(parsed)) {\n            dataArray = parsed;\n            addLog('Using direct array', 'info');\n          } else if (typeof parsed === 'object' && parsed !== null) {\n            const keys = Object.keys(parsed);\n            addLog(`Object has ${keys.length} keys: ${keys.join(', ')}`, 'info');\n\n            if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {\n              dataArray = parsed[keys[0]];\n              addLog(`Found array data in property \"${keys[0]}\" with ${dataArray.length} items`, 'info');\n            } else {\n              const arrayProperty = keys.find(key => Array.isArray(parsed[key]));\n              if (arrayProperty) {\n                const arrayData = parsed[arrayProperty];\n                const metadata = {};\n\n                keys.forEach(key => {\n                  if (key !== arrayProperty) {\n                    metadata[key] = parsed[key];\n                  }\n                });\n\n                dataArray = arrayData.map(item => ({\n                  ...metadata,\n                  ...item\n                }));\n\n                addLog(`Merged ${Object.keys(metadata).length} metadata keys with ${arrayData.length} array items from \"${arrayProperty}\"`, 'info');\n              } else {\n                dataArray = [parsed];\n                addLog('No arrays found, wrapping object in array', 'info');\n              }\n            }\n          } else {\n            dataArray = [parsed];\n            addLog('Wrapping primitive value in array', 'info');\n          }\n\n          setJsonData(dataArray);\n          const keys = extractJsonKeys(dataArray);\n          setJsonKeys(keys);\n\n          setMappings(keys.map(key => ({\n            jsonKey: key,\n            layerName: getDefaultLayerName(key),\n            valueBuilder: null\n          })));\n\n          addLog(`Loaded JSON from ${source} with ${dataArray.length} objects and ${keys.length} unique keys`, 'info');\n          return true;\n        } catch (error) {\n          addLog(`Invalid JSON data from ${source}`, 'error');\n          console.error('JSON parsing error:', error);\n          return false;\n        }\n      }, [addLog]);\n\n      // API data fetching\n      const fetchApiData = useCallback(async () => {\n        if (!apiConfig.url.trim()) {\n          addLog('API URL is required', 'error');\n          return;\n        }\n\n        setIsLoadingData(true);\n        addLog(`Fetching data from API: ${apiConfig.url}`, 'info');\n\n        try {\n          const headers = { ...apiConfig.headers };\n\n          if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {\n            headers['Authorization'] = `Bearer ${apiConfig.apiKey}`;\n          } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {\n            headers['X-API-Key'] = apiConfig.apiKey;\n          }\n\n          const response = await fetch(apiConfig.url, {\n            method: apiConfig.method,\n            headers: headers\n          });\n\n          if (!response.ok) {\n            throw new Error(`HTTP ${response.status}: ${response.statusText}`);\n          }\n\n          const data = await response.json();\n          processJsonData(data, 'API');\n          addLog('API data loaded successfully', 'info');\n        } catch (error) {\n          addLog(`API request failed: ${error.message}`, 'error');\n        } finally {\n          setIsLoadingData(false);\n        }\n      }, [apiConfig, processJsonData, addLog]);\n\n      // Configuration management\n      const saveConfiguration = useCallback(() => {\n        if (!configName.trim()) {\n          addLog('Configuration name is required', 'error');\n          return;\n        }\n\n        const config = {\n          name: configName,\n          dataSource,\n          apiConfig,\n          mappings,\n          valueBuilders,\n          savedAt: new Date().toISOString()\n        };\n\n        parent.postMessage({\n          pluginMessage: {\n            type: 'save-config',\n            data: config\n          }\n        }, '*');\n\n        setConfigName('');\n        setShowConfigSave(false);\n      }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);\n\n      const loadConfigurations = useCallback(() => {\n        parent.postMessage({\n          pluginMessage: {\n            type: 'load-configs'\n          }\n        }, '*');\n      }, []);\n\n      const loadConfiguration = useCallback((config) => {\n        setDataSource(config.dataSource);\n        setApiConfig(config.apiConfig);\n        setMappings(config.mappings || []);\n        setValueBuilders(config.valueBuilders || {});\n        addLog(`Configuration \"${config.name}\" loaded`, 'info');\n        setShowConfigList(false);\n      }, [addLog]);\n\n      const deleteConfiguration = useCallback((configName) => {\n        parent.postMessage({\n          pluginMessage: {\n            type: 'delete-config',\n            configName\n          }\n        }, '*');\n      }, [addLog]);\n\n      const clearAllConfigurations = useCallback(() => {\n        parent.postMessage({\n          pluginMessage: {\n            type: 'clear-configs'\n          }\n        }, '*');\n      }, []);\n\n      const handleFileUpload = useCallback((file) => {\n        if (file.size > 2 * 1024 * 1024) {\n          addLog('File size exceeds 2MB limit', 'error');\n          return;\n        }\n\n        const reader = new FileReader();\n        reader.onload = (e) => {\n          const content = e.target?.result;\n          const parsed = JSON.parse(content);\n          processJsonData(parsed, 'file');\n        };\n        reader.readAsText(file);\n      }, [processJsonData]);\n\n      const handleFileInputChange = useCallback((e) => {\n        const file = e.target.files?.[0];\n        if (file) {\n          handleFileUpload(file);\n        }\n      }, [handleFileUpload]);\n\n      const updateMapping = useCallback((jsonKey, layerName) => {\n        setMappings(prev => prev.map(mapping =>\n          mapping.jsonKey === jsonKey\n            ? { ...mapping, layerName }\n            : mapping\n        ));\n      }, []);\n\n      // Value builder functions\n      const openValueBuilder = useCallback((mappingKey) => {\n        const currentMapping = mappings.find(m => m.jsonKey === mappingKey);\n        if (currentMapping && valueBuilders[mappingKey]) {\n          setCurrentBuilder(valueBuilders[mappingKey]);\n        } else {\n          // Initialize with the selected mapping key pre-populated\n          setCurrentBuilder({\n            parts: [{ type: 'key', value: mappingKey }]\n          });\n        }\n        setValueBuilderModal({ isOpen: true, mappingKey });\n      }, [mappings, valueBuilders]);\n\n      const closeValueBuilder = useCallback(() => {\n        setValueBuilderModal({ isOpen: false, mappingKey: null });\n        setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });\n      }, []);\n\n      const saveValueBuilder = useCallback(() => {\n        if (!valueBuilderModal.mappingKey) return;\n\n        setValueBuilders(prev => ({\n          ...prev,\n          [valueBuilderModal.mappingKey]: { ...currentBuilder }\n        }));\n\n        addLog(`Value builder saved for ${valueBuilderModal.mappingKey}`, 'info');\n        closeValueBuilder();\n      }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);\n\n      const clearValueBuilder = useCallback((mappingKey) => {\n        setValueBuilders(prev => {\n          const newBuilders = { ...prev };\n          delete newBuilders[mappingKey];\n          return newBuilders;\n        });\n        addLog(`Value builder cleared for ${mappingKey}`, 'info');\n      }, [addLog]);\n\n      const addBuilderPart = useCallback((type) => {\n        setCurrentBuilder(prev => ({\n          ...prev,\n          parts: [...prev.parts, { type, value: '' }]\n        }));\n      }, []);\n\n      const updateBuilderPart = useCallback((index, field, value) => {\n        setCurrentBuilder(prev => ({\n          ...prev,\n          parts: prev.parts.map((part, i) =>\n            i === index ? { ...part, [field]: value } : part\n          )\n        }));\n      }, []);\n\n      const removeBuilderPart = useCallback((index) => {\n        setCurrentBuilder(prev => ({\n          ...prev,\n          parts: prev.parts.filter((_, i) => i !== index)\n        }));\n      }, []);\n\n      const moveBuilderPart = useCallback((fromIndex, toIndex) => {\n        setCurrentBuilder(prev => {\n          const newParts = [...prev.parts];\n          const [movedPart] = newParts.splice(fromIndex, 1);\n          newParts.splice(toIndex, 0, movedPart);\n          return { ...prev, parts: newParts };\n        });\n      }, []);\n\n      const handleApplyData = useCallback(() => {\n        if (!jsonData || jsonData.length === 0) {\n          addLog('No JSON data loaded', 'error');\n          return;\n        }\n\n        const activeMappings = mappings.filter(m => m.layerName.trim() !== '');\n        if (activeMappings.length === 0) {\n          addLog('No layer mappings configured', 'error');\n          return;\n        }\n\n        if (selectionCount === 0) {\n          addLog('No layers selected in Figma', 'error');\n          return;\n        }\n\n        parent.postMessage({\n          pluginMessage: {\n            type: 'apply-data',\n            jsonData,\n            mappings: activeMappings,\n            valueBuilders\n          }\n        }, '*');\n      }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);\n\n      const handleClearData = useCallback(() => {\n        setJsonData(null);\n        setJsonKeys([]);\n        setMappings([]);\n        addLog('Data cleared', 'info');\n      }, [addLog]);\n\n      useEffect(() => {\n        const handleMessage = (event) => {\n          const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};\n\n          if (type === 'log') {\n            addLog(message, level);\n          } else if (type === 'selection-changed') {\n            setSelectionCount(count);\n          } else if (type === 'configs-loaded') {\n            setSavedConfigs(data || []);\n          } else if (type === 'config-saved') {\n            addLog('Configuration saved successfully', 'info');\n            loadConfigurations(); // Reload configs to get updated list\n          } else if (type === 'config-deleted') {\n            addLog('Configuration deleted successfully', 'info');\n            loadConfigurations(); // Reload configs to get updated list\n          } else if (type === 'configs-cleared') {\n            setSavedConfigs([]);\n            addLog('All configurations cleared', 'info');\n          } else if (type === 'storage-error') {\n            addLog(`Storage error: ${message}`, 'error');\n          }\n        };\n\n        window.addEventListener('message', handleMessage);\n        return () => window.removeEventListener('message', handleMessage);\n      }, [addLog, loadConfigurations]);\n\n      // Load configurations on component mount\n      useEffect(() => {\n        loadConfigurations();\n      }, [loadConfigurations]);\n\n      useEffect(() => {\n        if (dropZoneRef.current) {\n          setupDragAndDrop(dropZoneRef.current, handleFileUpload);\n        }\n      }, [handleFileUpload]);\n\n      return React.createElement('div', { className: 'p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg' },\n        React.createElement('header', { className: 'mb-5 border-b border-figma-border pb-3' },\n          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'Struct'),\n          React.createElement('div', { className: 'flex justify-between items-center' },\n            React.createElement('p', { className: 'text-sm text-figma-textSecondary' }, `Selected: ${selectionCount} layer(s)`),\n            jsonData && React.createElement('button', {\n              onClick: handleClearData,\n              className: 'btn-danger'\n            }, '\uD83D\uDDD1\uFE0F Clear')\n          )\n        ),\n\n        // Configuration section\n        React.createElement('section', { className: 'config-section' },\n          React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Configuration'),\n          React.createElement('div', { className: 'config-controls' },\n            React.createElement('button', {\n              className: 'btn-primary text-xs',\n              onClick: () => setShowConfigSave(true)\n            }, 'Save Config'),\n            React.createElement('button', {\n              className: 'btn-primary text-xs',\n              onClick: () => {\n                loadConfigurations();\n                setShowConfigList(true);\n              }\n            }, 'Load Config'),\n            savedConfigs.length > 0 && React.createElement('button', {\n              className: 'btn-danger',\n              onClick: clearAllConfigurations\n            }, 'Clear All')\n          ),\n          showConfigSave && React.createElement('div', null,\n            React.createElement('input', {\n              type: 'text',\n              className: 'form-input mb-2',\n              placeholder: 'Configuration name',\n              value: configName,\n              onChange: (e) => setConfigName(e.target.value)\n            }),\n            React.createElement('div', { className: 'config-controls' },\n              React.createElement('button', { className: 'btn-primary text-xs', onClick: saveConfiguration }, 'Save'),\n              React.createElement('button', { className: 'btn-secondary text-xs', onClick: () => setShowConfigSave(false) }, 'Cancel')\n            )\n          ),\n          showConfigList && savedConfigs.length > 0 && React.createElement('div', { className: 'config-list' },\n            savedConfigs.map(config =>\n              React.createElement('div', { key: config.name, className: 'config-item' },\n                React.createElement('div', { className: 'config-name' }, config.name),\n                React.createElement('div', { className: 'config-meta' }, new Date(config.savedAt).toLocaleDateString()),\n                React.createElement('div', { className: 'config-actions' },\n                  React.createElement('button', {\n                    className: 'config-action-btn',\n                    onClick: () => loadConfiguration(config)\n                  }, 'Load'),\n                  React.createElement('button', {\n                    className: 'config-action-btn',\n                    onClick: () => deleteConfiguration(config.name)\n                  }, 'Delete')\n                )\n              )\n            )\n          ),\n          showConfigList && React.createElement('button', {\n            className: 'config-btn',\n            onClick: () => setShowConfigList(false)\n          }, 'Close')\n        ),\n\n        // Data source section\n        React.createElement('section', { className: 'data-source-section' },\n          React.createElement('h3', null, 'Data Source'),\n          React.createElement('div', { className: 'data-source-tabs' },\n            React.createElement('button', {\n              className: `data-source-tab ${dataSource === 'file' ? 'active' : ''}`,\n              onClick: () => setDataSource('file')\n            }, 'File'),\n            React.createElement('button', {\n              className: `data-source-tab ${dataSource === 'api' ? 'active' : ''}`,\n              onClick: () => setDataSource('api')\n            }, 'API'),\n            React.createElement('button', {\n              className: `data-source-tab ${dataSource === 'manual' ? 'active' : ''}`,\n              onClick: () => setDataSource('manual')\n            }, 'Manual')\n          ),\n          React.createElement('div', { className: 'data-source-content' },\n            dataSource === 'file' && React.createElement('div', { className: 'upload-section' },\n              React.createElement('div', {\n                className: 'drop-zone',\n                ref: dropZoneRef\n              },\n                React.createElement('p', null, 'Drop JSON file here or'),\n                React.createElement('label', { className: 'file-button' },\n                  'Choose File',\n                  React.createElement('input', {\n                    type: 'file',\n                    accept: '.json,application/json',\n                    onChange: handleFileInputChange,\n                    style: { display: 'none' }\n                  })\n                ),\n                React.createElement('p', { className: 'file-limit' }, 'Max 2MB')\n              )\n            ),\n            dataSource === 'api' && React.createElement('div', { className: 'mb-5' },\n              React.createElement('div', { className: 'form-group' },\n                React.createElement('label', { className: 'form-label' }, 'API URL'),\n                React.createElement('input', {\n                  type: 'text',\n                  className: 'form-input',\n                  value: apiConfig.url,\n                  onChange: (e) => setApiConfig(prev => ({ ...prev, url: e.target.value })),\n                  placeholder: 'https://api.example.com/data'\n                })\n              ),\n              React.createElement('div', { className: 'form-row' },\n                React.createElement('div', { className: 'form-group' },\n                  React.createElement('label', { className: 'form-label' }, 'Method'),\n                  React.createElement('select', {\n                    className: 'form-select',\n                    value: apiConfig.method,\n                    onChange: (e) => setApiConfig(prev => ({ ...prev, method: e.target.value }))\n                  },\n                    React.createElement('option', { value: 'GET' }, 'GET'),\n                    React.createElement('option', { value: 'POST' }, 'POST')\n                  )\n                ),\n                React.createElement('div', { className: 'form-group' },\n                  React.createElement('label', { className: 'form-label' }, 'Auth Type'),\n                  React.createElement('select', {\n                    className: 'form-select',\n                    value: apiConfig.authType,\n                    onChange: (e) => setApiConfig(prev => ({ ...prev, authType: e.target.value }))\n                  },\n                    React.createElement('option', { value: 'none' }, 'None'),\n                    React.createElement('option', { value: 'bearer' }, 'Bearer Token'),\n                    React.createElement('option', { value: 'apikey' }, 'API Key')\n                  )\n                )\n              ),\n              (apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && React.createElement('div', { className: 'form-group' },\n                React.createElement('label', { className: 'form-label' }, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'),\n                React.createElement('input', {\n                  type: 'password',\n                  className: 'form-input',\n                  value: apiConfig.apiKey,\n                  onChange: (e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value })),\n                  placeholder: 'Enter your token/key'\n                })\n              ),\n              React.createElement('button', {\n                className: 'fetch-button',\n                onClick: fetchApiData,\n                disabled: isLoadingData || !apiConfig.url.trim()\n              }, isLoadingData ? 'Loading...' : 'Fetch Data')\n            ),\n            dataSource === 'manual' && React.createElement('div', null,\n              React.createElement('p', null, 'Paste your JSON data:'),\n              React.createElement('textarea', {\n                rows: 8,\n                style: { width: '100%', marginTop: '8px', padding: '8px', fontFamily: 'monospace', fontSize: '11px' },\n                placeholder: 'Paste JSON data here...',\n                onChange: (e) => {\n                  try {\n                    const parsed = JSON.parse(e.target.value);\n                    processJsonData(parsed, 'manual');\n                  } catch (error) {\n                    // Invalid JSON, ignore\n                  }\n                }\n              })\n            )\n          )\n        ),\n\n        // JSON Preview\n        jsonData && React.createElement('section', { className: 'json-preview' },\n          React.createElement('h3', null, `JSON Preview (${jsonData.length} items)`),\n          React.createElement('div', { className: 'table-container' },\n            React.createElement('table', null,\n              React.createElement('thead', null,\n                React.createElement('tr', null,\n                  jsonKeys.slice(0, 10).map(key =>\n                    React.createElement('th', { key }, key)\n                  )\n                )\n              ),\n              React.createElement('tbody', null,\n                jsonData.slice(0, 10).map((item, index) =>\n                  React.createElement('tr', { key: index },\n                    jsonKeys.slice(0, 10).map(key =>\n                      React.createElement('td', { key },\n                        String(getNestedValue(item, key) || '').slice(0, 50)\n                      )\n                    )\n                  )\n                )\n              )\n            )\n          )\n        ),\n\n        jsonData && React.createElement('section', { className: 'mapping-section' },\n          React.createElement('h3', null, 'Key Mapping'),\n          React.createElement('div', { className: 'mapping-table' },\n            mappings.map(mapping =>\n              React.createElement('div', { key: mapping.jsonKey, className: 'mapping-row' },\n                React.createElement('label', null, mapping.jsonKey),\n                React.createElement('input', {\n                  type: 'text',\n                  placeholder: 'Figma layer name',\n                  value: mapping.layerName,\n                  onChange: (e) => updateMapping(mapping.jsonKey, e.target.value)\n                }),\n                React.createElement('button', {\n                  className: `build-value-btn ${valueBuilders[mapping.jsonKey] ? 'active' : ''}`,\n                  onClick: () => openValueBuilder(mapping.jsonKey),\n                  title: 'Build custom value'\n                }, '\uD83D\uDD27'),\n                valueBuilders[mapping.jsonKey] && React.createElement('button', {\n                  className: 'clear-builder-btn',\n                  onClick: () => clearValueBuilder(mapping.jsonKey),\n                  title: 'Clear value builder'\n                }, '\u2717')\n              )\n            )\n          )\n        ),\n\n        jsonData && React.createElement('section', { className: 'action-section' },\n          React.createElement('button', {\n            className: 'apply-button',\n            onClick: handleApplyData,\n            disabled: selectionCount === 0\n          }, 'Apply Data to Selection')\n        ),\n\n        // Value Builder Modal\n        valueBuilderModal.isOpen && React.createElement('div', { className: 'modal-overlay' },\n          React.createElement('div', { className: 'modal' },\n            React.createElement('div', { className: 'modal-header' },\n              React.createElement('h3', { className: 'modal-title' }, `Value Builder: ${valueBuilderModal.mappingKey}`),\n              React.createElement('button', { className: 'modal-close', onClick: closeValueBuilder }, '\u00D7')\n            ),\n            React.createElement('div', { className: 'add-part-buttons' },\n              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('key') }, 'Add Key'),\n              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('text') }, 'Add Text'),\n              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('separator') }, 'Add Separator')\n            ),\n            currentBuilder.parts.map((part, index) =>\n              React.createElement('div', { key: index, className: 'builder-part' },\n                React.createElement('div', { className: 'reorder-controls' },\n                  React.createElement('button', {\n                    className: 'reorder-btn',\n                    onClick: () => moveBuilderPart(index, Math.max(0, index - 1)),\n                    disabled: index === 0\n                  }, '\u2191'),\n                  React.createElement('button', {\n                    className: 'reorder-btn',\n                    onClick: () => moveBuilderPart(index, Math.min(currentBuilder.parts.length - 1, index + 1)),\n                    disabled: index === currentBuilder.parts.length - 1\n                  }, '\u2193')\n                ),\n                React.createElement('select', {\n                  value: part.type,\n                  onChange: (e) => updateBuilderPart(index, 'type', e.target.value)\n                },\n                  React.createElement('option', { value: 'key' }, 'JSON Key'),\n                  React.createElement('option', { value: 'text' }, 'Static Text'),\n                  React.createElement('option', { value: 'separator' }, 'Separator')\n                ),\n                part.type === 'key' ? React.createElement('select', {\n                  value: part.value,\n                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value)\n                },\n                  React.createElement('option', { value: '' }, 'Select key...'),\n                  jsonKeys.map(key =>\n                    React.createElement('option', { key, value: key }, key)\n                  )\n                ) : React.createElement('input', {\n                  type: 'text',\n                  value: part.value,\n                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value),\n                  placeholder: part.type === 'text' ? 'Enter text' : 'e.g., \" - \"'\n                }),\n                React.createElement('button', {\n                  className: 'remove-part-btn',\n                  onClick: () => removeBuilderPart(index)\n                }, '\u00D7')\n              )\n            ),\n            jsonData && jsonData.length > 0 && React.createElement('div', { className: 'preview-section' },\n              React.createElement('div', { className: 'preview-label' }, 'Preview:'),\n              React.createElement('div', { className: 'preview-value' },\n                evaluateValueBuilder(currentBuilder, jsonData[0])\n              )\n            ),\n            React.createElement('div', { className: 'modal-actions' },\n              React.createElement('button', { className: 'modal-btn secondary', onClick: closeValueBuilder }, 'Cancel'),\n              React.createElement('button', { className: 'modal-btn primary', onClick: saveValueBuilder }, 'Save')\n            )\n          )\n        ),\n\n        React.createElement('section', { className: 'logs-section' },\n          React.createElement('h3', null, 'Logs'),\n          React.createElement('div', { className: 'logs-container' },\n            logs.map((log, index) =>\n              React.createElement('div', { key: index, className: `log-entry ${log.level}` },\n                React.createElement('span', { className: 'timestamp' }, log.timestamp),\n                React.createElement('span', { className: 'message' }, log.message)\n              )\n            )\n          )\n        )\n      );\n    };\n    ";
+                    // Process CSS with PostCSS and Tailwind
+                    console.log('🎨 Processing CSS with Tailwind...');
+                    inputCssPath = path.join(uiDir, 'styles.css');
+                    outputCssPath = path.join(uiDir, 'styles.processed.css');
+                    if (!fs.existsSync(inputCssPath)) {
+                        throw new Error('ui/styles.css not found.');
+                    }
+                    // Run PostCSS to process Tailwind CSS
+                    return [4 /*yield*/, execAsync("npx postcss ".concat(inputCssPath, " -o ").concat(outputCssPath))];
+                case 3:
+                    // Run PostCSS to process Tailwind CSS
+                    _b.sent();
+                    cssContent = fs.readFileSync(outputCssPath, 'utf-8');
+                    console.log('✅ Processed CSS with Tailwind');
+                    templatePath = path.join(uiDir, 'index.template.html');
+                    if (!fs.existsSync(templatePath)) {
+                        throw new Error('ui/index.template.html not found.');
+                    }
+                    htmlContent = fs.readFileSync(templatePath, 'utf-8');
+                    console.log('✅ Read HTML template');
+                    processedJs = functionsCode.trim() + '\n\n// Render the app\nReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));';
+                    // Inject CSS and JavaScript into the template
+                    htmlContent = htmlContent.replace('/* INJECT_CSS */', cssContent);
+                    htmlContent = htmlContent.replace('/* INJECT_JS */', processedJs);
+                    outputPath = path.join(uiDir, 'index.html');
+                    fs.writeFileSync(outputPath, htmlContent, 'utf-8');
+                    console.log('✅ Generated final ui/index.html');
+                    console.log("\uD83D\uDCE6 Build complete! Output: ".concat(outputPath));
+                    stats = fs.statSync(outputPath);
+                    console.log("\uD83D\uDCCA Final HTML size: ".concat((stats.size / 1024).toFixed(1), " KB"));
+                    // Clean up temporary processed CSS file
+                    if (fs.existsSync(outputCssPath)) {
+                        fs.unlinkSync(outputCssPath);
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _b.sent();
+                    console.error('❌ Build failed:', error_1);
+                    process.exit(1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
-        }
-        console.log('✅ Combined JSX components');
-        // Step 3: Create the JavaScript functions that will be injected into App.jsx
-        const functionsCode = `
-    // Helper functions
-    function extractJsonKeys(data, maxDepth = 3) {
-      const keys = new Set();
-
-      function extractKeysRecursive(obj, prefix = '', depth = 0) {
-        if (depth >= maxDepth || obj === null || typeof obj !== 'object') {
-          return;
-        }
-
-        for (const key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            const fullKey = prefix ? \`\${prefix}.\${key}\` : key;
-            keys.add(fullKey);
-
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-              if (Array.isArray(obj[key])) {
-                const arrayItems = obj[key].slice(0, 3);
-                arrayItems.forEach((item, index) => {
-                  if (typeof item === 'object' && item !== null) {
-                    extractKeysRecursive(item, \`\${fullKey}[\${index}]\`, depth + 1);
-                    extractKeysRecursive(item, \`\${fullKey}[]\`, depth + 1);
-                  }
-                });
-              } else {
-                extractKeysRecursive(obj[key], fullKey, depth + 1);
-              }
-            }
-          }
-        }
-      }
-
-      data.slice(0, 10).forEach(item => extractKeysRecursive(item));
-      return Array.from(keys).sort();
-    }
-
-    function getDefaultLayerName(jsonKey) {
-      if (jsonKey.includes('[') && jsonKey.includes('.')) {
-        return jsonKey.split('.').pop() || jsonKey;
-      }
-      if (jsonKey.includes('[')) {
-        return jsonKey.split('[')[0];
-      }
-      if (jsonKey.includes('.')) {
-        return jsonKey.split('.').pop() || jsonKey;
-      }
-      return jsonKey;
-    }
-
-    function getNestedValue(obj, path) {
-      const parts = path.split('.');
-
-      return parts.reduce((current, part) => {
-        if (current === null || current === undefined) return undefined;
-
-        const arrayMatch = part.match(/^(.+)\\[(\\d*)\\]$/);
-        if (arrayMatch) {
-          const [, arrayKey, index] = arrayMatch;
-          const arrayValue = current[arrayKey];
-
-          if (!Array.isArray(arrayValue)) return undefined;
-
-          if (index === '') {
-            return arrayValue[0];
-          } else {
-            return arrayValue[parseInt(index)];
-          }
-        }
-
-        return current[part];
-      }, obj);
-    }
-
-    // Value builder utility functions
-    function evaluateValueBuilder(builder, data) {
-      if (!builder || !builder.parts || builder.parts.length === 0) return '';
-
-      return builder.parts.map(part => {
-        switch (part.type) {
-          case 'text':
-            return part.value || '';
-          case 'key':
-            if (!part.value) return '';
-            return getNestedValue(data, part.value) || '';
-          case 'separator':
-            return part.value || ' ';
-          default:
-            return '';
-        }
-      }).join('');
-    }
-
-    // Drag and drop utilities
-    function setupDragAndDrop(dropZone, onFileDrop) {
-      const handleDrag = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      };
-
-      const handleDragIn = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropZone.classList.add('dragging');
-      };
-
-      const handleDragOut = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropZone.classList.remove('dragging');
-      };
-
-      const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropZone.classList.remove('dragging');
-
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-          onFileDrop(files[0]);
-        }
-      };
-
-      dropZone.addEventListener('dragenter', handleDragIn);
-      dropZone.addEventListener('dragleave', handleDragOut);
-      dropZone.addEventListener('dragover', handleDrag);
-      dropZone.addEventListener('drop', handleDrop);
-    }
-
-    // Main component
-    const JsonDataMapper = () => {
-      const { useState, useCallback, useEffect, useRef } = React;
-
-      const [jsonData, setJsonData] = useState(null);
-      const [jsonKeys, setJsonKeys] = useState([]);
-      const [mappings, setMappings] = useState([]);
-      const [selectionCount, setSelectionCount] = useState(0);
-      const [logs, setLogs] = useState([]);
-      const [isDragging, setIsDragging] = useState(false);
-
-      const [dataSource, setDataSource] = useState('file');
-      const [apiConfig, setApiConfig] = useState({
-        url: '',
-        method: 'GET',
-        headers: {},
-        apiKey: '',
-        authType: 'none'
-      });
-      const [isLoadingData, setIsLoadingData] = useState(false);
-
-      const [savedConfigs, setSavedConfigs] = useState([]);
-      const [showConfigSave, setShowConfigSave] = useState(false);
-      const [configName, setConfigName] = useState('');
-      const [showConfigList, setShowConfigList] = useState(false);
-
-      const [valueBuilderModal, setValueBuilderModal] = useState({
-        isOpen: false,
-        mappingKey: null
-      });
-      const [currentBuilder, setCurrentBuilder] = useState({
-        parts: [{ type: 'key', value: '' }]
-      });
-      const [valueBuilders, setValueBuilders] = useState({});
-
-      const dropZoneRef = useRef(null);
-
-      const addLog = useCallback((message, level = 'info') => {
-        setLogs(prev => [...prev, {
-          message,
-          level,
-          timestamp: new Date().toLocaleTimeString()
-        }]);
-      }, []);
-
-      const processJsonData = useCallback((parsed, source = 'unknown') => {
-        try {
-          let dataArray;
-
-          addLog(\`Parsed JSON type: \${Array.isArray(parsed) ? 'array' : typeof parsed}\`, 'info');
-
-          if (Array.isArray(parsed)) {
-            dataArray = parsed;
-            addLog('Using direct array', 'info');
-          } else if (typeof parsed === 'object' && parsed !== null) {
-            const keys = Object.keys(parsed);
-            addLog(\`Object has \${keys.length} keys: \${keys.join(', ')}\`, 'info');
-
-            if (keys.length === 1 && Array.isArray(parsed[keys[0]])) {
-              dataArray = parsed[keys[0]];
-              addLog(\`Found array data in property "\${keys[0]}" with \${dataArray.length} items\`, 'info');
-            } else {
-              const arrayProperty = keys.find(key => Array.isArray(parsed[key]));
-              if (arrayProperty) {
-                const arrayData = parsed[arrayProperty];
-                const metadata = {};
-
-                keys.forEach(key => {
-                  if (key !== arrayProperty) {
-                    metadata[key] = parsed[key];
-                  }
-                });
-
-                dataArray = arrayData.map(item => ({
-                  ...metadata,
-                  ...item
-                }));
-
-                addLog(\`Merged \${Object.keys(metadata).length} metadata keys with \${arrayData.length} array items from "\${arrayProperty}"\`, 'info');
-              } else {
-                dataArray = [parsed];
-                addLog('No arrays found, wrapping object in array', 'info');
-              }
-            }
-          } else {
-            dataArray = [parsed];
-            addLog('Wrapping primitive value in array', 'info');
-          }
-
-          setJsonData(dataArray);
-          const keys = extractJsonKeys(dataArray);
-          setJsonKeys(keys);
-
-          setMappings(keys.map(key => ({
-            jsonKey: key,
-            layerName: getDefaultLayerName(key),
-            valueBuilder: null
-          })));
-
-          addLog(\`Loaded JSON from \${source} with \${dataArray.length} objects and \${keys.length} unique keys\`, 'info');
-          return true;
-        } catch (error) {
-          addLog(\`Invalid JSON data from \${source}\`, 'error');
-          console.error('JSON parsing error:', error);
-          return false;
-        }
-      }, [addLog]);
-
-      // API data fetching
-      const fetchApiData = useCallback(async () => {
-        if (!apiConfig.url.trim()) {
-          addLog('API URL is required', 'error');
-          return;
-        }
-
-        setIsLoadingData(true);
-        addLog(\`Fetching data from API: \${apiConfig.url}\`, 'info');
-
-        try {
-          const headers = { ...apiConfig.headers };
-
-          if (apiConfig.authType === 'bearer' && apiConfig.apiKey) {
-            headers['Authorization'] = \`Bearer \${apiConfig.apiKey}\`;
-          } else if (apiConfig.authType === 'apikey' && apiConfig.apiKey) {
-            headers['X-API-Key'] = apiConfig.apiKey;
-          }
-
-          const response = await fetch(apiConfig.url, {
-            method: apiConfig.method,
-            headers: headers
-          });
-
-          if (!response.ok) {
-            throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
-          }
-
-          const data = await response.json();
-          processJsonData(data, 'API');
-          addLog('API data loaded successfully', 'info');
-        } catch (error) {
-          addLog(\`API request failed: \${error.message}\`, 'error');
-        } finally {
-          setIsLoadingData(false);
-        }
-      }, [apiConfig, processJsonData, addLog]);
-
-      // Configuration management
-      const saveConfiguration = useCallback(() => {
-        if (!configName.trim()) {
-          addLog('Configuration name is required', 'error');
-          return;
-        }
-
-        const config = {
-          name: configName,
-          dataSource,
-          apiConfig,
-          mappings,
-          valueBuilders,
-          savedAt: new Date().toISOString()
-        };
-
-        parent.postMessage({
-          pluginMessage: {
-            type: 'save-config',
-            data: config
-          }
-        }, '*');
-
-        setConfigName('');
-        setShowConfigSave(false);
-      }, [configName, dataSource, apiConfig, mappings, valueBuilders, addLog]);
-
-      const loadConfigurations = useCallback(() => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'load-configs'
-          }
-        }, '*');
-      }, []);
-
-      const loadConfiguration = useCallback((config) => {
-        setDataSource(config.dataSource);
-        setApiConfig(config.apiConfig);
-        setMappings(config.mappings || []);
-        setValueBuilders(config.valueBuilders || {});
-        addLog(\`Configuration "\${config.name}" loaded\`, 'info');
-        setShowConfigList(false);
-      }, [addLog]);
-
-      const deleteConfiguration = useCallback((configName) => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'delete-config',
-            configName
-          }
-        }, '*');
-      }, [addLog]);
-
-      const clearAllConfigurations = useCallback(() => {
-        parent.postMessage({
-          pluginMessage: {
-            type: 'clear-configs'
-          }
-        }, '*');
-      }, []);
-
-      const handleFileUpload = useCallback((file) => {
-        if (file.size > 2 * 1024 * 1024) {
-          addLog('File size exceeds 2MB limit', 'error');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const content = e.target?.result;
-          const parsed = JSON.parse(content);
-          processJsonData(parsed, 'file');
-        };
-        reader.readAsText(file);
-      }, [processJsonData]);
-
-      const handleFileInputChange = useCallback((e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          handleFileUpload(file);
-        }
-      }, [handleFileUpload]);
-
-      const updateMapping = useCallback((jsonKey, layerName) => {
-        setMappings(prev => prev.map(mapping =>
-          mapping.jsonKey === jsonKey
-            ? { ...mapping, layerName }
-            : mapping
-        ));
-      }, []);
-
-      // Value builder functions
-      const openValueBuilder = useCallback((mappingKey) => {
-        const currentMapping = mappings.find(m => m.jsonKey === mappingKey);
-        if (currentMapping && valueBuilders[mappingKey]) {
-          setCurrentBuilder(valueBuilders[mappingKey]);
-        } else {
-          // Initialize with the selected mapping key pre-populated
-          setCurrentBuilder({
-            parts: [{ type: 'key', value: mappingKey }]
-          });
-        }
-        setValueBuilderModal({ isOpen: true, mappingKey });
-      }, [mappings, valueBuilders]);
-
-      const closeValueBuilder = useCallback(() => {
-        setValueBuilderModal({ isOpen: false, mappingKey: null });
-        setCurrentBuilder({ parts: [{ type: 'key', value: '' }] });
-      }, []);
-
-      const saveValueBuilder = useCallback(() => {
-        if (!valueBuilderModal.mappingKey) return;
-
-        setValueBuilders(prev => ({
-          ...prev,
-          [valueBuilderModal.mappingKey]: { ...currentBuilder }
-        }));
-
-        addLog(\`Value builder saved for \${valueBuilderModal.mappingKey}\`, 'info');
-        closeValueBuilder();
-      }, [valueBuilderModal.mappingKey, currentBuilder, addLog, closeValueBuilder]);
-
-      const clearValueBuilder = useCallback((mappingKey) => {
-        setValueBuilders(prev => {
-          const newBuilders = { ...prev };
-          delete newBuilders[mappingKey];
-          return newBuilders;
         });
-        addLog(\`Value builder cleared for \${mappingKey}\`, 'info');
-      }, [addLog]);
-
-      const addBuilderPart = useCallback((type) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: [...prev.parts, { type, value: '' }]
-        }));
-      }, []);
-
-      const updateBuilderPart = useCallback((index, field, value) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: prev.parts.map((part, i) =>
-            i === index ? { ...part, [field]: value } : part
-          )
-        }));
-      }, []);
-
-      const removeBuilderPart = useCallback((index) => {
-        setCurrentBuilder(prev => ({
-          ...prev,
-          parts: prev.parts.filter((_, i) => i !== index)
-        }));
-      }, []);
-
-      const moveBuilderPart = useCallback((fromIndex, toIndex) => {
-        setCurrentBuilder(prev => {
-          const newParts = [...prev.parts];
-          const [movedPart] = newParts.splice(fromIndex, 1);
-          newParts.splice(toIndex, 0, movedPart);
-          return { ...prev, parts: newParts };
-        });
-      }, []);
-
-      const handleApplyData = useCallback(() => {
-        if (!jsonData || jsonData.length === 0) {
-          addLog('No JSON data loaded', 'error');
-          return;
-        }
-
-        const activeMappings = mappings.filter(m => m.layerName.trim() !== '');
-        if (activeMappings.length === 0) {
-          addLog('No layer mappings configured', 'error');
-          return;
-        }
-
-        if (selectionCount === 0) {
-          addLog('No layers selected in Figma', 'error');
-          return;
-        }
-
-        parent.postMessage({
-          pluginMessage: {
-            type: 'apply-data',
-            jsonData,
-            mappings: activeMappings,
-            valueBuilders
-          }
-        }, '*');
-      }, [jsonData, mappings, selectionCount, addLog, valueBuilders]);
-
-      const handleClearData = useCallback(() => {
-        setJsonData(null);
-        setJsonKeys([]);
-        setMappings([]);
-        addLog('Data cleared', 'info');
-      }, [addLog]);
-
-      useEffect(() => {
-        const handleMessage = (event) => {
-          const { type, message, level, selectionCount: count, data } = event.data.pluginMessage || {};
-
-          if (type === 'log') {
-            addLog(message, level);
-          } else if (type === 'selection-changed') {
-            setSelectionCount(count);
-          } else if (type === 'configs-loaded') {
-            setSavedConfigs(data || []);
-          } else if (type === 'config-saved') {
-            addLog('Configuration saved successfully', 'info');
-            loadConfigurations(); // Reload configs to get updated list
-          } else if (type === 'config-deleted') {
-            addLog('Configuration deleted successfully', 'info');
-            loadConfigurations(); // Reload configs to get updated list
-          } else if (type === 'configs-cleared') {
-            setSavedConfigs([]);
-            addLog('All configurations cleared', 'info');
-          } else if (type === 'storage-error') {
-            addLog(\`Storage error: \${message}\`, 'error');
-          }
-        };
-
-        window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
-      }, [addLog, loadConfigurations]);
-
-      // Load configurations on component mount
-      useEffect(() => {
-        loadConfigurations();
-      }, [loadConfigurations]);
-
-      useEffect(() => {
-        if (dropZoneRef.current) {
-          setupDragAndDrop(dropZoneRef.current, handleFileUpload);
-        }
-      }, [handleFileUpload]);
-
-      return React.createElement('div', { className: 'p-4 max-w-full font-sans text-base leading-relaxed text-figma-text bg-figma-bg' },
-        React.createElement('header', { className: 'mb-5 border-b border-figma-border pb-3' },
-          React.createElement('h1', { className: 'text-xl font-semibold mb-1' }, 'Struct'),
-          React.createElement('div', { className: 'flex justify-between items-center' },
-            React.createElement('p', { className: 'text-sm text-figma-textSecondary' }, \`Selected: \${selectionCount} layer(s)\`),
-            jsonData && React.createElement('button', {
-              onClick: handleClearData,
-              className: 'btn-danger'
-            }, '🗑️ Clear')
-          )
-        ),
-
-        // Configuration section
-        React.createElement('section', { className: 'config-section' },
-          React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Configuration'),
-          React.createElement('div', { className: 'config-controls' },
-            React.createElement('button', {
-              className: 'btn-primary text-xs',
-              onClick: () => setShowConfigSave(true)
-            }, 'Save Config'),
-            React.createElement('button', {
-              className: 'btn-primary text-xs',
-              onClick: () => {
-                loadConfigurations();
-                setShowConfigList(true);
-              }
-            }, 'Load Config'),
-            savedConfigs.length > 0 && React.createElement('button', {
-              className: 'btn-danger',
-              onClick: clearAllConfigurations
-            }, 'Clear All')
-          ),
-          showConfigSave && React.createElement('div', null,
-            React.createElement('input', {
-              type: 'text',
-              className: 'form-input mb-2',
-              placeholder: 'Configuration name',
-              value: configName,
-              onChange: (e) => setConfigName(e.target.value)
-            }),
-            React.createElement('div', { className: 'config-controls' },
-              React.createElement('button', { className: 'btn-primary text-xs', onClick: saveConfiguration }, 'Save'),
-              React.createElement('button', { className: 'btn-secondary text-xs', onClick: () => setShowConfigSave(false) }, 'Cancel')
-            )
-          ),
-          showConfigList && savedConfigs.length > 0 && React.createElement('div', { className: 'config-list' },
-            savedConfigs.map(config =>
-              React.createElement('div', { key: config.name, className: 'config-item' },
-                React.createElement('div', { className: 'config-name' }, config.name),
-                React.createElement('div', { className: 'config-meta' }, new Date(config.savedAt).toLocaleDateString()),
-                React.createElement('div', { className: 'config-actions' },
-                  React.createElement('button', {
-                    className: 'config-action-btn',
-                    onClick: () => loadConfiguration(config)
-                  }, 'Load'),
-                  React.createElement('button', {
-                    className: 'config-action-btn',
-                    onClick: () => deleteConfiguration(config.name)
-                  }, 'Delete')
-                )
-              )
-            )
-          ),
-          showConfigList && React.createElement('button', {
-            className: 'config-btn',
-            onClick: () => setShowConfigList(false)
-          }, 'Close')
-        ),
-
-        // Data source section
-        React.createElement('section', { className: 'data-source-section' },
-          React.createElement('h3', null, 'Data Source'),
-          React.createElement('div', { className: 'data-source-tabs' },
-            React.createElement('button', {
-              className: \`data-source-tab \${dataSource === 'file' ? 'active' : ''}\`,
-              onClick: () => setDataSource('file')
-            }, 'File'),
-            React.createElement('button', {
-              className: \`data-source-tab \${dataSource === 'api' ? 'active' : ''}\`,
-              onClick: () => setDataSource('api')
-            }, 'API'),
-            React.createElement('button', {
-              className: \`data-source-tab \${dataSource === 'manual' ? 'active' : ''}\`,
-              onClick: () => setDataSource('manual')
-            }, 'Manual')
-          ),
-          React.createElement('div', { className: 'data-source-content' },
-            dataSource === 'file' && React.createElement('div', { className: 'upload-section' },
-              React.createElement('div', {
-                className: 'drop-zone',
-                ref: dropZoneRef
-              },
-                React.createElement('p', null, 'Drop JSON file here or'),
-                React.createElement('label', { className: 'file-button' },
-                  'Choose File',
-                  React.createElement('input', {
-                    type: 'file',
-                    accept: '.json,application/json',
-                    onChange: handleFileInputChange,
-                    style: { display: 'none' }
-                  })
-                ),
-                React.createElement('p', { className: 'file-limit' }, 'Max 2MB')
-              )
-            ),
-            dataSource === 'api' && React.createElement('div', { className: 'mb-5' },
-              React.createElement('div', { className: 'form-group' },
-                React.createElement('label', { className: 'form-label' }, 'API URL'),
-                React.createElement('input', {
-                  type: 'text',
-                  className: 'form-input',
-                  value: apiConfig.url,
-                  onChange: (e) => setApiConfig(prev => ({ ...prev, url: e.target.value })),
-                  placeholder: 'https://api.example.com/data'
-                })
-              ),
-              React.createElement('div', { className: 'form-row' },
-                React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', { className: 'form-label' }, 'Method'),
-                  React.createElement('select', {
-                    className: 'form-select',
-                    value: apiConfig.method,
-                    onChange: (e) => setApiConfig(prev => ({ ...prev, method: e.target.value }))
-                  },
-                    React.createElement('option', { value: 'GET' }, 'GET'),
-                    React.createElement('option', { value: 'POST' }, 'POST')
-                  )
-                ),
-                React.createElement('div', { className: 'form-group' },
-                  React.createElement('label', { className: 'form-label' }, 'Auth Type'),
-                  React.createElement('select', {
-                    className: 'form-select',
-                    value: apiConfig.authType,
-                    onChange: (e) => setApiConfig(prev => ({ ...prev, authType: e.target.value }))
-                  },
-                    React.createElement('option', { value: 'none' }, 'None'),
-                    React.createElement('option', { value: 'bearer' }, 'Bearer Token'),
-                    React.createElement('option', { value: 'apikey' }, 'API Key')
-                  )
-                )
-              ),
-              (apiConfig.authType === 'bearer' || apiConfig.authType === 'apikey') && React.createElement('div', { className: 'form-group' },
-                React.createElement('label', { className: 'form-label' }, apiConfig.authType === 'bearer' ? 'Bearer Token' : 'API Key'),
-                React.createElement('input', {
-                  type: 'password',
-                  className: 'form-input',
-                  value: apiConfig.apiKey,
-                  onChange: (e) => setApiConfig(prev => ({ ...prev, apiKey: e.target.value })),
-                  placeholder: 'Enter your token/key'
-                })
-              ),
-              React.createElement('button', {
-                className: 'fetch-button',
-                onClick: fetchApiData,
-                disabled: isLoadingData || !apiConfig.url.trim()
-              }, isLoadingData ? 'Loading...' : 'Fetch Data')
-            ),
-            dataSource === 'manual' && React.createElement('div', null,
-              React.createElement('p', null, 'Paste your JSON data:'),
-              React.createElement('textarea', {
-                rows: 8,
-                style: { width: '100%', marginTop: '8px', padding: '8px', fontFamily: 'monospace', fontSize: '11px' },
-                placeholder: 'Paste JSON data here...',
-                onChange: (e) => {
-                  try {
-                    const parsed = JSON.parse(e.target.value);
-                    processJsonData(parsed, 'manual');
-                  } catch (error) {
-                    // Invalid JSON, ignore
-                  }
-                }
-              })
-            )
-          )
-        ),
-
-        // JSON Preview
-        jsonData && React.createElement('section', { className: 'json-preview' },
-          React.createElement('h3', null, \`JSON Preview (\${jsonData.length} items)\`),
-          React.createElement('div', { className: 'table-container' },
-            React.createElement('table', null,
-              React.createElement('thead', null,
-                React.createElement('tr', null,
-                  jsonKeys.slice(0, 10).map(key =>
-                    React.createElement('th', { key }, key)
-                  )
-                )
-              ),
-              React.createElement('tbody', null,
-                jsonData.slice(0, 10).map((item, index) =>
-                  React.createElement('tr', { key: index },
-                    jsonKeys.slice(0, 10).map(key =>
-                      React.createElement('td', { key },
-                        String(getNestedValue(item, key) || '').slice(0, 50)
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        ),
-
-        jsonData && React.createElement('section', { className: 'mapping-section' },
-          React.createElement('h3', null, 'Key Mapping'),
-          React.createElement('div', { className: 'mapping-table' },
-            mappings.map(mapping =>
-              React.createElement('div', { key: mapping.jsonKey, className: 'mapping-row' },
-                React.createElement('label', null, mapping.jsonKey),
-                React.createElement('input', {
-                  type: 'text',
-                  placeholder: 'Figma layer name',
-                  value: mapping.layerName,
-                  onChange: (e) => updateMapping(mapping.jsonKey, e.target.value)
-                }),
-                React.createElement('button', {
-                  className: \`build-value-btn \${valueBuilders[mapping.jsonKey] ? 'active' : ''}\`,
-                  onClick: () => openValueBuilder(mapping.jsonKey),
-                  title: 'Build custom value'
-                }, '🔧'),
-                valueBuilders[mapping.jsonKey] && React.createElement('button', {
-                  className: 'clear-builder-btn',
-                  onClick: () => clearValueBuilder(mapping.jsonKey),
-                  title: 'Clear value builder'
-                }, '✗')
-              )
-            )
-          )
-        ),
-
-        jsonData && React.createElement('section', { className: 'action-section' },
-          React.createElement('button', {
-            className: 'apply-button',
-            onClick: handleApplyData,
-            disabled: selectionCount === 0
-          }, 'Apply Data to Selection')
-        ),
-
-        // Value Builder Modal
-        valueBuilderModal.isOpen && React.createElement('div', { className: 'modal-overlay' },
-          React.createElement('div', { className: 'modal' },
-            React.createElement('div', { className: 'modal-header' },
-              React.createElement('h3', { className: 'modal-title' }, \`Value Builder: \${valueBuilderModal.mappingKey}\`),
-              React.createElement('button', { className: 'modal-close', onClick: closeValueBuilder }, '×')
-            ),
-            React.createElement('div', { className: 'add-part-buttons' },
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('key') }, 'Add Key'),
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('text') }, 'Add Text'),
-              React.createElement('button', { className: 'add-part-btn', onClick: () => addBuilderPart('separator') }, 'Add Separator')
-            ),
-            currentBuilder.parts.map((part, index) =>
-              React.createElement('div', { key: index, className: 'builder-part' },
-                React.createElement('div', { className: 'reorder-controls' },
-                  React.createElement('button', {
-                    className: 'reorder-btn',
-                    onClick: () => moveBuilderPart(index, Math.max(0, index - 1)),
-                    disabled: index === 0
-                  }, '↑'),
-                  React.createElement('button', {
-                    className: 'reorder-btn',
-                    onClick: () => moveBuilderPart(index, Math.min(currentBuilder.parts.length - 1, index + 1)),
-                    disabled: index === currentBuilder.parts.length - 1
-                  }, '↓')
-                ),
-                React.createElement('select', {
-                  value: part.type,
-                  onChange: (e) => updateBuilderPart(index, 'type', e.target.value)
-                },
-                  React.createElement('option', { value: 'key' }, 'JSON Key'),
-                  React.createElement('option', { value: 'text' }, 'Static Text'),
-                  React.createElement('option', { value: 'separator' }, 'Separator')
-                ),
-                part.type === 'key' ? React.createElement('select', {
-                  value: part.value,
-                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value)
-                },
-                  React.createElement('option', { value: '' }, 'Select key...'),
-                  jsonKeys.map(key =>
-                    React.createElement('option', { key, value: key }, key)
-                  )
-                ) : React.createElement('input', {
-                  type: 'text',
-                  value: part.value,
-                  onChange: (e) => updateBuilderPart(index, 'value', e.target.value),
-                  placeholder: part.type === 'text' ? 'Enter text' : 'e.g., " - "'
-                }),
-                React.createElement('button', {
-                  className: 'remove-part-btn',
-                  onClick: () => removeBuilderPart(index)
-                }, '×')
-              )
-            ),
-            jsonData && jsonData.length > 0 && React.createElement('div', { className: 'preview-section' },
-              React.createElement('div', { className: 'preview-label' }, 'Preview:'),
-              React.createElement('div', { className: 'preview-value' },
-                evaluateValueBuilder(currentBuilder, jsonData[0])
-              )
-            ),
-            React.createElement('div', { className: 'modal-actions' },
-              React.createElement('button', { className: 'modal-btn secondary', onClick: closeValueBuilder }, 'Cancel'),
-              React.createElement('button', { className: 'modal-btn primary', onClick: saveValueBuilder }, 'Save')
-            )
-          )
-        ),
-
-        React.createElement('section', { className: 'logs-section' },
-          React.createElement('h3', null, 'Logs'),
-          React.createElement('div', { className: 'logs-container' },
-            logs.map((log, index) =>
-              React.createElement('div', { key: index, className: \`log-entry \${log.level}\` },
-                React.createElement('span', { className: 'timestamp' }, log.timestamp),
-                React.createElement('span', { className: 'message' }, log.message)
-              )
-            )
-          )
-        )
-      );
-    };
-    `;
-        // Process CSS with PostCSS and Tailwind
-        console.log('🎨 Processing CSS with Tailwind...');
-        const inputCssPath = path.join(uiDir, 'styles.css');
-        const outputCssPath = path.join(uiDir, 'styles.processed.css');
-        if (!fs.existsSync(inputCssPath)) {
-            throw new Error('ui/styles.css not found.');
-        }
-        // Run PostCSS to process Tailwind CSS
-        await execAsync(`npx postcss ${inputCssPath} -o ${outputCssPath}`);
-        const cssContent = fs.readFileSync(outputCssPath, 'utf-8');
-        console.log('✅ Processed CSS with Tailwind');
-        // Read the HTML template
-        const templatePath = path.join(uiDir, 'index.template.html');
-        if (!fs.existsSync(templatePath)) {
-            throw new Error('ui/index.template.html not found.');
-        }
-        let htmlContent = fs.readFileSync(templatePath, 'utf-8');
-        console.log('✅ Read HTML template');
-        // Clean up the JavaScript and add the render call
-        const processedJs = functionsCode.trim() + '\n\n// Render the app\nReactDOM.render(React.createElement(JsonDataMapper), document.getElementById("react-page"));';
-        // Inject CSS and JavaScript into the template
-        htmlContent = htmlContent.replace('/* INJECT_CSS */', cssContent);
-        htmlContent = htmlContent.replace('/* INJECT_JS */', processedJs);
-        // Write the final HTML file
-        const outputPath = path.join(uiDir, 'index.html');
-        fs.writeFileSync(outputPath, htmlContent, 'utf-8');
-        console.log('✅ Generated final ui/index.html');
-        console.log(`📦 Build complete! Output: ${outputPath}`);
-        // Show file sizes for reference
-        const stats = fs.statSync(outputPath);
-        console.log(`📊 Final HTML size: ${(stats.size / 1024).toFixed(1)} KB`);
-        // Clean up temporary processed CSS file
-        if (fs.existsSync(outputCssPath)) {
-            fs.unlinkSync(outputCssPath);
-        }
-    }
-    catch (error) {
-        console.error('❌ Build failed:', error);
-        process.exit(1);
-    }
+    });
 }
 // Run the build
 buildUI();
