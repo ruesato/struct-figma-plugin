@@ -560,14 +560,17 @@ const App = () => {
                     addLog('ℹ️ Fallback provides obfuscation-level security (better than plaintext)', 'info');
                 }
                 // Test crypto functionality (will use Web Crypto or fallback automatically)
+                console.log('🚀 About to start crypto test...');
                 const cryptoTest = await credentialCrypto_1.default.testCrypto();
+                console.log('🚀 Crypto test result:', cryptoTest);
                 if (cryptoTest) {
                     const cryptoType = cryptoSupported ? 'Web Crypto API' : 'JavaScript fallback crypto';
                     addLog(`✅ Encryption test passed using ${cryptoType}`, 'info');
                 }
                 else {
-                    addLog('❌ Encryption test failed - credential storage may not work', 'error');
-                    addToastError('Encryption Test Failed', 'Credential storage may not function properly', 'error');
+                    // Just log the failure, don't show disruptive modal
+                    addLog('⚠️ Encryption test failed - API credential storage will not work', 'warning');
+                    console.warn('Encryption test failed. API credentials cannot be stored securely.');
                 }
                 // Load existing API configuration
                 await loadSecureApiConfig();

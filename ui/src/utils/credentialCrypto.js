@@ -249,13 +249,30 @@ class CredentialCrypto {
      */
     static async testCrypto() {
         try {
+            console.log('🧪 DEBUG: Starting crypto test...');
             const testData = 'test-credential-' + Date.now();
+            console.log('🧪 DEBUG: Test data generated:', testData.length, 'chars');
+            console.log('🧪 DEBUG: Starting encryption...');
             const encrypted = await this.encryptCredential(testData);
+            console.log('🧪 DEBUG: Encryption completed:', {
+                hasEncryptedData: !!encrypted.encryptedData,
+                hasSalt: !!encrypted.salt,
+                hasIv: !!encrypted.iv,
+                version: encrypted.version
+            });
+            console.log('🧪 DEBUG: Starting decryption...');
             const decrypted = await this.decryptCredential(encrypted);
+            console.log('🧪 DEBUG: Decryption completed, length:', decrypted.length);
             const success = decrypted === testData;
+            console.log('🧪 DEBUG: Test result:', { success, originalLength: testData.length, decryptedLength: decrypted.length });
             if (success) {
                 const cryptoType = encrypted.iv ? 'Web Crypto API' : 'Fallback JavaScript crypto';
                 console.log(`✅ Crypto test passed using ${cryptoType}`);
+            }
+            else {
+                console.warn('❌ Crypto test failed: decrypted data does not match original');
+                console.warn('Original:', testData.substring(0, 50));
+                console.warn('Decrypted:', decrypted.substring(0, 50));
             }
             // Clean up test data (only if crypto is available for secure wipe)
             if (this.isSupported()) {
@@ -265,7 +282,8 @@ class CredentialCrypto {
             return success;
         }
         catch (error) {
-            console.warn('Crypto test failed:', error);
+            console.error('❌ CRYPTO TEST ERROR:', error);
+            console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
             return false;
         }
     }
