@@ -98,7 +98,13 @@ async function buildUnified() {
     const htmlSize = fs.statSync(finalHtmlPath).size;
     console.log(`✅ Final HTML: ${(htmlSize / 1024).toFixed(1)} KB`);
 
-    // Step 6: Copy and fix manifest
+    // Step 6: Copy UI file to dist directory
+    console.log('📄 Copying UI file to dist...');
+    const distUiPath = path.join(mainDist, 'index.html');
+    fs.copyFileSync(finalHtmlPath, distUiPath);
+    console.log(`✅ UI copied to dist: ${(htmlSize / 1024).toFixed(1)} KB`);
+
+    // Step 7: Copy and fix manifest
     console.log('📋 Copying and fixing manifest...');
     const manifestSrc = path.join(__dirname, '..', 'manifest.json');
     const manifestDest = path.join(mainDist, 'manifest.json');
@@ -106,6 +112,8 @@ async function buildUnified() {
       let manifestContent = fs.readFileSync(manifestSrc, 'utf-8');
       // Fix main path to be relative to dist directory
       manifestContent = manifestContent.replace('"main": "dist/code.js"', '"main": "code.js"');
+      // Fix UI path to be relative to dist directory (now in same folder)
+      manifestContent = manifestContent.replace('"ui": "ui/index.html"', '"ui": "index.html"');
       fs.writeFileSync(manifestDest, manifestContent);
     }
 
