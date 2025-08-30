@@ -24,11 +24,11 @@ const DomainApprovalModal: React.FC<DomainApprovalModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-[var(--figma-color-bg)] border-[var(--figma-color-border)]">
+      <DialogContent className="sm:max-w-lg bg-[var(--figma-color-bg)] border-[var(--figma-color-border)]">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
+            <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-full">
+              <AlertTriangle className="h-5 w-5 text-white" />
             </div>
             <div>
               <DialogTitle className="text-[var(--figma-color-text)] text-lg font-semibold">
@@ -41,29 +41,27 @@ const DomainApprovalModal: React.FC<DomainApprovalModalProps> = ({
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 my-4">
+        <div className="space-y-4 mb-4">
           {/* Domain Info */}
-          <div className="bg-[var(--figma-color-bg-secondary)] rounded-lg p-4 border border-[var(--figma-color-border)]">
-            <div className="flex items-center gap-3 mb-3">
-              <Globe className="h-4 w-4 text-[var(--figma-color-text-secondary)]" />
-              <span className="text-sm font-medium text-[var(--figma-color-text)]">Domain Details</span>
-            </div>
+          <div className="mb-6">
             <div className="space-y-2 text-sm">
-              <div>
-                <span className="text-[var(--figma-color-text-secondary)]">Domain: </span>
-                <code className="bg-[var(--figma-color-bg)] px-2 py-1 rounded text-[var(--figma-color-text)] font-mono">
+              <div className="flex gap-2 items-baseline">
+                <span className="text-[var(--figma-color-text-secondary)] min-w-16">Domain: </span>
+
+                <code className="bg-[var(--figma-color-bg-secondary)] px-2 py-1 rounded text-[var(--figma-color-text)] font-mono">
                   {domain}
                 </code>
               </div>
-              <div>
-                <span className="text-[var(--figma-color-text-secondary)]">Purpose: </span>
-                <span className="text-[var(--figma-color-text)]">{purpose}</span>
-              </div>
-              <div>
-                <span className="text-[var(--figma-color-text-secondary)]">Full URL: </span>
-                <code className="bg-[var(--figma-color-bg)] px-2 py-1 rounded text-[var(--figma-color-text)] font-mono text-xs break-all">
+              <div className="flex gap-2 items-baseline">
+                <span className="text-[var(--figma-color-text-secondary)] min-w-16">Full URL: </span>
+                <code className="bg-[var(--figma-color-bg-secondary)] px-2 py-1 rounded text-[var(--figma-color-text)] font-mono break-all">
                   {url}
                 </code>
+              </div>
+              <div className="flex gap-2 items-baseline">
+                <span className="text-[var(--figma-color-text-secondary)] min-w-16">Purpose: </span>
+
+                <span className="text-[var(--figma-color-text)]">{purpose}</span>
               </div>
             </div>
           </div>
@@ -73,31 +71,31 @@ const DomainApprovalModal: React.FC<DomainApprovalModalProps> = ({
             <div className="flex items-start gap-3">
               <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm">
-                <p className="text-red-800 font-semibold mb-2">⚠️ WILDCARD ACCESS ENABLED</p>
-                <p className="text-red-700 mb-3 text-xs">
+                <p className="text-red-800 font-semibold mb-2"> WILDCARD ACCESS ENABLED</p>
+                <p className="text-red-700 mb-3 text-xs font-bold">
                   This plugin has wildcard network access. Exercise extreme caution when approving new domains.
                 </p>
                 <ul className="text-red-700 space-y-1 text-xs">
-                  <li>• This approval is temporary for the current session only</li>
-                  <li>• Only approve domains from trusted sources</li>
-                  <li>• Malicious domains can potentially steal data or perform harmful actions</li>
-                  <li>• Rate limited to {purpose.includes('WILDCARD') ? '10 requests per hour per domain' : 'standard limits'}</li>
-                  <li>• All requests are logged for security monitoring</li>
+                  <li>This approval is temporary for the current session only</li>
+                  <li>Only approve domains from trusted sources</li>
+                  <li>Malicious domains can potentially steal data or perform harmful actions</li>
+                  <li>Rate limited to {purpose.includes('WILDCARD') ? '10 requests per hour per domain' : 'standard limits'}</li>
+                  <li>All requests are logged for security monitoring</li>
                 </ul>
               </div>
             </div>
           </div>
-          
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+
+          <div className="bg-[var(--figma-color-bg-secondary)] rounded-lg p-4 border border-[var(--figma-color-border)]">
             <div className="flex items-start gap-3">
               <Shield className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm">
-                <p className="text-blue-800 font-medium mb-1">Security Features Active</p>
-                <ul className="text-blue-700 space-y-1 text-xs">
-                  <li>• HTTPS-only connections enforced</li>
-                  <li>• Private/internal URLs blocked</li>
-                  <li>• Suspicious domains automatically blocked</li>
-                  <li>• User approval required for each new domain</li>
+                <p className="text-[var(--figma-color-text)] font-medium mb-1">Security Features Active</p>
+                <ul className="text-[var(--figma-color-text)] space-y-1 text-xs">
+                  <li>HTTPS-only connections enforced</li>
+                  <li>Private/internal URLs blocked</li>
+                  <li>Suspicious domains automatically blocked</li>
+                  <li>User approval required for each new domain</li>
                 </ul>
               </div>
             </div>
