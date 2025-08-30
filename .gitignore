@@ -2,6 +2,21 @@
 .env
 .env*
 
+# Compiled TypeScript outputs
+# Main thread compiled files
+main/code.js
+main/code-minimal.js
+main/utils/*.js
+
+# UI compiled files  
+ui/src/**/*.js
+ui/src/*.js
+!ui/dist/*.js
+
+# Build outputs are intentionally kept
+# ui/dist/ - keep build outputs
+# node_modules/ - handled by default
+
 PROGRESS_NOTES.md
 SECURITY_AUDIT_REPORT.md
 MIGRATION_SUMMARY.md
