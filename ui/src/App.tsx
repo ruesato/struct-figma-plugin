@@ -326,6 +326,20 @@ const App = () => {
     });
   }, []);
 
+  // Security: Sanitize CSV values to prevent formula injection
+  const sanitizeCSVValue = useCallback((value: string): string => {
+    if (typeof value !== 'string') return String(value);
+    
+    // Check for potential formula injection characters
+    const dangerousChars = ['=', '+', '-', '@', '\t', '\r'];
+    if (dangerousChars.some(char => value.startsWith(char))) {
+      // Prepend with single quote to neutralize formula
+      return `'${value}`;
+    }
+    
+    return value;
+  }, []);
+
   const parseCSV = useCallback((csvText: string): any[] => {
     const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
     
@@ -355,9 +369,18 @@ const App = () => {
       
       values.push(current.trim().replace(/^"|"$/g, ''));
       
-      const row: any = {};
+      const row: Record<string, string> = {};
       headers.forEach((header, i) => {
-        row[header] = values[i] || '';
+        // Prevent prototype pollution by validating header names
+        if (typeof header === 'string' && 
+            header !== '__proto__' && 
+            header !== 'constructor' && 
+            header !== 'prototype' &&
+            !header.includes('__proto__') &&
+            !header.includes('constructor')) {
+          // Apply CSV injection protection
+          row[header] = sanitizeCSVValue(values[i] || '');
+        }
       });
       
       return row;

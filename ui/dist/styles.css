@@ -1800,9 +1800,6 @@ video {
 .bg-\[var\(--figma-color-border\)\] {
   background-color: var(--figma-color-border);
 }
-.bg-\[var\(--figma-color-secondary\)\] {
-  background-color: var(--figma-color-secondary);
-}
 .bg-\[var\(--figma-color-text\)\] {
   background-color: var(--figma-color-text);
 }

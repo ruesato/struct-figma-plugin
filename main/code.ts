@@ -143,7 +143,7 @@ function sanitizeText(input: string): string {
   const maxLength = 50000; // Figma's text limit
 
   if (cleaned.length > maxLength) {
-    console.warn(`⚠️ Text truncated from ${cleaned.length} to ${maxLength} characters`);
+    // Text truncated for length limit
     return cleaned.substring(0, maxLength);
   }
 
@@ -153,7 +153,7 @@ function sanitizeText(input: string): string {
 // Basic URL validation using regex (URL constructor not available in Figma sandbox)
 function isValidUrl(url: string): boolean {
   if (!url || typeof url !== 'string') {
-    console.log('🚨 URL validation failed: empty or non-string URL');
+    // URL validation failed: empty or non-string URL
     return false;
   }
 
@@ -163,7 +163,7 @@ function isValidUrl(url: string): boolean {
     const match = url.match(urlRegex);
 
     if (!match) {
-      console.log(`🚨 URL validation failed: invalid URL format for ${url}`);
+      // URL validation failed: invalid URL format
       return false;
     }
 
@@ -175,20 +175,20 @@ function isValidUrl(url: string): boolean {
         hostname.startsWith('192.168.') ||
         hostname.startsWith('10.') ||
         hostname.match(/^172\.(1[6-9]|2[0-9]|3[01])\./)) {
-      console.log(`🚨 URL validation failed: private IP detected (${hostname}) for ${url}`);
+      // URL validation failed: private IP detected
       return false;
     }
 
     // Block direct IP addresses
     if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
-      console.log(`🚨 URL validation failed: direct IP address not allowed (${hostname}) for ${url}`);
+      // URL validation failed: direct IP address not allowed
       return false;
     }
 
-    console.log(`✅ URL validation passed for ${hostname}`);
+    // URL validation passed
     return true;
   } catch (error) {
-    console.log(`🚨 URL validation failed: error processing ${url} - ${error}`);
+    // URL validation failed: error processing
     return false;
   }
 }
@@ -213,7 +213,7 @@ class SimpleRateLimiter {
     );
 
     if (recentRequests.length >= this.MAX_REQUESTS) {
-      console.warn(`🚫 Rate limit exceeded for ${domain}`);
+      // Rate limit exceeded for domain
       return false;
     }
 
@@ -226,7 +226,18 @@ class SimpleRateLimiter {
     try {
       // Use regex to extract hostname since URL constructor isn't available
       const match = url.match(/^https?:\/\/([a-zA-Z0-9.-]+)/);
-      return match ? match[1] : 'unknown';
+      if (match && match[1]) {
+        // Normalize to lowercase to prevent case-based bypass attempts
+        let domain = match[1].toLowerCase();
+        
+        // Basic validation to prevent obvious bypass attempts
+        if (domain.includes('..') || domain.startsWith('.') || domain.endsWith('.')) {
+          return 'invalid';
+        }
+        
+        return domain;
+      }
+      return 'unknown';
     } catch {
       return 'unknown';
     }
@@ -334,7 +345,7 @@ function applyTextContent(node: TextNode, value: string): void {
       sendLog(`🔒 Applied sanitized text content (${sanitizedValue.length} chars)`, 'info');
     });
   } catch (error) {
-    console.error('Error applying text:', error);
+    // Error applying text
     sendLog('Failed to apply text content', 'error');
   }
 }
@@ -672,7 +683,7 @@ function applyVariantProperty(node: InstanceNode, propertyName: string, value: s
     }
     return false;
   } catch (error) {
-    console.error('Error applying variant property:', error);
+    // Error applying variant property
     sendLog('Failed to apply variant property', 'error');
     return false;
   }
@@ -843,8 +854,7 @@ async function loadConfigurations(): Promise<void> {
       await figma.clientStorage.setAsync('figmaJsonMapperConfigs', cleanedConfigurations);
       
       // Log migration summary
-      console.log(`🔒 Configuration Migration: Cleaned ${migrationSummary.migratedConfigs}/${migrationSummary.totalConfigs} configurations`);
-      console.log(`🔒 Removed ${migrationSummary.removedApiKeys} API keys and ${migrationSummary.removedHeaders} sensitive headers`);
+      // Configuration migration completed
       
       // Notify UI about the migration
       figma.ui.postMessage({
@@ -859,7 +869,7 @@ async function loadConfigurations(): Promise<void> {
       data: cleanedConfigurations
     } as StorageResponse);
   } catch (error) {
-    console.error('Storage error details:', error);
+    // Storage error occurred
     figma.ui.postMessage({
       type: 'storage-error',
       message: `Failed to load configurations: ${error instanceof Error ? error.message : 'Unknown error'}`

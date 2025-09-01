@@ -34,10 +34,10 @@ function isValidFigmaPluginOrigin(origin: string): boolean {
     return true;
   }
   
-  // Allow Figma plugin iframe origins (they typically contain 'figma' in the domain)
+  // Allow only trusted Figma domains (strict allowlist)
   const figmaPatterns = [
     /^https:\/\/.*\.figma\.com$/,
-    /^https:\/\/.*figma.*\.com$/,
+    /^https:\/\/figma\.com$/,
     /^https:\/\/plugin-.*\.figma\.com$/
   ];
   
