@@ -749,6 +749,128 @@ const reactPatterns = {
 };
 ```
 
+## Security Architecture & Audit History
+
+### 🔒 Security Posture (Updated: August 2025)
+**Current Status: PRODUCTION READY** - All critical vulnerabilities resolved
+
+#### **Comprehensive Security Audit Results**
+A thorough security audit was conducted in August 2025, identifying and fixing all critical vulnerabilities:
+
+**CRITICAL FIXES IMPLEMENTED:**
+- ✅ **Prototype Pollution** - Fixed CSV parsing vulnerability that allowed malicious files to modify JavaScript object prototypes
+- ✅ **Weak Cryptography Removal** - Eliminated insecure XOR-based fallback encryption, now requires Web Crypto API
+- ✅ **Origin Validation Bypass** - Strengthened PostMessage validation to prevent domain spoofing attacks
+- ✅ **CSV Injection Protection** - Added sanitization to prevent formula injection in spreadsheet applications
+- ✅ **Information Disclosure** - Sanitized console logging to prevent sensitive data exposure
+
+#### **Current Security Features**
+```typescript
+// Multi-layered security approach
+const securityLayers = {
+  // 1. Network Security
+  domainApproval: 'Session-based approval system with user consent',
+  httpsEnforcement: 'Only HTTPS URLs allowed, private IP blocking',
+  rateLimiting: '10 requests per hour per domain with monitoring',
+  
+  // 2. Data Security  
+  inputSanitization: 'Text content cleaning for Figma nodes',
+  csvInjectionProtection: 'Formula detection and neutralization',
+  prototypePolllutionPrevention: 'Object property validation',
+  
+  // 3. Communication Security
+  postMessageValidation: 'Strict origin allowlist for iframe communication',
+  credentialEncryption: 'AES-GCM with Web Crypto API (no weak fallbacks)',
+  secureLogging: 'Activity tracking without sensitive data exposure'
+};
+```
+
+#### **Security Implementation Patterns**
+```typescript
+// Example: Secure CSV Processing
+const sanitizeCSVValue = (value: string): string => {
+  if (typeof value !== 'string') return String(value);
+  
+  // Check for potential formula injection characters
+  const dangerousChars = ['=', '+', '-', '@', '\t', '\r'];
+  if (dangerousChars.some(char => value.startsWith(char))) {
+    // Prepend with single quote to neutralize formula
+    return `'${value}`;
+  }
+  
+  return value;
+};
+
+// Example: Secure Domain Validation  
+private static extractDomain(url: string): string {
+  try {
+    const match = url.match(/^https?:\/\/([a-zA-Z0-9.-]+)/);
+    if (match && match[1]) {
+      // Normalize to lowercase to prevent case-based bypass attempts
+      let domain = match[1].toLowerCase();
+      
+      // Basic validation to prevent obvious bypass attempts
+      if (domain.includes('..') || domain.startsWith('.') || domain.endsWith('.')) {
+        return 'invalid';
+      }
+      
+      return domain;
+    }
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+```
+
+#### **Credential Storage Decision**
+**IMPORTANT:** This plugin does NOT store credentials persistently for security reasons.
+
+- ❌ **figma.clientStorage** - Not suitable for credentials (Figma docs: "for stability, not security")
+- ❌ **Weak fallback encryption** - Removed entirely to prevent false sense of security  
+- ✅ **Session-based approach** - Temporary domain approvals, no credential persistence
+- ✅ **Web Crypto API requirement** - Strong encryption when absolutely necessary
+
+#### **Security Testing & Validation**
+```typescript
+// Security test scenarios implemented:
+const securityTests = {
+  prototypePolluton: 'CSV files with __proto__, constructor, prototype headers',
+  csvInjection: 'Values starting with =, +, -, @, formula injection attempts',
+  originSpoofing: 'PostMessage from evil-figma-attacker.com domains',
+  domainBypass: 'Case variations, malformed domains, IP addresses',
+  informationDisclosure: 'Console logs exposing URLs, errors, sensitive data'
+};
+```
+
+### 🛡️ Security Guidelines for Future Development
+
+#### **DO's:**
+- ✅ Use Web Crypto API for any encryption needs
+- ✅ Validate all user inputs (CSV, JSON, URLs)  
+- ✅ Use strict allowlists for domain/origin validation
+- ✅ Sanitize data before applying to Figma nodes
+- ✅ Use the existing session-based security model
+- ✅ Add security tests for new features
+
+#### **DON'Ts:**
+- ❌ Never store credentials in figma.clientStorage
+- ❌ Don't implement custom/weak encryption
+- ❌ Avoid permissive regex patterns for validation
+- ❌ Don't log sensitive data (URLs, tokens, user input)
+- ❌ Never trust user input without validation
+- ❌ Don't bypass existing security controls
+
+#### **Security Review Checklist**
+When adding new features, verify:
+- [ ] Input validation for all user data
+- [ ] No new credential storage mechanisms
+- [ ] Console logging doesn't expose sensitive data
+- [ ] Network requests go through existing domain approval
+- [ ] PostMessage validation uses strict origins
+- [ ] No new prototype pollution vectors
+- [ ] Follows existing security patterns
+
 ---
 
-*This developer reference provides comprehensive technical context for the plugin's modern architecture, advanced error handling system, and professional UX implementation. It should enable any developer to quickly understand and extend the plugin's capabilities.*
+*This developer reference provides comprehensive technical context for the plugin's modern architecture, advanced error handling system, professional UX implementation, and enterprise-grade security posture. It should enable any developer to quickly understand, safely extend, and maintain the plugin's capabilities.*
