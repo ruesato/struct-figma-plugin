@@ -640,9 +640,10 @@ const App = () => {
     return () => window.removeEventListener('message', secureListener);
   }, [addLog, loadConfigurations, processJsonData, addToastError]);
 
-  useEffect(() => {
-    loadConfigurations();
-  }, [loadConfigurations]);
+  // Note: Not auto-loading configurations anymore - users should load configurations manually
+  // useEffect(() => {
+  //   loadConfigurations();
+  // }, [loadConfigurations]);
 
   useEffect(() => {
     if (dropZoneRef.current) {
@@ -681,8 +682,7 @@ const App = () => {
           });
         }
         
-        // Load existing API configuration
-        await loadSecureApiConfig();
+        // Note: Not auto-loading API configuration anymore - users should load configurations manually
         
       } catch (error) {
         addLog(`Security initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
