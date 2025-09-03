@@ -81,7 +81,7 @@ const App = () => {
   
   // Security state
   const [isEncryptionAvailable, setIsEncryptionAvailable] = useState(false);
-  const [isLoadingCredentials, setIsLoadingCredentials] = useState(true);
+  const [isLoadingCredentials, setIsLoadingCredentials] = useState(false);
   
   // Domain approval state
   const [domainApprovalRequest, setDomainApprovalRequest] = useState<{
