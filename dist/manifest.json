@@ -1,0 +1,20 @@
+{
+  "name": "Struct",
+  "id": "json-data-mapper",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "index.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Wildcard access is required to support arbitrary API endpoints that users may need to connect to. The plugin implements comprehensive security controls including domain validation, user approval prompts, and request monitoring to ensure safe usage despite broad network permissions."
+  },
+  "permissions": ["currentuser"],
+  "relaunchButtons": [
+    {
+      "command": "open",
+      "name": "Struct"
+    }
+  ]
+}
