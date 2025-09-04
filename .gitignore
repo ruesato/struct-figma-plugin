@@ -3,7 +3,6 @@
 .env*
 
 # Compiled files from unified build system
-dist/
 ui/dist/
 
 # Legacy compiled TypeScript outputs (now cleaned up)
