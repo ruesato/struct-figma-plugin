@@ -16,7 +16,8 @@ ui/src/*.js
 !ui/dist/*.js
 
 # Build outputs intentionally kept in dist directories only
-
+claude.md
+DEVELOPER_REFERENCE.md
 PROGRESS_NOTES.md
 SECURITY_AUDIT_REPORT.md
 MIGRATION_SUMMARY.md
