@@ -334,6 +334,43 @@ function findLayerByName(node: SceneNode, layerName: string): SceneNode | null {
   return null;
 }
 
+// Helper function to recursively find all INSTANCE nodes within a container at any depth
+function findAllInstancesInNode(node: SceneNode): InstanceNode[] {
+  const instances: InstanceNode[] = [];
+
+  // If this node is an instance, add it to the result
+  if (node.type === 'INSTANCE') {
+    instances.push(node as InstanceNode);
+  }
+
+  // If this node has children, recursively search them
+  if ('children' in node) {
+    for (const child of node.children) {
+      instances.push(...findAllInstancesInNode(child));
+    }
+  }
+
+  return instances;
+}
+
+// Helper function to collect all target instances from the current selection
+function collectAllTargetInstances(selection: readonly SceneNode[]): InstanceNode[] {
+  const allInstances: InstanceNode[] = [];
+
+  for (const selectedNode of selection) {
+    if (selectedNode.type === 'INSTANCE') {
+      // If the selected node is already an instance, add it directly
+      allInstances.push(selectedNode as InstanceNode);
+    } else {
+      // If it's a container (GROUP, FRAME, etc.), find all instances within it
+      const nestedInstances = findAllInstancesInNode(selectedNode);
+      allInstances.push(...nestedInstances);
+    }
+  }
+
+  return allInstances;
+}
+
 // Helper function to apply text content to a text node
 function applyTextContent(node: TextNode, value: string): void {
   try {
@@ -724,23 +761,31 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
   const selection = figma.currentPage.selection;
 
   if (selection.length === 0) {
-    sendLog('No layers selected. Please select one or more component instances or layers.', 'warning');
+    sendLog('No layers selected. Please select one or more component instances, groups, or frames.', 'warning');
+    return;
+  }
+
+  // Collect all target instances from the selection (both direct instances and nested instances)
+  const allTargetInstances = collectAllTargetInstances(selection);
+
+  if (allTargetInstances.length === 0) {
+    sendLog('No component instances found in selection. Please select component instances or containers with component instances.', 'warning');
     return;
   }
 
   let processedCount = 0;
-  const maxItems = Math.min(selection.length, jsonData.length);
+  const totalInstances = allTargetInstances.length;
 
-  sendLog(`Starting to apply data to ${maxItems} selected instances...`, 'info');
+  sendLog(`Found ${allTargetInstances.length} component instances in selection. Starting to apply data...`, 'info');
 
-  for (let i = 0; i < maxItems; i++) {
-    const selectedNode = selection[i];
-    const rawDataItem = jsonData[i];
+  for (let i = 0; i < totalInstances; i++) {
+    const targetInstance = allTargetInstances[i];
+    // Cycle through JSON data using modulo to repeat the data if we have more instances than data
+    const dataIndex = i % jsonData.length;
+    const rawDataItem = jsonData[dataIndex];
 
     // Use the raw data item directly (basic validation only)
     const dataItem = rawDataItem;
-
-    sendLog(`🔒 Processing sanitized instance ${i + 1}/${maxItems}: ${selectedNode.name}`, 'info');
 
     // Process each mapping
     for (const mapping of mappings) {
@@ -751,25 +796,25 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
         continue;
       }
 
-      // Find the target layer
-      const targetLayer = findLayerByName(selectedNode, mapping.layerName);
+      // Find the target layer within this instance
+      const targetLayer = findLayerByName(targetInstance, mapping.layerName);
 
       if (!targetLayer) {
-        sendLog(`Layer "${mapping.layerName}" not found in ${selectedNode.name}`, 'warning');
+        sendLog(`Layer "${mapping.layerName}" not found in instance "${targetInstance.name}"`, 'warning');
         continue;
       }
 
       // Apply data based on layer type and value type
       if (targetLayer.type === 'TEXT') {
         applyTextContent(targetLayer as TextNode, String(value));
-        sendLog(`Applied text "${value}" to layer "${mapping.layerName}"`, 'info');
+        sendLog(`Applied text "${value}" to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'info');
       } else if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
         // Try to apply as image URL
         const success = await applyImageFromUrl(targetLayer, value);
         if (success) {
-          sendLog(`Applied image from URL to layer "${mapping.layerName}"`, 'info');
+          sendLog(`Applied image from URL to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'info');
         } else {
-          sendLog(`Failed to apply image from URL "${value}" to layer "${mapping.layerName}"`, 'error');
+          sendLog(`Failed to apply image from URL "${value}" to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'error');
         }
       } else if (targetLayer.type === 'INSTANCE' && typeof value === 'string') {
         // Try to apply as variant property
@@ -786,12 +831,12 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
           if (matchedProperty) {
             const success = applyVariantProperty(instanceNode, matchedProperty, value);
             if (success) {
-              sendLog(`Applied variant property "${matchedProperty}" = "${value}"`, 'info');
+              sendLog(`Applied variant property "${matchedProperty}" = "${value}" in "${targetInstance.name}"`, 'info');
             } else {
-              sendLog(`Failed to apply variant property "${matchedProperty}" = "${value}"`, 'error');
+              sendLog(`Failed to apply variant property "${matchedProperty}" = "${value}" in "${targetInstance.name}"`, 'error');
             }
           } else {
-            sendLog(`No matching variant property found for "${mapping.layerName}"`, 'warning');
+            sendLog(`No matching variant property found for "${mapping.layerName}" in "${targetInstance.name}"`, 'warning');
           }
         }
       }
@@ -800,13 +845,17 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
     processedCount++;
   }
 
-  if (jsonData.length > selection.length) {
-    sendLog(`${jsonData.length - selection.length} JSON objects were ignored (more data than selected instances)`, 'warning');
-  } else if (selection.length > jsonData.length) {
-    sendLog(`${selection.length - jsonData.length} selected instances were left unchanged (more instances than data)`, 'info');
+  // Updated logging to reflect the new behavior with data cycling
+  if (allTargetInstances.length > jsonData.length) {
+    const cycles = Math.ceil(allTargetInstances.length / jsonData.length);
+    sendLog(`📄 Data cycling: Used ${jsonData.length} data items across ${allTargetInstances.length} instances (${cycles} cycles)`, 'info');
+  } else if (jsonData.length > allTargetInstances.length) {
+    sendLog(`📄 Data usage: Used ${allTargetInstances.length} of ${jsonData.length} available data items`, 'info');
+  } else {
+    sendLog(`📄 Perfect match: ${allTargetInstances.length} instances with ${jsonData.length} data items`, 'info');
   }
 
-  sendLog(`✅ Completed! Processed ${processedCount} instances.`, 'info');
+  sendLog(`✅ Completed! Processed ${processedCount} component instances across ${selection.length} selected containers.`, 'info');
 }
 
 // Plugin initialization
