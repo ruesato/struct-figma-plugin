@@ -412,6 +412,31 @@ function extractDomain(url: string): string | null {
   }
 }
 
+// Privacy-focused error message sanitization
+function sanitizeErrorMessage(message: string, url?: string): string {
+  // Remove full URLs and replace with domain only
+  let sanitized = message.replace(/https?:\/\/[^\s]+/g, (match) => {
+    const domain = extractDomain(match);
+    return domain ? `[${domain}]` : '[redacted-url]';
+  });
+
+  // Remove API keys, tokens, and other sensitive patterns
+  sanitized = sanitized.replace(/[?&](?:key|token|apikey|api_key|access_token)=[^&\s]+/gi, '[api-key-redacted]');
+
+  // Remove file paths
+  sanitized = sanitized.replace(/\/[a-zA-Z0-9._/-]+\.(js|ts|json|html)/g, '[file-path]');
+
+  // If URL provided, show just the domain for context
+  if (url) {
+    const domain = extractDomain(url);
+    if (domain) {
+      sanitized = sanitized.replace(/for [^\s:]+:?/g, `for ${domain}:`);
+    }
+  }
+
+  return sanitized;
+}
+
 function validateUrl(url: string): { isValid: boolean; error?: string } {
   try {
     // Enhanced security validation for wildcard access
@@ -610,7 +635,7 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
     try {
       image = await figma.createImageAsync(sanitizedUrl);
     } catch (error) {
-      sendLog(`Failed to create image from URL: ${(error as Error).message}`, 'error');
+      sendLog(`Failed to create image from URL: ${sanitizeErrorMessage((error as Error).message)}`, 'error');
       return false;
     }
 
@@ -635,26 +660,27 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
     return false;
   } catch (error) {
     const errorMessage = (error as Error).message;
+    const domain = extractDomain(imageUrl);
 
-    // Log detailed error information for debugging
-    sendLog(`🚨 Image fetch error for ${imageUrl}:`, 'error');
-    sendLog(`Error details: ${errorMessage}`, 'error');
+    // Log privacy-safe error information
+    sendLog(`🚨 Image fetch error for ${domain}:`, 'error');
+    sendLog(`Error details: ${sanitizeErrorMessage(errorMessage, imageUrl)}`, 'error');
 
-    // Handle specific error types
+    // Handle specific error types with sanitized messages
     if (errorMessage.includes('CORS')) {
       sendLog(`❌ CORS Error: Using figma.createImageAsync should avoid this`, 'error');
-      sendLog(`💡 Domain ${extractDomain(imageUrl)} is pre-approved`, 'info');
+      sendLog(`💡 Domain ${domain} should be accessible`, 'info');
     } else if ((error as any).rateLimitError) {
       const retryAfter = (error as any).retryAfter;
       if (retryAfter) {
         sendLog(`🚫 Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`, 'warning');
       } else {
-        sendLog(`🚫 Rate limit exceeded: ${errorMessage}`, 'warning');
+        sendLog(`🚫 Rate limit exceeded for ${domain}`, 'warning');
       }
     } else if (errorMessage.includes('fetch')) {
-      sendLog(`🌐 Network error: ${errorMessage}`, 'error');
+      sendLog(`🌐 Network error accessing ${domain}`, 'error');
     } else {
-      sendLog(`❓ Unknown error: ${errorMessage}`, 'error');
+      sendLog(`❓ Unknown error accessing ${domain}`, 'error');
     }
 
     return false;
@@ -771,7 +797,7 @@ async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], va
         if (success) {
           sendLog(`Applied image from URL to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'info');
         } else {
-          sendLog(`Failed to apply image from URL "${value}" to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'error');
+          sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetInstance.name}"`, 'error');
         }
       } else if (targetLayer.type === 'INSTANCE' && typeof value === 'string') {
         // Try to apply as variant property
@@ -1028,7 +1054,7 @@ async function handleApiDataFetch(msg: any) {
       requestId: msg.requestId,
       error: errorMessage
     });
-    sendLog(`API fetch failed: ${errorMessage}`, 'error');
+    sendLog(`API fetch failed: ${sanitizeErrorMessage(errorMessage)}`, 'error');
   }
 }
 
@@ -1057,7 +1083,7 @@ async function handleSecureStorageSave(msg: any) {
       success: false,
       error: errorMessage
     });
-    sendLog(`Secure storage save failed: ${errorMessage}`, 'error');
+    sendLog(`Secure storage save failed: ${sanitizeErrorMessage(errorMessage)}`, 'error');
   }
 }
 
@@ -1087,7 +1113,7 @@ async function handleSecureStorageLoad(msg: any) {
       error: errorMessage,
       value: null
     });
-    sendLog(`Secure storage load failed: ${errorMessage}`, 'error');
+    sendLog(`Secure storage load failed: ${sanitizeErrorMessage(errorMessage)}`, 'error');
   }
 }
 
@@ -1174,7 +1200,7 @@ figma.on('selectionchange', () => {
     sendLog(`📊 Storage initialized with basic security`, 'info');
 
   } catch (error) {
-    sendLog(`⚠️ Storage initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'warning');
+    sendLog(`⚠️ Storage initialization failed: ${error instanceof Error ? sanitizeErrorMessage(error.message) : 'Unknown error'}`, 'warning');
     // Fallback to basic configuration loading
     await loadConfigurations();
   }
