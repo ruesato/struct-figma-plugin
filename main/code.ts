@@ -603,66 +603,14 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
       return false;
     }
 
-    // Use basic fetch with security headers
-    const response = await fetch(sanitizedUrl, {
-      method: 'GET',
-      headers: {
-        'User-Agent': 'FigmaPlugin-Struct/1.0'
-      }
-    });
+    // Use Figma's built-in createImageAsync method to avoid CORS issues
+    sendLog(`🔗 Fetching image from: ${sanitizedUrl}`, 'info');
 
-    if (!response) {
-      sendLog('Failed to fetch image: No response received', 'error');
-      return false;
-    }
-
-    if (!response.ok) {
-      sendLog(`Failed to fetch image: HTTP ${response.status}`, 'error');
-      return false;
-    }
-
-    // Safely validate content type with proper null checks
-    const contentType = (response.headers && response.headers.get)
-      ? response.headers.get('content-type') || ''
-      : '';
-
-    if (contentType && !contentType.startsWith('image/')) {
-      sendLog(`Invalid content type: ${contentType}`, 'error');
-      return false;
-    }
-
-    // Safely check file size with proper null checks
-    const contentLength = (response.headers && response.headers.get)
-      ? response.headers.get('content-length')
-      : null;
-
-    if (contentLength && parseInt(contentLength) > 10 * 1024 * 1024) {
-      sendLog('Image file too large (max 10MB)', 'error');
-      return false;
-    }
-
-    // Safely get array buffer with error handling
-    let arrayBuffer: ArrayBuffer;
-    try {
-      arrayBuffer = await response.arrayBuffer();
-    } catch (error) {
-      sendLog(`Failed to read image data: ${(error as Error).message}`, 'error');
-      return false;
-    }
-
-    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-      sendLog('Received empty image data', 'error');
-      return false;
-    }
-
-    const uint8Array = new Uint8Array(arrayBuffer);
-
-    // Safely create image with error handling
     let image: Image;
     try {
-      image = figma.createImage(uint8Array);
+      image = await figma.createImageAsync(sanitizedUrl);
     } catch (error) {
-      sendLog(`Failed to create image: ${(error as Error).message}`, 'error');
+      sendLog(`Failed to create image from URL: ${(error as Error).message}`, 'error');
       return false;
     }
 
@@ -688,16 +636,25 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
   } catch (error) {
     const errorMessage = (error as Error).message;
 
-    // Handle rate limiting errors specifically
-    if ((error as any).rateLimitError) {
+    // Log detailed error information for debugging
+    sendLog(`🚨 Image fetch error for ${imageUrl}:`, 'error');
+    sendLog(`Error details: ${errorMessage}`, 'error');
+
+    // Handle specific error types
+    if (errorMessage.includes('CORS')) {
+      sendLog(`❌ CORS Error: Using figma.createImageAsync should avoid this`, 'error');
+      sendLog(`💡 Domain ${extractDomain(imageUrl)} is pre-approved`, 'info');
+    } else if ((error as any).rateLimitError) {
       const retryAfter = (error as any).retryAfter;
       if (retryAfter) {
         sendLog(`🚫 Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`, 'warning');
       } else {
         sendLog(`🚫 Rate limit exceeded: ${errorMessage}`, 'warning');
       }
+    } else if (errorMessage.includes('fetch')) {
+      sendLog(`🌐 Network error: ${errorMessage}`, 'error');
     } else {
-      sendLog(`Error fetching image: ${errorMessage}`, 'error');
+      sendLog(`❓ Unknown error: ${errorMessage}`, 'error');
     }
 
     return false;
