@@ -509,7 +509,7 @@ let pendingDomainApproval: {
 
 // Rate limiting for domain requests
 const domainRequestCounts = new Map<string, { count: number; resetTime: number }>();
-const MAX_DOMAIN_REQUESTS_PER_HOUR = 100; // Increased for testing, may reduce to 50 after major testing completed
+const MAX_DOMAIN_REQUESTS_PER_HOUR = 250; // Increased for better user experience during testing and development
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
 
 // Track request history for security monitoring

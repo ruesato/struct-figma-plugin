@@ -79,7 +79,7 @@ const DomainApprovalModal: React.FC<DomainApprovalModalProps> = ({
                   <li>This approval is temporary for the current session only</li>
                   <li>Only approve domains from trusted sources</li>
                   <li>Malicious domains can potentially steal data or perform harmful actions</li>
-                  <li>Rate limited to {purpose.includes('WILDCARD') ? '10 requests per hour per domain' : 'standard limits'}</li>
+                  <li>Rate limited to {purpose.includes('WILDCARD') ? '250 requests per hour per domain' : 'standard limits'}</li>
                   <li>All requests are logged for security monitoring</li>
                 </ul>
               </div>

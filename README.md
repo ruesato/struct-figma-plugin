@@ -33,7 +33,7 @@ A powerful Figma plugin that allows you to import JSON data and map it to layer 
 - **Secure Network Access**: Wildcard domain support with user approval system
 - **Session-Based Approval**: Secure domain access that resets between plugin sessions
 - **Enhanced URL Validation**: HTTPS-only, private IP blocking, suspicious domain filtering
-- **Rate Limiting**: 10 requests per hour per domain with security monitoring
+- **Rate Limiting**: 250 requests per hour per domain with security monitoring
 - **Request Auditing**: Complete activity logging for security compliance
 
 ### 🛠️ **Professional Tools**
