@@ -485,6 +485,7 @@ const App = () => {
   const handleLocalImageSelect = useCallback(async (jsonKey: string, files: FileList) => {
     const fileMap = new Map<string, Uint8Array>();
 
+    console.log('🔵 [LOCAL IMAGES] Received files from picker:', files.length, 'files for key:', jsonKey);
     addLog(`Received ${files.length} file(s) from file picker for ${jsonKey}`, 'info');
 
     try {
@@ -507,6 +508,7 @@ const App = () => {
 
         // Store with basename as key (handles directory selection)
         const basename = getBasename(file.name);
+        console.log(`🔵 [LOCAL IMAGES] Loading file: "${file.name}" → basename: "${basename}" (${bytes.length} bytes)`);
         addLog(`Loading: ${file.name} → basename: ${basename} (${bytes.length} bytes)`, 'info');
         fileMap.set(basename, bytes);
         loadedCount++;
@@ -518,7 +520,9 @@ const App = () => {
         [jsonKey]: fileMap
       }));
 
-      addLog(`✅ Loaded ${loadedCount} image file(s) for ${jsonKey}. File names: ${Array.from(fileMap.keys()).join(', ')}`, 'info');
+      const loadedFileNames = Array.from(fileMap.keys());
+      console.log(`🔵 [LOCAL IMAGES] ✅ Loaded ${loadedCount} files for "${jsonKey}":`, loadedFileNames);
+      addLog(`✅ Loaded ${loadedCount} image file(s) for ${jsonKey}. File names: ${loadedFileNames.join(', ')}`, 'info');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       addToastError('Image Load Failed', `Failed to load local image files`, 'error', errorMessage);
@@ -586,13 +590,22 @@ const App = () => {
     // Collect and convert local images to JSON-serializable format
     const localImages: Record<string, Record<string, Uint8Array>> = {};
 
+    console.log('🟢 [APPLY DATA] Starting to collect local images from state...');
+    console.log('🟢 [APPLY DATA] localImageFiles state:', localImageFiles);
+
     for (const [jsonKey, fileMap] of Object.entries(localImageFiles)) {
       // Convert Map to Record for JSON serialization
       const filesRecord: Record<string, Uint8Array> = {};
       fileMap.forEach((bytes, filename) => {
         filesRecord[filename] = bytes;
+        console.log(`🟢 [APPLY DATA] Adding to payload: "${jsonKey}" → "${filename}" (${bytes.length} bytes)`);
       });
       localImages[jsonKey] = filesRecord;
+    }
+
+    console.log('🟢 [APPLY DATA] Sending message to main thread with localImages:', Object.keys(localImages));
+    for (const key of Object.keys(localImages)) {
+      console.log(`🟢 [APPLY DATA]   "${key}":`, Object.keys(localImages[key]));
     }
 
     SecureMessageHandler.sendSecureMessage({
