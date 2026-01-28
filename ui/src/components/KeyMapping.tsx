@@ -119,6 +119,7 @@ const KeyMapping: React.FC<KeyMappingProps> = ({
                         type="file"
                         accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
                         multiple
+                        {...({ webkitdirectory: '', directory: '' } as any)}
                         onChange={(e) => handleFileChange(mapping.jsonKey, e)}
                         style={{ display: 'none' }}
                       />
