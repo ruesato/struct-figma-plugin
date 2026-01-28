@@ -486,12 +486,18 @@ const App = () => {
     const fileMap = new Map<string, Uint8Array>();
 
     console.log('🔵 [LOCAL IMAGES] Received files from picker:', files.length, 'files for key:', jsonKey);
+    console.log('🔵 [LOCAL IMAGES] FileList details:', files);
+    console.log('🔵 [LOCAL IMAGES] File array:', Array.from(files).map(f => ({ name: f.name, size: f.size, type: f.type })));
     addLog(`Received ${files.length} file(s) from file picker for ${jsonKey}`, 'info');
 
     try {
       let loadedCount = 0;
+      console.log('🔵 [LOCAL IMAGES] Starting file loop...');
+
       for (let i = 0; i < files.length; i++) {
+        console.log(`🔵 [LOCAL IMAGES] Loop iteration ${i}, loadedCount=${loadedCount}`);
         const file = files[i];
+        console.log(`🔵 [LOCAL IMAGES] Got file object:`, file);
 
         try {
           console.log(`🔵 [LOCAL IMAGES] Processing file ${i + 1}/${files.length}: "${file.name}"`);
