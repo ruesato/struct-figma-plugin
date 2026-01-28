@@ -1,6 +1,6 @@
 {
   "name": "figma-json-data-mapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Figma plugin for mapping JSON data to layer properties",
   "main": "dist/code.js",
   "scripts": {
