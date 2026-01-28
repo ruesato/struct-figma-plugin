@@ -2,18 +2,21 @@
 .env
 .env*
 
-# Compiled files from unified build system
-ui/dist/
-
-# Legacy compiled TypeScript outputs (now cleaned up)
-# Any .js files that might be accidentally generated in source dirs
-main/**/*.js
+# Intermediate build outputs (ignore)
+node_modules/
 ui/src/**/*.js
 ui/src/*.js
+main/**/*.js
 
-# Keep final bundled outputs only in designated dist directories
-!dist/*.js
-!ui/dist/*.js
+# Figma plugin build artifacts (intentionally tracked)
+# These are required for Figma to load the plugin
+# and are distributed as pre-built artifacts
+!dist/code.js
+!dist/index.html
+!dist/manifest.json
+!ui/dist/bundle.js
+!ui/dist/styles.css
+!ui/index.html
 
 # Build outputs intentionally kept in dist directories only
 claude.md
@@ -26,6 +29,14 @@ test-api-endpoints.md
 test-tmdb-data.json
 test-tmdb-realistic.json
 /assets
+
+# Local images test data (large test files for development)
+examples/images/
+examples/colors-local-images.json
+
+# Working files and directories
+/openspec
+/reference
 claude.md
 /.claude
 /.beads

@@ -1,4 +1,6 @@
-
+# Git workflow
+Commit whenever you are finished with a discrete chunk of work.
+Never push.
 
 ## Landing the Plane (Session Completion)
 
