@@ -483,18 +483,13 @@ const App = () => {
 
   // Local image file handlers
   const handleLocalImageSelect = useCallback(async (jsonKey: string, files: FileList) => {
-    console.log('🔵 [LOCAL IMAGES] Received files from picker:', files.length, 'files for key:', jsonKey);
-    console.log('🔵 [LOCAL IMAGES] FileList details:', files);
-
     // Early exit validation
     if (!files || files.length === 0) {
-      console.log('🔵 [LOCAL IMAGES] No files provided, exiting early');
       addLog('⚠️ No files selected', 'warning');
       return;
     }
 
     const fileInfoArray = Array.from(files).map(f => ({ name: f.name, size: f.size, type: f.type }));
-    console.log('🔵 [LOCAL IMAGES] File array:', fileInfoArray);
     addLog(`📁 Received ${files.length} file(s) from picker: ${fileInfoArray.map(f => f.name).join(', ')}`, 'info');
 
     const fileMap = new Map<string, Uint8Array>();
@@ -503,20 +498,16 @@ const App = () => {
     let skippedCount = 0;
 
     try {
-      console.log('🔵 [LOCAL IMAGES] Starting file loop...');
       addLog(`🔄 Starting to process ${files.length} files...`, 'info');
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`🔵 [LOCAL IMAGES] Loop iteration ${i}, loadedCount=${loadedCount}`);
 
         try {
-          console.log(`🔵 [LOCAL IMAGES] Processing file ${i + 1}/${files.length}: "${file.name}"`);
           addLog(`📄 Processing file ${i + 1}/${files.length}: ${file.name}`, 'info');
 
           // Skip hidden files
           if (file.name.startsWith('.')) {
-            console.log(`🔵 [LOCAL IMAGES] Skipping hidden file: ${file.name}`);
             addLog(`⏭️ Skipping hidden file: ${file.name}`, 'info');
             skippedCount++;
             continue;
@@ -525,7 +516,6 @@ const App = () => {
           // Filter to only image files
           const isImageFile = /\.(png|jpe?g|gif|webp)$/i.test(file.name);
           if (!isImageFile) {
-            console.log(`🔵 [LOCAL IMAGES] Skipping non-image file: ${file.name}`);
             addLog(`⏭️ Skipping non-image: ${file.name}`, 'info');
             skippedCount++;
             continue;
@@ -533,14 +523,12 @@ const App = () => {
 
           // Validate file size
           if (file.size === 0) {
-            console.log(`🔵 [LOCAL IMAGES] Skipping empty file: ${file.name}`);
             addLog(`⚠️ Skipping empty file: ${file.name}`, 'warning');
             skippedCount++;
             continue;
           }
 
           if (file.size > MAX_FILE_SIZE) {
-            console.log(`🔵 [LOCAL IMAGES] Skipping oversized file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
             addLog(`⚠️ Skipping oversized file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`, 'warning');
             skippedCount++;
             continue;
@@ -553,7 +541,6 @@ const App = () => {
 
           // Validate that we actually read something
           if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-            console.log(`🔵 [LOCAL IMAGES] File read produced empty buffer: ${file.name}`);
             addLog(`⚠️ File appears corrupted: ${file.name}`, 'warning');
             skippedCount++;
             continue;
@@ -568,12 +555,10 @@ const App = () => {
           // Normalize .jpeg to .jpg for consistent matching
           basename = basename.replace(/\.jpeg$/i, '.jpg');
 
-          console.log(`🔵 [LOCAL IMAGES] Loading file: "${file.name}" → basename: "${basename}" (${bytes.length} bytes)`);
           addLog(`✅ Loaded: ${basename} (${(bytes.length / 1024).toFixed(1)}KB)`, 'info');
           fileMap.set(basename, bytes);
           loadedCount++;
         } catch (fileError) {
-          console.error(`🔵 [LOCAL IMAGES] Error loading file "${file.name}":`, fileError);
           addLog(`❌ Error loading "${file.name}": ${fileError instanceof Error ? fileError.message : 'Unknown error'}`, 'error');
           skippedCount++;
           // Continue with next file
@@ -593,11 +578,9 @@ const App = () => {
       }));
 
       const loadedFileNames = Array.from(fileMap.keys());
-      console.log(`🔵 [LOCAL IMAGES] ✅ Loaded ${loadedCount} files for "${jsonKey}":`, loadedFileNames);
       addLog(`✅ Loaded ${loadedCount} image file(s) for ${jsonKey}. File names: ${loadedFileNames.join(', ')}`, 'info');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('🔵 [LOCAL IMAGES] Fatal error in handleLocalImageSelect:', error);
       addToastError('Image Load Failed', `Failed to load local image files`, 'error', errorMessage);
     }
   }, [addLog, addToastError]);
