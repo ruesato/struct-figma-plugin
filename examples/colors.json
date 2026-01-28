@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Sunset Orange",
+    "description": "6-digit HEX color",
+    "fill_color": "#FF5733",
+    "stroke_color": "#CC4400"
+  },
+  {
+    "name": "Ocean Blue",
+    "description": "3-digit shorthand HEX",
+    "fill_color": "#38F",
+    "stroke_color": "#06C"
+  },
+  {
+    "name": "Forest Green",
+    "description": "8-digit HEX with alpha",
+    "fill_color": "#228B22CC",
+    "stroke_color": "#006400"
+  },
+  {
+    "name": "Ruby Red",
+    "description": "RGB color format",
+    "fill_color": "rgb(220, 20, 60)",
+    "stroke_color": "rgb(139, 0, 0)"
+  },
+  {
+    "name": "Amethyst Purple",
+    "description": "RGBA with transparency",
+    "fill_color": "rgba(153, 102, 204, 0.8)",
+    "stroke_color": "rgba(128, 0, 128, 1)"
+  },
+  {
+    "name": "Golden Yellow",
+    "description": "HSL color format",
+    "fill_color": "hsl(45, 100%, 50%)",
+    "stroke_color": "hsl(36, 100%, 40%)"
+  },
+  {
+    "name": "Sky Teal",
+    "description": "HSLA with transparency",
+    "fill_color": "hsla(180, 60%, 50%, 0.9)",
+    "stroke_color": "hsla(180, 80%, 30%, 1)"
+  },
+  {
+    "name": "Coral Pink",
+    "description": "Mixed formats test",
+    "fill_color": "#FF7F7F",
+    "stroke_color": "rgb(255, 99, 71)"
+  },
+  {
+    "name": "Invalid Test",
+    "description": "Invalid color should log warning",
+    "fill_color": "not-a-color",
+    "stroke_color": "also-invalid"
+  },
+  {
+    "name": "URL Fragment Test",
+    "description": "URL with hash should NOT be treated as color",
+    "fill_color": "https://example.com/page#section",
+    "stroke_color": "#4169E1"
+  }
+]
