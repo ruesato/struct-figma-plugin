@@ -115,11 +115,17 @@ const KeyMapping: React.FC<KeyMappingProps> = ({
                   {hasLocalImages && (
                     <>
                       <input
-                        ref={(el) => (fileInputRefs.current[mapping.jsonKey] = el)}
+                        ref={(el) => {
+                          if (el) {
+                            fileInputRefs.current[mapping.jsonKey] = el;
+                            // Set directory attributes programmatically
+                            el.setAttribute('webkitdirectory', '');
+                            el.setAttribute('directory', '');
+                          }
+                        }}
                         type="file"
                         accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
                         multiple
-                        {...({ webkitdirectory: '', directory: '' } as any)}
                         onChange={(e) => handleFileChange(mapping.jsonKey, e)}
                         style={{ display: 'none' }}
                       />

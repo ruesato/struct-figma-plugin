@@ -485,9 +485,19 @@ const App = () => {
   const handleLocalImageSelect = useCallback(async (jsonKey: string, files: FileList) => {
     const fileMap = new Map<string, Uint8Array>();
 
+    addLog(`Received ${files.length} file(s) from file picker for ${jsonKey}`, 'info');
+
     try {
+      let loadedCount = 0;
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+
+        // Filter to only image files
+        const isImageFile = /\.(png|jpe?g|gif|webp)$/i.test(file.name);
+        if (!isImageFile) {
+          addLog(`Skipping non-image file: ${file.name}`, 'info');
+          continue;
+        }
 
         // Read file as ArrayBuffer
         const arrayBuffer = await file.arrayBuffer();
@@ -497,7 +507,9 @@ const App = () => {
 
         // Store with basename as key (handles directory selection)
         const basename = getBasename(file.name);
+        addLog(`Loading: ${file.name} → basename: ${basename} (${bytes.length} bytes)`, 'info');
         fileMap.set(basename, bytes);
+        loadedCount++;
       }
 
       // Update state
@@ -506,7 +518,7 @@ const App = () => {
         [jsonKey]: fileMap
       }));
 
-      addLog(`Loaded ${files.length} local image(s) for ${jsonKey}`, 'info');
+      addLog(`✅ Loaded ${loadedCount} image file(s) for ${jsonKey}. File names: ${Array.from(fileMap.keys()).join(', ')}`, 'info');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       addToastError('Image Load Failed', `Failed to load local image files`, 'error', errorMessage);

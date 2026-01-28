@@ -962,6 +962,18 @@ async function applyDataToContainers(
   let processedCount = 0;
   const totalContainers = allTargetContainers.length;
 
+  // Debug: Log local images info
+  if (localImages) {
+    const imageKeys = Object.keys(localImages);
+    sendLog(`📦 Local images available for ${imageKeys.length} mapping(s): ${imageKeys.join(', ')}`, 'info');
+    for (const key of imageKeys) {
+      const files = Object.keys(localImages[key]);
+      sendLog(`   "${key}": ${files.length} file(s) - ${files.join(', ')}`, 'info');
+    }
+  } else {
+    sendLog('📦 No local images provided', 'info');
+  }
+
   sendLog(`Found ${allTargetContainers.length} containers in selection. Starting to apply data...`, 'info');
 
   for (let i = 0; i < totalContainers; i++) {
@@ -996,6 +1008,14 @@ async function applyDataToContainers(
         const basename = getBasename(value);
         const imageBytes = localImages?.[mapping.jsonKey]?.[basename];
 
+        // Debug logging
+        if (!imageBytes) {
+          const availableFiles = localImages?.[mapping.jsonKey]
+            ? Object.keys(localImages[mapping.jsonKey]).join(', ')
+            : 'none';
+          sendLog(`🔍 Looking for "${basename}" in mapping "${mapping.jsonKey}". Available files: ${availableFiles}`, 'info');
+        }
+
         if (imageBytes) {
           const success = await applyImageFromBytes(targetLayer, imageBytes);
           if (success) {
@@ -1004,7 +1024,7 @@ async function applyDataToContainers(
             sendLog(`Failed to apply local image "${basename}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
           }
         } else {
-          sendLog(`Local image file "${basename}" not found for key "${mapping.jsonKey}"`, 'warning');
+          sendLog(`⚠️ Local image file "${basename}" not found for key "${mapping.jsonKey}"`, 'warning');
         }
       } else if (typeof value === 'string' && isColorValue(value)) {
         // Apply color selectively based on JSON key name
