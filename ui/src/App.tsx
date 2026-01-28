@@ -487,12 +487,15 @@ const App = () => {
 
     console.log('🔵 [LOCAL IMAGES] Received files from picker:', files.length, 'files for key:', jsonKey);
     console.log('🔵 [LOCAL IMAGES] FileList details:', files);
-    console.log('🔵 [LOCAL IMAGES] File array:', Array.from(files).map(f => ({ name: f.name, size: f.size, type: f.type })));
-    addLog(`Received ${files.length} file(s) from file picker for ${jsonKey}`, 'info');
+
+    const fileInfoArray = Array.from(files).map(f => ({ name: f.name, size: f.size, type: f.type }));
+    console.log('🔵 [LOCAL IMAGES] File array:', fileInfoArray);
+    addLog(`📁 Received ${files.length} file(s) from picker: ${fileInfoArray.map(f => f.name).join(', ')}`, 'info');
 
     try {
       let loadedCount = 0;
       console.log('🔵 [LOCAL IMAGES] Starting file loop...');
+      addLog(`🔄 Starting to process ${files.length} files...`, 'info');
 
       for (let i = 0; i < files.length; i++) {
         console.log(`🔵 [LOCAL IMAGES] Loop iteration ${i}, loadedCount=${loadedCount}`);
@@ -501,14 +504,17 @@ const App = () => {
 
         try {
           console.log(`🔵 [LOCAL IMAGES] Processing file ${i + 1}/${files.length}: "${file.name}"`);
+          addLog(`📄 Processing file ${i + 1}/${files.length}: ${file.name}`, 'info');
 
           // Filter to only image files
           const isImageFile = /\.(png|jpe?g|gif|webp)$/i.test(file.name);
           if (!isImageFile) {
             console.log(`🔵 [LOCAL IMAGES] Skipping non-image file: ${file.name}`);
-            addLog(`Skipping non-image file: ${file.name}`, 'info');
+            addLog(`⏭️ Skipping non-image: ${file.name}`, 'info');
             continue;
           }
+
+          addLog(`⬇️ Reading ${file.name}...`, 'info');
 
           // Read file as ArrayBuffer
           const arrayBuffer = await file.arrayBuffer();
@@ -523,15 +529,17 @@ const App = () => {
           basename = basename.replace(/\.jpeg$/i, '.jpg');
 
           console.log(`🔵 [LOCAL IMAGES] Loading file: "${file.name}" → basename: "${basename}" (${bytes.length} bytes)`);
-          addLog(`Loading: ${file.name} → basename: ${basename} (${bytes.length} bytes)`, 'info');
+          addLog(`✅ Loaded: ${basename} (${(bytes.length / 1024).toFixed(1)}KB)`, 'info');
           fileMap.set(basename, bytes);
           loadedCount++;
         } catch (fileError) {
           console.error(`🔵 [LOCAL IMAGES] Error loading file "${file.name}":`, fileError);
-          addLog(`Error loading file "${file.name}": ${fileError instanceof Error ? fileError.message : 'Unknown error'}`, 'error');
+          addLog(`❌ Error loading "${file.name}": ${fileError instanceof Error ? fileError.message : 'Unknown error'}`, 'error');
           // Continue with next file
         }
       }
+
+      addLog(`🎉 Finished processing! ${loadedCount} of ${files.length} files loaded successfully`, 'info');
 
       // Update state
       setLocalImageFiles(prev => ({
