@@ -896,9 +896,22 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
           sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
         }
       } else if (typeof value === 'string' && isColorValue(value)) {
-        // Apply color to fill and stroke
-        applyColorToFill(targetLayer, value);
-        applyColorToStroke(targetLayer, value);
+        // Apply color selectively based on mapping layer name
+        const layerNameLower = mapping.layerName.toLowerCase();
+        const isStrokeTarget = layerNameLower.includes('stroke');
+        const isFillTarget = layerNameLower.includes('fill');
+
+        if (isStrokeTarget && !isFillTarget) {
+          // Only apply to stroke
+          applyColorToStroke(targetLayer, value);
+        } else if (isFillTarget && !isStrokeTarget) {
+          // Only apply to fill
+          applyColorToFill(targetLayer, value);
+        } else {
+          // Apply to both (backward compatible for generic layer names)
+          applyColorToFill(targetLayer, value);
+          applyColorToStroke(targetLayer, value);
+        }
       } else if (targetLayer.type === 'TEXT') {
         applyTextContent(targetLayer as TextNode, String(value));
         sendLog(`Applied text "${value}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
