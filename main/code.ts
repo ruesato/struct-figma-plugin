@@ -212,6 +212,42 @@ function isColorValue(value: string): boolean {
   return false;
 }
 
+// Local image filename detection utility
+function isLocalImageFilename(value: string): boolean {
+  if (!value || typeof value !== 'string') return false;
+
+  // Check if it's not a URL
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return false;
+  }
+
+  // Check if it ends with a common image extension (case-insensitive)
+  const lowerValue = value.toLowerCase();
+  return (
+    lowerValue.endsWith('.png') ||
+    lowerValue.endsWith('.jpg') ||
+    lowerValue.endsWith('.jpeg') ||
+    lowerValue.endsWith('.gif') ||
+    lowerValue.endsWith('.webp')
+  );
+}
+
+// Extract basename from path (handles both / and \ separators)
+function getBasename(path: string): string {
+  if (!path || typeof path !== 'string') return '';
+
+  const lastSlash = Math.max(
+    path.lastIndexOf('/'),
+    path.lastIndexOf('\\')
+  );
+
+  if (lastSlash === -1) {
+    return path;
+  }
+
+  return path.substring(lastSlash + 1);
+}
+
 // Apply color to node fill
 function applyColorToFill(node: SceneNode, colorValue: string): boolean {
   try {
@@ -324,6 +360,7 @@ interface ApplyDataMessage {
   jsonData: any[];
   mappings: JsonMapping[];
   valueBuilders: { [key: string]: ValueBuilder };
+  localImages?: { [jsonKey: string]: { [filename: string]: Uint8Array } };
 }
 
 interface LogMessage {
@@ -684,6 +721,44 @@ async function requestDomainApproval(url: string, purpose: string): Promise<bool
   });
 }
 
+// Helper function to apply image from local file bytes
+async function applyImageFromBytes(node: SceneNode, bytes: Uint8Array): Promise<boolean> {
+  try {
+    if (!('fills' in node)) {
+      sendLog(`Layer "${node.name}" does not support image fills`, 'warning');
+      return false;
+    }
+
+    // Create image from bytes
+    let image: Image;
+    try {
+      image = figma.createImage(bytes);
+    } catch (error) {
+      sendLog(`Failed to create image from bytes: ${(error as Error).message}`, 'error');
+      return false;
+    }
+
+    if (!image || !image.hash) {
+      sendLog('Failed to create valid image object from bytes', 'error');
+      return false;
+    }
+
+    // Apply as IMAGE fill
+    const newFills: Paint[] = [{
+      type: 'IMAGE',
+      scaleMode: 'FILL',
+      imageHash: image.hash
+    }];
+    node.fills = newFills;
+    sendLog(`Successfully applied image from local file to "${node.name}"`, 'info');
+    return true;
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    sendLog(`Failed to apply image from bytes: ${errorMessage}`, 'error');
+    return false;
+  }
+}
+
 // Helper function to fetch and apply image from URL with security
 async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boolean> {
   try {
@@ -839,7 +914,12 @@ function sendLog(message: string, level: 'info' | 'warning' | 'error' = 'info'):
 }
 
 // Main function to apply data to selected containers
-async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], valueBuilders: { [key: string]: ValueBuilder } = {}): Promise<void> {
+async function applyDataToContainers(
+  jsonData: any[],
+  mappings: JsonMapping[],
+  valueBuilders: { [key: string]: ValueBuilder } = {},
+  localImages?: { [jsonKey: string]: { [filename: string]: Uint8Array } }
+): Promise<void> {
   const selection = figma.currentPage.selection;
 
   if (selection.length === 0) {
@@ -887,7 +967,22 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
       }
 
       // Apply data based on layer type and value type
-      if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+      if (typeof value === 'string' && isLocalImageFilename(value)) {
+        // Try to apply as local image file
+        const basename = getBasename(value);
+        const imageBytes = localImages?.[mapping.jsonKey]?.[basename];
+
+        if (imageBytes) {
+          const success = await applyImageFromBytes(targetLayer, imageBytes);
+          if (success) {
+            sendLog(`Applied local image "${basename}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
+          } else {
+            sendLog(`Failed to apply local image "${basename}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
+          }
+        } else {
+          sendLog(`Local image file "${basename}" not found for key "${mapping.jsonKey}"`, 'warning');
+        }
+      } else if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
         // Try to apply as image URL
         const success = await applyImageFromUrl(targetLayer, value);
         if (success) {
@@ -958,9 +1053,14 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
 }
 
 // Backward compatibility function
-async function applyDataToInstances(jsonData: any[], mappings: JsonMapping[], valueBuilders: { [key: string]: ValueBuilder } = {}): Promise<void> {
+async function applyDataToInstances(
+  jsonData: any[],
+  mappings: JsonMapping[],
+  valueBuilders: { [key: string]: ValueBuilder } = {},
+  localImages?: { [jsonKey: string]: { [filename: string]: Uint8Array } }
+): Promise<void> {
   // Redirect to the new function for backward compatibility
-  return applyDataToContainers(jsonData, mappings, valueBuilders);
+  return applyDataToContainers(jsonData, mappings, valueBuilders, localImages);
 }
 
 // Plugin initialization
@@ -1243,8 +1343,8 @@ async function handleSecureStorageLoad(msg: any) {
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'apply-data':
-      const { jsonData, mappings, valueBuilders } = msg as ApplyDataMessage;
-      await applyDataToInstances(jsonData, mappings, valueBuilders || {});
+      const { jsonData, mappings, valueBuilders, localImages } = msg as ApplyDataMessage;
+      await applyDataToInstances(jsonData, mappings, valueBuilders || {}, localImages);
       break;
 
     case 'save-config':
