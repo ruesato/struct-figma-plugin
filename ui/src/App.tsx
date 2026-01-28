@@ -78,6 +78,9 @@ const App = () => {
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [toastErrors, setToastErrors] = useState<ToastError[]>([]);
+
+  // Local image files state: jsonKey → Map(filename → bytes)
+  const [localImageFiles, setLocalImageFiles] = useState<Record<string, Map<string, Uint8Array>>>({});
   
   // Security state
   const [isEncryptionAvailable, setIsEncryptionAvailable] = useState(false);
@@ -477,6 +480,46 @@ const App = () => {
     addLog(`Value builder cleared for ${mappingKey}`, 'info');
   }, [addLog]);
 
+  // Local image file handlers
+  const handleLocalImageSelect = useCallback(async (jsonKey: string, files: FileList) => {
+    const fileMap = new Map<string, Uint8Array>();
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Read file as ArrayBuffer
+        const arrayBuffer = await file.arrayBuffer();
+
+        // Convert to Uint8Array
+        const bytes = new Uint8Array(arrayBuffer);
+
+        // Store with filename as key
+        fileMap.set(file.name, bytes);
+      }
+
+      // Update state
+      setLocalImageFiles(prev => ({
+        ...prev,
+        [jsonKey]: fileMap
+      }));
+
+      addLog(`Loaded ${files.length} local image(s) for ${jsonKey}`, 'info');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      addToastError('Image Load Failed', `Failed to load local image files`, 'error', errorMessage);
+    }
+  }, [addLog, addToastError]);
+
+  const clearLocalImages = useCallback((jsonKey: string) => {
+    setLocalImageFiles(prev => {
+      const newFiles = { ...prev };
+      delete newFiles[jsonKey];
+      return newFiles;
+    });
+    addLog(`Cleared local images for ${jsonKey}`, 'info');
+  }, [addLog]);
+
   const addBuilderPart = useCallback((type: 'key' | 'text' | 'separator') => {
     setCurrentBuilder(prev => ({
       ...prev,
@@ -755,6 +798,10 @@ const App = () => {
 	            valueBuilders={valueBuilders}
 	            openValueBuilder={openValueBuilder}
 	            clearValueBuilder={clearValueBuilder}
+	            localImageFiles={localImageFiles}
+	            jsonData={jsonData}
+	            handleLocalImageSelect={handleLocalImageSelect}
+	            clearLocalImages={clearLocalImages}
 	          />
 
 	        </>
