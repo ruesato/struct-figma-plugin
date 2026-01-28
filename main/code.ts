@@ -896,10 +896,10 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
           sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
         }
       } else if (typeof value === 'string' && isColorValue(value)) {
-        // Apply color selectively based on mapping layer name
-        const layerNameLower = mapping.layerName.toLowerCase();
-        const isStrokeTarget = layerNameLower.includes('stroke');
-        const isFillTarget = layerNameLower.includes('fill');
+        // Apply color selectively based on JSON key name
+        const jsonKeyLower = mapping.jsonKey.toLowerCase();
+        const isStrokeTarget = jsonKeyLower.includes('stroke');
+        const isFillTarget = jsonKeyLower.includes('fill');
 
         if (isStrokeTarget && !isFillTarget) {
           // Only apply to stroke
@@ -908,7 +908,7 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
           // Only apply to fill
           applyColorToFill(targetLayer, value);
         } else {
-          // Apply to both (backward compatible for generic layer names)
+          // Apply to both (backward compatible for generic color keys)
           applyColorToFill(targetLayer, value);
           applyColorToStroke(targetLayer, value);
         }
