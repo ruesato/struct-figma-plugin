@@ -493,25 +493,38 @@ const App = () => {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
-        // Filter to only image files
-        const isImageFile = /\.(png|jpe?g|gif|webp)$/i.test(file.name);
-        if (!isImageFile) {
-          addLog(`Skipping non-image file: ${file.name}`, 'info');
-          continue;
+        try {
+          console.log(`🔵 [LOCAL IMAGES] Processing file ${i + 1}/${files.length}: "${file.name}"`);
+
+          // Filter to only image files
+          const isImageFile = /\.(png|jpe?g|gif|webp)$/i.test(file.name);
+          if (!isImageFile) {
+            console.log(`🔵 [LOCAL IMAGES] Skipping non-image file: ${file.name}`);
+            addLog(`Skipping non-image file: ${file.name}`, 'info');
+            continue;
+          }
+
+          // Read file as ArrayBuffer
+          const arrayBuffer = await file.arrayBuffer();
+
+          // Convert to Uint8Array
+          const bytes = new Uint8Array(arrayBuffer);
+
+          // Store with basename as key (handles directory selection)
+          let basename = getBasename(file.name);
+
+          // Normalize .jpeg to .jpg for consistent matching
+          basename = basename.replace(/\.jpeg$/i, '.jpg');
+
+          console.log(`🔵 [LOCAL IMAGES] Loading file: "${file.name}" → basename: "${basename}" (${bytes.length} bytes)`);
+          addLog(`Loading: ${file.name} → basename: ${basename} (${bytes.length} bytes)`, 'info');
+          fileMap.set(basename, bytes);
+          loadedCount++;
+        } catch (fileError) {
+          console.error(`🔵 [LOCAL IMAGES] Error loading file "${file.name}":`, fileError);
+          addLog(`Error loading file "${file.name}": ${fileError instanceof Error ? fileError.message : 'Unknown error'}`, 'error');
+          // Continue with next file
         }
-
-        // Read file as ArrayBuffer
-        const arrayBuffer = await file.arrayBuffer();
-
-        // Convert to Uint8Array
-        const bytes = new Uint8Array(arrayBuffer);
-
-        // Store with basename as key (handles directory selection)
-        const basename = getBasename(file.name);
-        console.log(`🔵 [LOCAL IMAGES] Loading file: "${file.name}" → basename: "${basename}" (${bytes.length} bytes)`);
-        addLog(`Loading: ${file.name} → basename: ${basename} (${bytes.length} bytes)`, 'info');
-        fileMap.set(basename, bytes);
-        loadedCount++;
       }
 
       // Update state

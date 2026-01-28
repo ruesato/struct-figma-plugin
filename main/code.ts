@@ -1005,7 +1005,11 @@ async function applyDataToContainers(
       // Apply data based on layer type and value type
       if (typeof value === 'string' && isLocalImageFilename(value)) {
         // Try to apply as local image file
-        const basename = getBasename(value);
+        let basename = getBasename(value);
+
+        // Normalize .jpeg to .jpg for consistent matching
+        basename = basename.replace(/\.jpeg$/i, '.jpg');
+
         const imageBytes = localImages?.[mapping.jsonKey]?.[basename];
 
         // Debug logging
