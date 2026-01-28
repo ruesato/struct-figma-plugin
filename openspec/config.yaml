@@ -1,0 +1,139 @@
+schema: spec-driven
+
+context: |
+  # Project Context
+
+  ## Purpose
+  Struct is a Figma plugin that allows designers to import JSON/CSV data and map it to layer properties in their designs. It enables:
+  - Populating designs with real data from files or APIs
+  - Creating data-driven prototypes
+  - Automating content updates with complex, nested data structures
+  - Applying data to multiple component instances, frames, and groups at once
+
+  ## Tech Stack
+  - **TypeScript** - Primary language with strict mode enabled
+  - **React 18** - UI framework (functional components with hooks)
+  - **Tailwind CSS** - Styling with custom Figma design tokens
+  - **shadcn/ui** - Component library built on Radix UI primitives
+  - **Figma Plugin API** - Integration with Figma editor
+  - **esbuild** - Build tool for both main thread and UI bundling
+  - **@dnd-kit** - Drag and drop functionality
+  - **motion/react** - Animations
+  - **Lucide React** - Icons
+
+  ## Project Structure
+  ```
+  struct-figma-plugin/
+  ├── main/              # Figma main thread code (sandbox environment)
+  │   ├── code.ts        # Primary plugin logic
+  │   └── utils/         # Security utilities (sanitizers, loggers)
+  ├── ui/                # React UI (runs in iframe)
+  │   ├── src/
+  │   │   ├── App.tsx    # Main application component
+  │   │   ├── components/  # React components
+  │   │   │   └── ui/    # shadcn/ui components
+  │   │   ├── utils/     # Utility functions (security, crypto)
+  │   │   └── lib/       # shadcn utility functions
+  │   └── index.html     # UI entry point
+  ├── scripts/           # Build scripts
+  ├── examples/          # Sample JSON/CSV data files
+  └── dist/              # Built plugin output
+  ```
+
+  ## Project Conventions
+
+  ### Code Style
+  - **ES Modules**: Use `import/export` syntax, not CommonJS `require`
+  - **Destructured imports**: `import { useState, useCallback } from 'react'`
+  - **Functional components**: Use React hooks (useState, useCallback, useEffect)
+  - **No hardcoded colors**: Use design tokens from shadcn/Tailwind/Figma CSS variables
+  - **Security-first**: All user input must be sanitized; credentials must be encrypted
+
+  ### Architecture Patterns
+  - **Dual-thread architecture**: Figma plugins run main code in a sandbox, UI in an iframe
+  - **Message passing**: Communication between main and UI via `postMessage`/`onmessage`
+  - **Secure message handling**: Use `SecureMessageHandler` for all plugin-UI communication
+  - **Session-based security**: Domain approvals and rate limits reset each session
+  - **Configuration sanitization**: API credentials are stripped before storage
+
+  ### Testing Strategy
+  - No formal testing framework currently in place
+  - Manual testing via Figma plugin development mode
+  - Security audit documents in root directory (SECURITY_AUDIT_REPORT.md, SECURITY_REVIEW.md)
+
+  ### Git Workflow
+  - **Commit format**: Semantic release format (feat:, fix:, etc.)
+  - **Commit message style**: Include bullet points summarizing changes
+  - **Linear issue tracking**: Append `Closes [ISSUE-ID]` when applicable
+  - **Co-author**: Include AI assistant co-author when applicable
+
+  ## Domain Context
+
+  ### Figma Plugin Environment
+  - **Main thread**: Runs in a sandboxed JavaScript environment with limited APIs
+    - No `URL` constructor, `fetch` has restrictions, no Node.js APIs
+    - Access to Figma document via `figma` global
+    - Uses `figma.clientStorage` for persistent data
+  - **UI thread**: Runs in an iframe with full browser APIs
+    - Can use Web Crypto API, fetch, etc.
+    - Communicates with main thread via `parent.postMessage`
+
+  ### Key Features
+  - **Data sources**: File upload (JSON/CSV) or API endpoints
+  - **Mapping system**: Maps JSON keys to Figma layer names
+  - **Value builders**: Combine multiple JSON keys into custom field values
+  - **Container support**: Works with instances, frames, groups, and components
+  - **Security controls**: Domain approval, rate limiting, URL validation
+
+  ## Important Constraints
+
+  ### Security Requirements
+  - HTTPS-only for external URLs
+  - Block private IPs (localhost, 127.x, 192.168.x, 10.x, 172.16-31.x)
+  - Block URL shorteners and potentially malicious domains
+  - Rate limit: 250 requests/hour per domain
+  - No persistent storage of API keys/credentials
+  - Sanitize all error messages to avoid leaking sensitive data
+
+  ### Figma Plugin Constraints
+  - Max file size: 2MB for JSON/CSV uploads
+  - Max text length: 50,000 characters (Figma limit)
+  - No synchronous blocking operations
+  - Must load fonts before modifying text content
+  - `documentAccess: "dynamic-page"` for page access
+
+  ### Browser Constraints
+  - Web Crypto API may not be available in all contexts (fallback encryption used)
+  - CORS restrictions apply to image fetching (use `figma.createImageAsync`)
+
+  ## External Dependencies
+
+  ### APIs & Services
+  - **Figma Plugin API**: Primary integration point
+  - **User-defined APIs**: Plugin fetches data from any user-specified HTTPS endpoint
+  - **Image hosting**: Supports various image CDNs (Unsplash, Picsum, placeholder services)
+
+  ### Default Approved Domains
+  - jsonplaceholder.typicode.com
+  - api.github.com
+  - httpbin.org
+  - images.unsplash.com
+  - via.placeholder.com
+  - picsum.photos
+  - loremflickr.com
+  - dummyimage.com
+
+  ### Build Commands
+  - `pnpm dev` - Start development with watch mode
+  - `pnpm build` - Build plugin for production
+  - `pnpm typecheck` - Run TypeScript type checking
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
