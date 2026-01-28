@@ -3,7 +3,7 @@ import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { ChevronDown, Edit, Trash2, FolderOpen, X } from 'lucide-react';
-import { hasLocalImageValues } from '../utils';
+import { hasLocalImageValues } from '../utils/index';
 
 interface Mapping {
   jsonKey: string;

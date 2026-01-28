@@ -203,5 +203,6 @@ class SecureLogger {
 // Create singleton instance
 const logger = new SecureLogger();
 
-export { logger, LogContext };
+export { logger };
+export type { LogContext };
 export default logger;
