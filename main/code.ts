@@ -193,6 +193,67 @@ function isValidUrl(url: string): boolean {
   }
 }
 
+// Color value detection utility
+function isColorValue(value: string): boolean {
+  if (!value || typeof value !== 'string') return false;
+
+  // HEX color: #RGB, #RRGGBB, or #RRGGBBAA
+  const hexPattern = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;
+  if (hexPattern.test(value)) return true;
+
+  // RGB/RGBA color: rgb(r, g, b) or rgba(r, g, b, a)
+  const rgbPattern = /^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+/i;
+  if (rgbPattern.test(value)) return true;
+
+  // HSL/HSLA color: hsl(h, s%, l%) or hsla(h, s%, l%, a)
+  const hslPattern = /^hsla?\(\s*\d+/i;
+  if (hslPattern.test(value)) return true;
+
+  return false;
+}
+
+// Apply color to node fill
+function applyColorToFill(node: SceneNode, colorValue: string): boolean {
+  try {
+    if (!('fills' in node)) {
+      sendLog(`Layer "${node.name}" does not support fills`, 'warning');
+      return false;
+    }
+
+    const paint = figma.util.solidPaint(colorValue);
+    (node as GeometryMixin).fills = [paint];
+    sendLog(`Applied fill color "${colorValue}" to layer "${node.name}"`, 'info');
+    return true;
+  } catch (error) {
+    sendLog(`Invalid color value "${colorValue}" for layer "${node.name}"`, 'warning');
+    return false;
+  }
+}
+
+// Apply color to node stroke (only if stroke exists)
+function applyColorToStroke(node: SceneNode, colorValue: string): boolean {
+  try {
+    if (!('strokes' in node)) {
+      return false;
+    }
+
+    const nodeWithStrokes = node as GeometryMixin;
+
+    // Only apply if node already has strokes
+    if (!nodeWithStrokes.strokes || nodeWithStrokes.strokes.length === 0) {
+      return false;
+    }
+
+    const paint = figma.util.solidPaint(colorValue);
+    nodeWithStrokes.strokes = [paint];
+    sendLog(`Applied stroke color "${colorValue}" to layer "${node.name}"`, 'info');
+    return true;
+  } catch (error) {
+    sendLog(`Invalid stroke color "${colorValue}" for layer "${node.name}"`, 'warning');
+    return false;
+  }
+}
+
 // Simple rate limiting
 class SimpleRateLimiter {
   private static requestHistory: Array<{ url: string; timestamp: number }> = [];
@@ -826,10 +887,7 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
       }
 
       // Apply data based on layer type and value type
-      if (targetLayer.type === 'TEXT') {
-        applyTextContent(targetLayer as TextNode, String(value));
-        sendLog(`Applied text "${value}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
-      } else if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+      if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
         // Try to apply as image URL
         const success = await applyImageFromUrl(targetLayer, value);
         if (success) {
@@ -837,6 +895,26 @@ async function applyDataToContainers(jsonData: any[], mappings: JsonMapping[], v
         } else {
           sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
         }
+      } else if (typeof value === 'string' && isColorValue(value)) {
+        // Apply color selectively based on JSON key name
+        const jsonKeyLower = mapping.jsonKey.toLowerCase();
+        const isStrokeTarget = jsonKeyLower.includes('stroke');
+        const isFillTarget = jsonKeyLower.includes('fill');
+
+        if (isStrokeTarget && !isFillTarget) {
+          // Only apply to stroke
+          applyColorToStroke(targetLayer, value);
+        } else if (isFillTarget && !isStrokeTarget) {
+          // Only apply to fill
+          applyColorToFill(targetLayer, value);
+        } else {
+          // Apply to both (backward compatible for generic color keys)
+          applyColorToFill(targetLayer, value);
+          applyColorToStroke(targetLayer, value);
+        }
+      } else if (targetLayer.type === 'TEXT') {
+        applyTextContent(targetLayer as TextNode, String(value));
+        sendLog(`Applied text "${value}" to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
       } else if (targetLayer.type === 'INSTANCE' && typeof value === 'string') {
         // Try to apply as variant property (only works on component instances)
         const instanceNode = targetLayer as InstanceNode;
