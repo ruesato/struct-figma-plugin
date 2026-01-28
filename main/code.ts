@@ -212,6 +212,30 @@ function isColorValue(value: string): boolean {
   return false;
 }
 
+// Image URL detection utility
+function isImageUrl(value: string): boolean {
+  if (!value || typeof value !== 'string') return false;
+
+  // Must be a URL
+  if (!value.startsWith('http://') && !value.startsWith('https://')) {
+    return false;
+  }
+
+  // Extract the path portion (before query string or hash)
+  const urlWithoutQueryOrHash = value.split('?')[0].split('#')[0];
+
+  // Check if it ends with a common image extension (case-insensitive)
+  const lowerValue = urlWithoutQueryOrHash.toLowerCase();
+  return (
+    lowerValue.endsWith('.png') ||
+    lowerValue.endsWith('.jpg') ||
+    lowerValue.endsWith('.jpeg') ||
+    lowerValue.endsWith('.gif') ||
+    lowerValue.endsWith('.webp') ||
+    lowerValue.endsWith('.svg')
+  );
+}
+
 // Local image filename detection utility
 function isLocalImageFilename(value: string): boolean {
   if (!value || typeof value !== 'string') return false;
@@ -982,14 +1006,6 @@ async function applyDataToContainers(
         } else {
           sendLog(`Local image file "${basename}" not found for key "${mapping.jsonKey}"`, 'warning');
         }
-      } else if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
-        // Try to apply as image URL
-        const success = await applyImageFromUrl(targetLayer, value);
-        if (success) {
-          sendLog(`Applied image from URL to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
-        } else {
-          sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
-        }
       } else if (typeof value === 'string' && isColorValue(value)) {
         // Apply color selectively based on JSON key name
         const jsonKeyLower = mapping.jsonKey.toLowerCase();
@@ -1006,6 +1022,14 @@ async function applyDataToContainers(
           // Apply to both (backward compatible for generic color keys)
           applyColorToFill(targetLayer, value);
           applyColorToStroke(targetLayer, value);
+        }
+      } else if (typeof value === 'string' && isImageUrl(value)) {
+        // Try to apply as image URL (only URLs with image extensions)
+        const success = await applyImageFromUrl(targetLayer, value);
+        if (success) {
+          sendLog(`Applied image from URL to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'info');
+        } else {
+          sendLog(`Failed to apply image from ${extractDomain(value) || 'URL'} to layer "${mapping.layerName}" in "${targetContainer.name}"`, 'error');
         }
       } else if (targetLayer.type === 'TEXT') {
         applyTextContent(targetLayer as TextNode, String(value));

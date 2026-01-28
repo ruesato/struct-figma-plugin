@@ -16,6 +16,7 @@ import ErrorToast, { ToastError } from './components/ErrorToast';
 
 // Import utilities
 import { extractJsonKeys, getDefaultLayerName, getNestedValue, evaluateValueBuilder, setupDragAndDrop } from './utils';
+import { getBasename } from './utils/index';
 import logger from './utils/secureLogger';
 import SecureCredentialManager from './utils/secureCredentialManager';
 import CredentialCrypto from './utils/credentialCrypto';
@@ -494,8 +495,9 @@ const App = () => {
         // Convert to Uint8Array
         const bytes = new Uint8Array(arrayBuffer);
 
-        // Store with filename as key
-        fileMap.set(file.name, bytes);
+        // Store with basename as key (handles directory selection)
+        const basename = getBasename(file.name);
+        fileMap.set(basename, bytes);
       }
 
       // Update state
