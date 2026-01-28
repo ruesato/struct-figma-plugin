@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { ChevronDown, Edit, Trash2, FolderOpen, X } from 'lucide-react';
+import { ChevronDown, Edit, Trash2, FolderOpen, X, Loader2 } from 'lucide-react';
 import { hasLocalImageValues } from '../utils/index';
 
 interface Mapping {
@@ -34,18 +34,29 @@ const KeyMapping: React.FC<KeyMappingProps> = ({
   clearLocalImages
 }) => {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [loadingKeys, setLoadingKeys] = useState<Set<string>>(new Set());
 
   const handleFileInputClick = (jsonKey: string) => {
-    fileInputRefs.current[jsonKey]?.click();
+    if (!loadingKeys.has(jsonKey)) {
+      fileInputRefs.current[jsonKey]?.click();
+    }
   };
 
-  const handleFileChange = (jsonKey: string, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (jsonKey: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files && files.length > 0) {
-      handleLocalImageSelect(jsonKey, files);
+    if (files && files.length > 0 && !loadingKeys.has(jsonKey)) {
+      try {
+        setLoadingKeys(prev => new Set(prev).add(jsonKey));
+        await handleLocalImageSelect(jsonKey, files);
+      } finally {
+        setLoadingKeys(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(jsonKey);
+          return newSet;
+        });
+        event.target.value = '';
+      }
     }
-    // Reset input value so the same file can be selected again
-    event.target.value = '';
   };
 
   return (
@@ -132,11 +143,16 @@ const KeyMapping: React.FC<KeyMappingProps> = ({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-5 w-5 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] transition-colors"
+                        className="h-5 w-5 p-0 text-[var(--figma-color-text-secondary)] hover:text-[var(--figma-color-text)] transition-colors disabled:opacity-50"
                         onClick={() => handleFileInputClick(mapping.jsonKey)}
                         title="Select local image files"
+                        disabled={loadingKeys.has(mapping.jsonKey)}
                       >
-                        <FolderOpen className="h-3 w-3" />
+                        {loadingKeys.has(mapping.jsonKey) ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <FolderOpen className="h-3 w-3" />
+                        )}
                       </Button>
 
                       {fileCount > 0 && (
