@@ -569,13 +569,26 @@ const App = () => {
       return;
     }
 
+    // Collect and convert local images to JSON-serializable format
+    const localImages: Record<string, Record<string, Uint8Array>> = {};
+
+    for (const [jsonKey, fileMap] of Object.entries(localImageFiles)) {
+      // Convert Map to Record for JSON serialization
+      const filesRecord: Record<string, Uint8Array> = {};
+      fileMap.forEach((bytes, filename) => {
+        filesRecord[filename] = bytes;
+      });
+      localImages[jsonKey] = filesRecord;
+    }
+
     SecureMessageHandler.sendSecureMessage({
       type: 'apply-data',
       jsonData,
       mappings: activeMappings,
-      valueBuilders
+      valueBuilders,
+      localImages
     });
-  }, [jsonData, mappings, selectionCount, addLog, addToastError, valueBuilders]);
+  }, [jsonData, mappings, selectionCount, addToastError, valueBuilders, localImageFiles]);
 
   const handleClearData = useCallback(() => {
     const sourceKey = dataSource as keyof typeof dataBySource;
