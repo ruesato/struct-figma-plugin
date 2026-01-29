@@ -494,6 +494,23 @@ function findAllInstancesInNode(node: SceneNode): InstanceNode[] {
   return instances;
 }
 
+// Helper function to sort nodes by their layer panel order (top to bottom)
+function sortByLayerPanelOrder(nodes: SceneNode[]): SceneNode[] {
+  return nodes.slice().sort((a, b) => {
+    // If nodes share the same parent, sort by their index in parent's children
+    if (a.parent && b.parent && a.parent.id === b.parent.id && 'children' in a.parent) {
+      const parentChildren = a.parent.children;
+      const indexA = parentChildren.indexOf(a);
+      const indexB = parentChildren.indexOf(b);
+      return indexA - indexB;
+    }
+
+    // If nodes have different parents, sort by Y position (top to bottom)
+    // This handles cases where nodes are in different containers
+    return a.y - b.y;
+  });
+}
+
 // Helper function to collect all target containers from the current selection
 function collectAllTargetContainers(selection: readonly SceneNode[]): SceneNode[] {
   const allContainers: SceneNode[] = [];
@@ -510,7 +527,8 @@ function collectAllTargetContainers(selection: readonly SceneNode[]): SceneNode[
     }
   }
 
-  return allContainers;
+  // Sort containers by their layer panel order (top to bottom)
+  return sortByLayerPanelOrder(allContainers);
 }
 
 // Helper function to collect all target instances from the current selection (kept for backward compatibility)
