@@ -745,6 +745,55 @@ async function requestDomainApproval(url: string, purpose: string): Promise<bool
   });
 }
 
+// Helper function to create ImagePaint with preserved properties
+function createImagePaint(node: SceneNode & MinimalFillsMixin, imageHash: string): ImagePaint {
+  // Check if node already has an image fill
+  const existingImageFill = Array.isArray(node.fills)
+    ? node.fills.find((fill): fill is ImagePaint => fill.type === 'IMAGE')
+    : undefined;
+
+  if (existingImageFill) {
+    // Preserve all existing properties except imageHash
+    const newPaint: ImagePaint = {
+      type: 'IMAGE',
+      imageHash,
+      scaleMode: existingImageFill.scaleMode,
+    };
+
+    // Preserve optional properties if they exist
+    if (existingImageFill.imageTransform !== undefined) {
+      newPaint.imageTransform = existingImageFill.imageTransform;
+    }
+    if (existingImageFill.scalingFactor !== undefined) {
+      newPaint.scalingFactor = existingImageFill.scalingFactor;
+    }
+    if (existingImageFill.rotation !== undefined) {
+      newPaint.rotation = existingImageFill.rotation;
+    }
+    if (existingImageFill.filters !== undefined) {
+      newPaint.filters = existingImageFill.filters;
+    }
+    if (existingImageFill.opacity !== undefined) {
+      newPaint.opacity = existingImageFill.opacity;
+    }
+    if (existingImageFill.blendMode !== undefined) {
+      newPaint.blendMode = existingImageFill.blendMode;
+    }
+    if (existingImageFill.visible !== undefined) {
+      newPaint.visible = existingImageFill.visible;
+    }
+
+    return newPaint;
+  }
+
+  // Default: create new image fill with FILL scale mode
+  return {
+    type: 'IMAGE',
+    scaleMode: 'FILL',
+    imageHash,
+  };
+}
+
 // Helper function to apply image from local file bytes
 async function applyImageFromBytes(node: SceneNode, bytes: Uint8Array): Promise<boolean> {
   try {
@@ -767,13 +816,9 @@ async function applyImageFromBytes(node: SceneNode, bytes: Uint8Array): Promise<
       return false;
     }
 
-    // Apply as IMAGE fill
-    const newFills: Paint[] = [{
-      type: 'IMAGE',
-      scaleMode: 'FILL',
-      imageHash: image.hash
-    }];
-    node.fills = newFills;
+    // Apply as IMAGE fill, preserving existing image fill properties if present
+    const imagePaint = createImagePaint(node, image.hash);
+    node.fills = [imagePaint];
     sendLog(`Successfully applied image from local file to "${node.name}"`, 'info');
     return true;
   } catch (error) {
@@ -843,12 +888,9 @@ async function applyImageFromUrl(node: SceneNode, imageUrl: string): Promise<boo
     }
 
     if ('fills' in node) {
-      const newFills: Paint[] = [{
-        type: 'IMAGE',
-        scaleMode: 'FILL',
-        imageHash: image.hash
-      }];
-      node.fills = newFills;
+      // Apply as IMAGE fill, preserving existing image fill properties if present
+      const imagePaint = createImagePaint(node, image.hash);
+      node.fills = [imagePaint];
       sendLog(`Successfully applied image from ${domain}`, 'info');
       return true;
     } else {
