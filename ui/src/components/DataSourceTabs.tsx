@@ -43,7 +43,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
       <div className="grid grid-cols-2 gap-3 mb-6">
         {/* File Upload Card */}
         <Card
-          className={`cursor-pointer transition-all border-[var(--figma-color-border)] bg-[var(--figma-color-bg-secondary)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] hover:text-[var(--figma-color-text-onbrand)] ${
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] bg-[var(--figma-color-bg)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] hover:text-[var(--figma-color-text-onbrand)] ${
             dataSource === 'file' ? 'bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)]' : ''
           }`}
           onClick={() => setDataSource('file')}
@@ -58,7 +58,7 @@ const DataSourceTabs: React.FC<DataSourceTabsProps> = ({
 
         {/* API Connection Card */}
         <Card
-          className={`cursor-pointer transition-all border-[var(--figma-color-border)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] bg-[var(--figma-color-bg-secondary)] hover:text-[var(--figma-color-text-onbrand)] ${
+          className={`cursor-pointer transition-all border-[var(--figma-color-border)] bg-[var(--figma-color-bg)] hover:bg-[var(--figma-color-bg-brand-hover)] text-[var(--figma-color-text)] hover:text-[var(--figma-color-text-onbrand)] ${
             dataSource === 'api' ? 'bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)]' : ''
           }`}
           onClick={() => setDataSource('api')}
