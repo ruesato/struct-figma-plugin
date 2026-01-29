@@ -157,8 +157,8 @@ const KeyMapping: React.FC<KeyMappingProps> = ({
 
                       {fileCount > 0 && (
                         <>
-                          <span className="text-[10px] px-1.5 py-0.5 bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)] rounded font-medium">
-                            {fileCount} {fileCount === 1 ? 'file' : 'files'}
+                          <span className="text-[10px] px-1.5 py-0.5 bg-[var(--figma-color-bg-brand)] text-[var(--figma-color-text-onbrand)] rounded-full font-medium">
+                            {fileCount}
                           </span>
                           <Button
                             variant="ghost"
